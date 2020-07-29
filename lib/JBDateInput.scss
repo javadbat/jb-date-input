@@ -1,0 +1,75 @@
+.jb-date-input-web-component {
+    width: 100%;
+    margin: 12px 0;
+
+    label {
+        width: 100%;
+        margin: 4px 0px;
+        display: block;
+        font-size: 0.8em;
+        color: #1f1735;
+    }
+
+    .input-box {
+        width: 100%;
+        box-sizing: border-box;
+        height: 40px;
+        border: solid 1px #f7f6f6;
+        background-color: #f7f6f6;
+        border-bottom: solid 3px #f7f6f6;
+        border-radius: 16px;
+        margin: 4px 0px;
+        display: block;
+        transition: ease 0.3s all;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+
+        &:focus-within {
+            border-color: #1e2832;
+        }
+
+        input {
+            border: none;
+            width: calc(100% - 36px);
+            box-sizing: border-box;
+            height: 100%;
+            background-color: transparent;
+            padding: 2px 12px 0 12px;
+            display: block;
+            font-family: inherit;
+            font-size: 1.1em;
+            color: #1f1735;
+            margin: 0;
+            border-radius: 0;
+            text-align: right;
+            direction: ltr;
+            &:focus {
+                outline: none;
+            }
+        }
+        .calendar-trigger {
+            display: block;
+            height: 28px;
+            width: 28px;
+            margin: 4px 0 4px 8px;
+            cursor: pointer;
+            svg {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+    .message-box{
+        font-size: 0.7em;
+        padding: 2px 8px;
+        color: #929292;
+        &:empty{
+            padding: 0;
+        }
+        &.error{
+            color: red;
+        }
+    }
+
+}
