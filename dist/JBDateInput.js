@@ -67,7 +67,7 @@ class JBDateInputWebComponent extends HTMLElement {
     }
     initProp() {
         this.validationList = [];
-        this.valueType = "GREGORIAN";//JALALI,TIME_STAMP
+        this.valueType = this.getAttribute("value-type") || "GREGORIAN";//JALALI,TIME_STAMP
         this._valueObj = {
             jalali: {
                 year: null,
@@ -92,7 +92,7 @@ class JBDateInputWebComponent extends HTMLElement {
         };
     }
     static get observedAttributes() {
-        return ['label', 'type', 'message', 'value', 'name'];
+        return ['label', 'value-type', 'message', 'value', 'name'];
     }
     attributeChangedCallback(name, oldValue, newValue) {
         // do something when an attribute has changed
@@ -111,6 +111,9 @@ class JBDateInputWebComponent extends HTMLElement {
                 break;
             case 'name':
                 this.inputElement.setAttribute('name', value);
+                break;
+            case 'value-type':
+                this.valueType = value;
                 break;
         }
 
@@ -200,7 +203,21 @@ class JBDateInputWebComponent extends HTMLElement {
 
     }
     setDateValueFromTimeStamp(value){
-        debugger;
+        const timeStamp = parseInt(value);
+        const date = dayjs_min(timeStamp);
+        const jalaliDate = date.calendar('jalali');
+        this._valueObj.gregorian={
+            year:date.year(),
+            month: date.month()+1,
+            day:date.date()
+        };
+        this._valueObj.jalali={
+            year:jalaliDate.year(),
+            month: jalaliDate.month()+1,
+            day:jalaliDate.date()
+        };
+        this._valueObj.timeStamp= date.unix();
+        
     }
     setDateValueFromgregorian(value) {
         // we replace '[Z]','Ž' and replace it again to Z becuse we dont want Z inside [Z] get replaced with time zone and remain constant Z : `Z--[Z]`=>`+3:30--Z`
