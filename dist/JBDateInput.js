@@ -68,19 +68,7 @@ class JBDateInputWebComponent extends HTMLElement {
     initProp() {
         this.validationList = [];
         this.valueType = this.getAttribute("value-type") || "GREGORIAN";//JALALI,TIME_STAMP
-        this._valueObj = {
-            jalali: {
-                year: null,
-                month: null,
-                day: null,
-            },
-            gregorian: {
-                year: null,
-                month: null,
-                day: null,
-            },
-            timeStamp: null,
-        };
+        this.setValueObjNull();
         this.inputFormat = 'YYYY/MM/DD';
         this.inputRegex = /^(?<year>[\d,\s]{4})\/(?<month>[\d,\s]{2})\/(?<day>[\d,\s]{2})$/g;
         this.format = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
@@ -176,15 +164,26 @@ class JBDateInputWebComponent extends HTMLElement {
         switch (this.valueType) {
             case 'GREGORIAN':
                 var { year, month, day } = this._valueObj.gregorian;
-                var value = this.format.replace('YYYY', year).replace('MM', month).replace('DD', day)
+                var yearStr = year<1000?( year<100?( year<10?"000"+year:"00"+year):"0"+year):year;
+                var monthStr = month<10?"0"+month:month;
+                var dayStr = day<10?"0"+day:day;
+                var value = this.format.replace('YYYY', yearStr).replace('MM', monthStr).replace('DD', dayStr)
                     .replace('HH', '00').replace('mm', '00').replace('ss', '00').replace('SSS', '000')
                     .replace('[Z]', 'Ž').replace('Z', '+00:00').replace('Ž', 'Z');
                 return value;
             case 'JALALI':
                 // eslint-disable-next-line no-redeclare
-                var { year, month, day } = this._valueObj.gregorian;
+                var { year, month, day } = this._valueObj.jalali;
                 // eslint-disable-next-line no-redeclare
-                var value = this.format.replace('YYYY', year).replace('MM', month).replace('DD', day).replace('HH', '00').replace('mm', '00').replace('ss', '00').replace('Z', '+00:00');
+                var yearStr = year<1000?( year<100?( year<10?"000"+year:"00"+year):"0"+year):year;
+                // eslint-disable-next-line no-redeclare
+                var monthStr = month<10?"0"+month:month;
+                // eslint-disable-next-line no-redeclare
+                var dayStr = day<10?"0"+day:day;
+                // eslint-disable-next-line no-redeclare
+                var value = this.format.replace('YYYY', yearStr).replace('MM', monthStr).replace('DD', dayStr)
+                    .replace('HH', '00').replace('mm', '00').replace('ss', '00').replace('SSS', '000')
+                    .replace('[Z]', 'Ž').replace('Z', '+00:00').replace('Ž', 'Z');
                 return value;
             case 'TIME_STAMP':
                 return this._valueObj.timeStamp;
@@ -198,26 +197,77 @@ class JBDateInputWebComponent extends HTMLElement {
                 break;
             case "TIME_STAMP":
                 this.setDateValueFromTimeStamp(value);
+                break;
+            case "JALALI":
+                this.setDateValueFromJalali(value);
+                break;
 
         }
 
     }
-    setDateValueFromTimeStamp(value){
+    setValueObjNull(){
+        // mean we reset calendar value and set it to null
+        this._valueObj={
+            gregorian: {
+                year: null,
+                month: null,
+                day: null
+            },
+            jalali: {
+                year: null,
+                month: null,
+                day:null
+            },
+            timeStamp: null
+        };
+    }
+    setDateValueFromJalali(value) {
+        debugger;
+        // we replace '[Z]','Ž' and replace it again to Z becuse we dont want Z inside [Z] get replaced with time zone and remain constant Z : `Z--[Z]`=>`+3:30--Z`
+        const regexString = this.format.replace('YYYY', '(?<year>[\\d]{4})').replace('MM', '(?<month>[\\d]{2})').replace('DD', '(?<day>[\\d]{2})')
+            .replace('HH', '(?<hour>[\\d]{2})').replace('mm', '(?<minute>[\\d]{2})').replace('ss', '(?<second>[\\d]{2})').replace('SSS', '(?<miliSecond>[\\d]{3})')
+            .replace('[Z]', 'Ž').replace('Z', '(?<zone>([\\+,-]\\d{2}:\\d{2}))').replace('Ž', 'Z');
+        const regex = new RegExp(regexString, 'g');
+        const res = regex.exec(value);
+        if(res){
+            const date = dayjs_min(`${res.groups.year}-${res.groups.month}-${res.groups.day}`, { jalali: true });
+            const jalaliDate = date.calendar('jalali');
+            this._valueObj.gregorian = {
+                year: date.year(),
+                month: date.month() + 1,
+                day: date.date()
+            };
+            this._valueObj.jalali = {
+                year: jalaliDate.year(),
+                month: jalaliDate.month() + 1,
+                day: jalaliDate.date()
+            };
+            this._valueObj.timeStamp = date.unix();
+        }else {
+            if (value !== null && value !== undefined && value !== '') {
+                console.error('your inputed Date doest match defualt or your specified Format');
+            }else {
+                this.setValueObjNull();
+            }
+        }
+
+    }
+    setDateValueFromTimeStamp(value) {
         const timeStamp = parseInt(value);
         const date = dayjs_min(timeStamp);
         const jalaliDate = date.calendar('jalali');
-        this._valueObj.gregorian={
-            year:date.year(),
-            month: date.month()+1,
-            day:date.date()
+        this._valueObj.gregorian = {
+            year: date.year(),
+            month: date.month() + 1,
+            day: date.date()
         };
-        this._valueObj.jalali={
-            year:jalaliDate.year(),
-            month: jalaliDate.month()+1,
-            day:jalaliDate.date()
+        this._valueObj.jalali = {
+            year: jalaliDate.year(),
+            month: jalaliDate.month() + 1,
+            day: jalaliDate.date()
         };
-        this._valueObj.timeStamp= date.unix();
-        
+        this._valueObj.timeStamp = date.unix();
+
     }
     setDateValueFromgregorian(value) {
         // we replace '[Z]','Ž' and replace it again to Z becuse we dont want Z inside [Z] get replaced with time zone and remain constant Z : `Z--[Z]`=>`+3:30--Z`
@@ -243,20 +293,22 @@ class JBDateInputWebComponent extends HTMLElement {
         } else {
             if (value !== null && value !== undefined && value !== '') {
                 console.error('your inputed Date doest match defualt or your specified Format');
+            }else {
+                this.setValueObjNull();
             }
         }
     }
     updateinputTextFromValue() {
         var str = this.inputFormat;
         let { year, month, day } = this._valueObj.jalali;
-        if(year<1000){
-            year = "0"+year;
+        if (year < 1000) {
+            year = "0" + year;
         }
-        if(month<10){
-            month = "0"+month;
+        if (month < 10) {
+            month = "0" + month;
         }
-        if(day<10){
-            day = "0"+day;
+        if (day < 10) {
+            day = "0" + day;
         }
         str = str.replace('YYYY', year).replace('MM', month).replace('DD', day);
         this._inputValue = str;
@@ -264,14 +316,14 @@ class JBDateInputWebComponent extends HTMLElement {
     updateValueObj(inputString) {
         const res = this.inputRegex.exec(inputString);
         this._valueObj.jalali = {
-            day: parseInt(res.groups.day) ,
-            month: parseInt(res.groups.month) ,
-            year: parseInt(res.groups.year) 
+            day: parseInt(res.groups.day),
+            month: parseInt(res.groups.month),
+            year: parseInt(res.groups.year)
         };
         const date = dayjs_min(`${this._valueObj.jalali.year}-${this._valueObj.jalali.month}-${this._valueObj.jalali.day}`, { jalali: true });
         this._valueObj.gregorian = {
             year: date.year(),
-            month: date.month()+1,
+            month: date.month() + 1,
             day: date.date(),
         };
         this._valueObj.timeStamp = date.unix();
