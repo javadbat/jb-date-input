@@ -81,7 +81,7 @@ class JBDateInputWebComponent extends HTMLElement {
         };
     }
     static get observedAttributes() {
-        return ['label', 'value-type', 'message', 'value', 'name'];
+        return ['label', 'value-type', 'message', 'value', 'name', 'format'];
     }
     attributeChangedCallback(name, oldValue, newValue) {
         // do something when an attribute has changed
@@ -103,6 +103,9 @@ class JBDateInputWebComponent extends HTMLElement {
                 break;
             case 'value-type':
                 this.valueType = value;
+                break;
+            case 'format':
+                this.format = value;
                 break;
         }
 
@@ -166,20 +169,20 @@ class JBDateInputWebComponent extends HTMLElement {
             //up and down button
             const carretPos = e.target.selectionStart;
             if (carretPos < 5) {
-                e.keyCode == 38?this.addYear(1):this.addYear(-1);
+                e.keyCode == 38 ? this.addYear(1) : this.addYear(-1);
                 e.target.setSelectionRange(0, 4);
             }
             if (carretPos > 4 && carretPos < 8) {
-                e.keyCode == 38?this.addMonth(1):this.addMonth(-1);
+                e.keyCode == 38 ? this.addMonth(1) : this.addMonth(-1);
                 e.target.setSelectionRange(5, 7);
             }
             if (carretPos > 7) {
-                e.keyCode == 38?this.addDay(1):this.addDay(-1);
+                e.keyCode == 38 ? this.addDay(1) : this.addDay(-1);
                 e.target.setSelectionRange(8, 10);
             }
             e.preventDefault();
         }
-        
+
     }
     addYear(interval) {
         const currentYear = this._valueObj.jalali.year;
@@ -187,12 +190,12 @@ class JBDateInputWebComponent extends HTMLElement {
         this.updateinputTextFromValue();
     }
     addMonth(interval) {
-        const currentMonth= this._valueObj.jalali.month;
+        const currentMonth = this._valueObj.jalali.month;
         this.setDateValueFromJalali(this._valueObj.jalali.year, currentMonth + interval, this._valueObj.jalali.day);
         this.updateinputTextFromValue();
     }
     addDay(interval) {
-        const currentDay= this._valueObj.jalali.day;
+        const currentDay = this._valueObj.jalali.day;
         this.setDateValueFromJalali(this._valueObj.jalali.year, this._valueObj.jalali.month, currentDay + interval);
         this.updateinputTextFromValue();
     }
@@ -262,7 +265,7 @@ class JBDateInputWebComponent extends HTMLElement {
         const res = regex.exec(value);
         if (res) {
             this.setDateValueFromJalali(res.groups.year, res.groups.month, res.groups.day);
-        }else {
+        } else {
             if (value !== null && value !== undefined && value !== '') {
                 console.error('your inputed Date doest match defualt or your specified Format');
             } else {
@@ -270,42 +273,32 @@ class JBDateInputWebComponent extends HTMLElement {
             }
         }
     }
+    checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay) {
+        let date = dayjs_min(`${jalaliYear}-${jalaliMonth}-${jalaliDay}`, { jalali: true });
+        let jalaliDate = date.calendar('jalali');
+        if (jalaliDate.year() !== jalaliYear) ;
+
+    }
     setDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay) {
-        if(jalaliYear>9000 || jalaliYear<1000){
-            return false;
-        }
-        if(jalaliMonth <1 || jalaliMonth>12){
-            return false;
-        }
-        if(jalaliMonth <7){
-            if(jalaliDay > 31){
-                return false;
-            }
-        }
-        if(jalaliMonth > 6 && jalaliMonth<12){
-            if(jalaliDay > 30){
-                if(this._valueObj.jalali.month != jalaliMonth && jalaliDay == 31){
+        const dateValidationResult = this.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
+        if (!dateValidationResult.isValid) {
+            if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
+                if (this._valueObj.jalali.month != jalaliMonth && jalaliDay == 31) {
                     //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
-                    return  this.setDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay-1);
+                    return this.setDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1);
                 }
-                return false;
             }
-        }
-        if(jalaliMonth == 12){
-            if(jalaliDay > 30){
-                return false;
+            if (dateValidationResult.error == "INVALID_DAY_FOR_LEAP") {
+                //if it was leap year and calender go to next year in 30 esfand
+                if (this._valueObj.jalali.year != jalaliYear && jalaliDay == 30) {
+                    //if we update year and prev year was kabiseh so new year cant update, we update day to 39 esfand and let user change year smootly without block
+                    return this.setDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1);
+                }
             }
+            return false;
         }
         let date = dayjs_min(`${jalaliYear}-${jalaliMonth}-${jalaliDay}`, { jalali: true });
         let jalaliDate = date.calendar('jalali');
-        if(jalaliDate.year() !== jalaliYear){
-            //if it was leap year and calender go to next year in 30 esfand
-            if(this._valueObj.jalali.year != jalaliYear && jalaliDay == 30){
-                //if we update year and prev year was kabiseh so new year cant update, we update day to 39 esfand and let user change year smootly without block
-                return  this.setDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay-1);
-            }
-            return false;
-        }
         this._valueObj.gregorian = {
             year: date.year(),
             month: date.month() + 1,
