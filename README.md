@@ -21,3 +21,12 @@ we have 3 value type:
     <jb-date-input value="1596291030322" valueType="TIME_STAMP"/>
     <jb-date-input value="1399-05-01T12:05:39.530Z" valueType="JALALI"/>
 ```
+### min and max date limit
+
+you can set minimum date and maximum date range for your app 
+
+```html
+ <jb-date-input label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z">
+ </jb-date-input>
+```
+remember your min and max date must be in the same format and valueType of your value.
