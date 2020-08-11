@@ -30,3 +30,13 @@ you can set minimum date and maximum date range for your app
  </jb-date-input>
 ```
 remember your min and max date must be in the same format and valueType of your value.
+
+### events
+
+```js
+//when defualt property are defined best time for impl your config like min and max date
+document.querySelector('jb-calendar').addEventListener('init',this.onCalendarElementInitiated);
+
+//when calendar init all property and function and dom created and bind successully
+document.querySelector('jb-calendar').addEventListener('load',this.onCalendarElementLoaded);
+```
