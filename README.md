@@ -21,6 +21,7 @@ we have 3 value type:
     <jb-date-input value="1596291030322" valueType="TIME_STAMP"/>
     <jb-date-input value="1399-05-01T12:05:39.530Z" valueType="JALALI"/>
 ```
+
 ### min and max date limit
 
 you can set minimum date and maximum date range for your app 
@@ -30,6 +31,12 @@ you can set minimum date and maximum date range for your app
  </jb-date-input>
 ```
 remember your min and max date must be in the same format and valueType of your value.
+to trigger validation and check is the element has a valid value:
+```js
+// if show error was false, in case of error component dont show error itself and function will return if data valid or not
+const showError = true
+const validationObj = dom.triggerInputValidation(showError)
+```
 
 ### events
 
