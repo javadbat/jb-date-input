@@ -28,5 +28,10 @@
   "repository": {
 		"type": "git",
 		"url": "git@github.com:javadbat/jb-date-input.git"
+  },
+  "dependencies": {
+    "dayjs": "^1.8.31",
+    "jalaliday": "^2.3.0",
+    "jb-calendar": "^1.0.1"
   }
 }
