@@ -1,0 +1,32 @@
+{
+  "name": "jb-date-input",
+  "description": "jalali date input web component",
+  "author": {
+		"name": "mohammad javad bathaei",
+		"email": "javadbat@gmail.com"
+	},
+  "keywords": [
+    "jb",
+    "jb-date-input",
+    "calendar",
+    "jalali calendar",
+    "jalali date",
+    "shamsi",
+    "jalali",
+    "web component"
+  ],
+  "version": "1.0.0",
+  "bugs": "https://github.com/javadbat/jb-date-input/issues",
+  "license": "MIT",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "lib/",
+    "dist/"
+  ],
+  "main": "index.js",
+  "repository": {
+		"type": "git",
+		"url": "git@github.com:javadbat/jb-date-input.git"
+  }
+}
