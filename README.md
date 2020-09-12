@@ -47,3 +47,14 @@ document.querySelector('jb-calendar').addEventListener('init',this.onCalendarEle
 //when calendar init all property and function and dom created and bind successully
 document.querySelector('jb-calendar').addEventListener('load',this.onCalendarElementLoaded);
 ```
+### set custome style
+
+in some cases in your project you need to change defualt style of web-component for example you need zero margin or different border-radius and etc.    
+if you want to set a custom style to this web-component all you need is to set css variable in parent scope of web-component 
+| css variable name                       | description                                                                                   |
+| -------------                           | -------------                                                                                 |
+| --jb-date-input-margin                  | web-component margin defualt is `0 12px`                                                      |
+| --jb-date-input-border-radius           | web-component border-radius defualt is `16px`                                                 |
+| --jb-date-input-border-color            | border color of select in normal mode                                                         |
+| --jb-date-input-border-color-focus      | border color when user focus on input                                                         |
+| --jb-date-input-bgcolor                 | background color of input                                                                     |
