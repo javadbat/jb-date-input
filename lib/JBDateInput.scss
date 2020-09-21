@@ -80,6 +80,7 @@
         font-size: 0.7em;
         padding: 2px 8px;
         color: #929292;
+        display: var(--jb-date-input-message-box-display , block);
         &:empty{
             padding: 0;
         }
