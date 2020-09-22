@@ -15,7 +15,7 @@
     "jalali",
     "web component"
   ],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "bugs": "https://github.com/javadbat/jb-date-input/issues",
   "license": "MIT",
   "files": [
@@ -32,6 +32,6 @@
   "dependencies": {
     "dayjs": "^1.8.31",
     "jalaliday": "^2.3.0",
-    "jb-calendar": "^1.0.2"
+    "jb-calendar": "^1.0.3"
   }
 }
