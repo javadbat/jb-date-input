@@ -30,8 +30,10 @@ you can set minimum date and maximum date range for your app
  <jb-date-input label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z">
  </jb-date-input>
 ```
+
 remember your min and max date must be in the same format and valueType of your value.
 to trigger validation and check is the element has a valid value:
+
 ```js
 // if show error was false, in case of error component dont show error itself and function will return if data valid or not
 const showError = true
@@ -42,11 +44,31 @@ const validationObj = dom.triggerInputValidation(showError)
 
 ```js
 //when defualt property are defined best time for impl your config like min and max date
-document.querySelector('jb-calendar').addEventListener('init',this.onCalendarElementInitiated);
+document.querySelector('jb-date-input').addEventListener('init',this.onCalendarElementInitiated);
 
 //when calendar init all property and function and dom created and bind successully
-document.querySelector('jb-calendar').addEventListener('load',this.onCalendarElementLoaded);
+document.querySelector('jb-date-input').addEventListener('load',this.onCalendarElementLoaded);
 ```
+
+### date input type
+
+jb-calendar support both jalali and gregorian(miladi) calendar input type. like value-type that let you determine how you want to provide/expect data to/from jb-date-input you can specify how user must fill the date input.
+to achive this you have to set `input-type` attribute or set `inputType` object to component dom directly.
+to set it as attribute you can set value like this:
+
+```HTML
+<jb-date-input input-type="GREGORIAN"></jb-date-input>
+<jb-date-input input-type="JALALI"></jb-date-input>
+```
+
+and for doing it with direct DOM assignment you can use following js code:
+
+```js
+//to show gregorian calendar
+document.querySelector('jb-date-input').inputType = "GREGORIAN" 
+document.querySelector('jb-date-input').inputType = "JALALI"
+```
+
 ### set custome style
 
 in some cases in your project you need to change defualt style of web-component for example you need zero margin or different border-radius and etc.    
