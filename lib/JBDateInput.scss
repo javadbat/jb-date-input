@@ -1,15 +1,16 @@
 .jb-date-input-web-component {
     width: 100%;
-    margin: var(--jb-date-input-margin , 12px 0) ;
+    margin: var(--jb-date-input-margin, 12px 0);
     position: relative;
-    direction: rtl;
+
     label {
         width: 100%;
         margin: 4px 0px;
         display: block;
         font-size: 0.8em;
         color: #1f1735;
-        &.--hide{
+
+        &.--hide {
             display: none;
         }
     }
@@ -18,10 +19,10 @@
         width: 100%;
         box-sizing: border-box;
         height: 40px;
-        border: solid 1px var(--jb-date-input-border-color , #f7f6f6);
-        background-color: var(--jb-date-input-bgcolor , #f7f6f6) ;
-        border-bottom: solid 3px var(--jb-date-input-border-color , #f7f6f6);
-        border-radius: var(--jb-date-input-border-radius , 16px);
+        border: solid 1px var(--jb-date-input-border-color, #f7f6f6);
+        background-color: var(--jb-date-input-bgcolor, #f7f6f6);
+        border-bottom: solid 3px var(--jb-date-input-border-color, #f7f6f6);
+        border-radius: var(--jb-date-input-border-radius, 16px);
         margin: 4px 0px;
         display: block;
         transition: ease 0.3s all;
@@ -30,7 +31,7 @@
         justify-content: space-between;
 
         &:focus-within {
-            border-color: var(--jb-date-input-border-color-focus , #1e2832);
+            border-color: var(--jb-date-input-border-color-focus, #1e2832);
         }
 
         input {
@@ -46,68 +47,83 @@
             color: #1f1735;
             margin: 0;
             border-radius: 0;
-            text-align: right;
             direction: ltr;
+            text-align: right;
+            text-align: -webkit-match-parent;
+            text-align: -moz-match-parent;
+            text-align: match-parent;
+
             &:focus {
                 outline: none;
             }
         }
+
         .calendar-trigger {
             display: block;
             height: 28px;
             width: 28px;
-            margin: 4px 0 4px 8px;
+            margin: 4px 0;
+            margin-inline-end: 8px;
             cursor: pointer;
-            &.--active{
-                svg{
-                    .cls-1{
+
+            &.--active {
+                svg {
+                    .cls-1 {
                         fill: #1f1735;
                     }
                 }
-                
+
             }
+
             svg {
                 width: 100%;
                 height: 100%;
-                .cls-1{
-                    fill:#bbb;
-                    
+
+                .cls-1 {
+                    fill: #bbb;
+
                 }
             }
         }
     }
-    .message-box{
+
+    .message-box {
         font-size: 0.7em;
         padding: 2px 8px;
         color: #929292;
-        display: var(--jb-date-input-message-box-display , block);
-        &:empty{
+        display: var(--jb-date-input-message-box-display, block);
+
+        &:empty {
             padding: 0;
         }
-        &.error{
+
+        &.error {
             color: red;
         }
     }
-    .calendar-wrapper{
+
+    .calendar-wrapper {
         position: absolute;
         display: none;
-        top:64px;
-        right: 0;
+        inset-block-start: 64px;
+        inset-inline-start: 0;;
         background-color: #fff;
         border-radius: 24px;
         padding: 16px;
-        box-shadow: 
-    12px 12px 16px 0 rgba(0, 0, 0, 0.25),
-    -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
-    z-index: 10;
-        jb-calendar{
-            &:focus{
+        box-shadow:
+            12px 12px 16px 0 rgba(0, 0, 0, 0.25),
+            -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
+        z-index: 10;
+
+        jb-calendar {
+            &:focus {
                 outline: none;
             }
         }
-    &.--show{
-        display: block;
-    }
+
+        &.--show {
+            display: block;
+        }
     }
 
 }
