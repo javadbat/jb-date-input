@@ -1,5 +1,19 @@
 # jb-date-input
 
+web component form element to get date from user
+
+- support jalali date as well as gregorian date
+
+- support keyboard arrow key and fast date input with keyboard
+
+- customizable style with css variable
+
+- can set min and max date value
+
+- web component so it can be used in every framework and even purejs project
+
+sample: <https://codepen.io/javadbat/pen/qBRyYKY>
+
 ### format
 
 defualt format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
