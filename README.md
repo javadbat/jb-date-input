@@ -1,5 +1,8 @@
 # jb-date-input
 
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/jb-date-input)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/master/LICENSE)
+
 web component form element to get date from user
 
 - support jalali date as well as gregorian date
@@ -13,6 +16,40 @@ web component form element to get date from user
 - web component so it can be used in every framework and even purejs project
 
 sample: <https://codepen.io/javadbat/pen/qBRyYKY>
+
+## instructions
+
+### getting started
+
+#### using npm
+
+1- install package:
+
+```command
+npm i jb-date-input
+```
+
+2- import package in one of your `.js` file:
+
+```js
+import 'jb-date-input';
+```
+
+3- use it in your `.html` file like any other tag:
+
+```HTML
+<jb-date-input label="date label"></jb-date-input>
+```
+
+#### using cdn
+
+you can just add script tag to your html file and then use web component how ever you need
+
+```HTML
+<script src="https://unpkg.com/jb-date-input"></script>
+<script src="https://unpkg.com/jb-calendar"></script>
+
+```
 
 ### format
 

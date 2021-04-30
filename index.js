@@ -1,1 +1,1 @@
-import './dist/JBDateInput';
+import './dist/JBDateInput.js';
