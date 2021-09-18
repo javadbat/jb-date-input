@@ -132,3 +132,4 @@ if you want to set a custom style to this web-component all you need is to set c
 | --jb-date-input-border-color-focus      | border color when user focus on input                                                         |
 | --jb-date-input-bgcolor                 | background color of input                                                                     |
 | --jb-date-input-message-box-display     | defualt is block but if you set it to none message box will be hidden                         |
+| --jb-date-input-text-align              | text align of input                                                                           |
