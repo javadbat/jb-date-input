@@ -81,6 +81,29 @@ you can set minimum date and maximum date range for your app
  <jb-date-input label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z">
  </jb-date-input>
 ```
+### custom validation
+
+beside of min and max you can also set your own custom validation like any other jb web components family to achive this you must create a array of validations and assign them to component
+
+```js
+const validationList = [
+        {
+            validator:/^13.*$/g,
+            message:'تاریخ باید تنها در قرن 13 شمسی باشد'
+        },
+        {
+            validator:(inputedText, valueObject, valueText)=>{
+                //you can use raw inputed text or formatted text in expected value in argumants
+                //you have access to both jalali and gregorian date object here
+                // rememmber valueObject and valueText are both empty and null when date is incomplete
+                return valueObject.jalali.day == 15;
+            },
+            message:'باید تاریخ حتما  15 ماه انتخاب شود'
+        }
+];
+document.querySelector('jb-date-input').validationList = validationList
+```
+
 
 remember your min and max date must be in the same format and valueType of your value.
 to trigger validation and check is the element has a valid value:
