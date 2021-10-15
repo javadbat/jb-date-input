@@ -64,8 +64,8 @@
 
         .calendar-trigger {
             display: block;
-            height: 28px;
-            width: 28px;
+            width:  var(--jb-date-input-calendar-trigger-width, 28px);
+            height: var(--jb-date-input-calendar-trigger-height, 28px);
             margin: 4px 0;
             margin-inline-end: 8px;
             cursor: pointer;
