@@ -21,17 +21,18 @@
     .input-box {
         width: 100%;
         box-sizing: border-box;
-        height: 40px;
-        border: solid 1px var(--jb-date-input-border-color, #f7f6f6);
+        height: var(--jb-date-input-box-height, 40px);
+        border: solid var(--jb-date-input-border-width, 1px) var(--jb-date-input-border-color, #f7f6f6);
         background-color: var(--jb-date-input-bgcolor, #f7f6f6);
-        border-bottom: solid 3px var(--jb-date-input-border-color, #f7f6f6);
+        border-bottom: solid var(--jb-date-input-border-bottom-width, 3px) var(--jb-date-input-border-color, #f7f6f6);
         border-radius: var(--jb-date-input-border-radius, 16px);
         margin: 4px 0px;
         display: block;
         transition: ease 0.3s all;
         overflow: hidden;
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        box-shadow: var(--jb-date-input-box-shadow, none);
         text-align: var(--jb-date-input-text-align, initial) ;
 
         &:focus-within {
@@ -76,7 +77,6 @@
                         fill: #1f1735;
                     }
                 }
-
             }
 
             svg {

@@ -1,6 +1,9 @@
 <div class="jb-date-input-web-component">
     <label class="--hide"><span class="label-value"></span></label>
     <div class="input-box">
+        <div class="jb-date-input-start-section-wrapper">
+            <slot name="start-section"></slot>
+        </div>
         <input class="input-box"/>
         <div class="calendar-trigger">
             <slot name="calendar-trigger-icon">
@@ -14,6 +17,9 @@
                     </g>
                 </svg>
             </slot>
+        </div>
+        <div class="jb-date-input-end-section-wrapper">
+            <slot name="end-section"></slot>
         </div>
     </div>
     <div class="message-box"></div>

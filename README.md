@@ -183,3 +183,24 @@ if you want to set a custom style to this web-component all you need is to set c
 | --jb-date-input-bgcolor                 | background color of input                                                                     |
 | --jb-date-input-message-box-display     | defualt is block but if you set it to none message box will be hidden                         |
 | --jb-date-input-text-align              | text align of input                                                                           |
+| --jb-date-input-box-height              | height of input box                                                                           |
+| --jb-date-input-border-width            | general border width defualt is `1px`                                                         |
+| --jb-date-input-border-bottom-width     | border bottom width defualt is `3px`                                                          |     
+
+## add custom element in input box
+
+in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to plae custom DOM in `jb-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
+for better result i suggest you use `jb-date-input-inbox-element` tag but its optional and you can use your own custom tag too.
+`jb-input-inbox-element` will add some style to make sure your icon will place in center and will not overflow nad make your job easier if you want more controll you can skip it and use your own tag.
+example:
+
+```HTML
+<JBInput>
+    <jb-date-input-inbox-element slot="end-section">
+        <div>after</div>
+    </jb-date-input-inbox-element>
+    <jb-date-input-inbox-element slot="start-section">
+        <div>before</div>
+    </jb-date-input-inbox-element>
+</JBInput>
+```
