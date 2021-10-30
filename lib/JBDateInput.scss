@@ -10,7 +10,7 @@
         width: 100%;
         margin: 4px 0px;
         display: block;
-        font-size: 0.8em;
+        font-size:  var(--jb-date-input-label-font-size, 0.8em);;
         color: #1f1735;
 
         &.--hide {
@@ -57,7 +57,10 @@
             text-align: -webkit-match-parent;
             text-align: -moz-match-parent;
             text-align: match-parent;
-
+            &::placeholder {
+                color: var(--jb-date-input-placeholder-color, initial);
+                font-size: var(--jb-date-input-placeholder-font-size, 1.1em);
+            }
             &:focus {
                 outline: none;
             }
