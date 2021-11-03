@@ -48,8 +48,8 @@
             padding: 2px 12px 0 12px;
             display: block;
             font-family: inherit;
-            font-size: 1.1em;
-            color: #1f1735;
+            font-size: var(--jb-date-input-value-font-size, 1.1em);
+            color: var(--jb-date-input-value-color, #1f1735);
             margin: 0;
             border-radius: 0;
             direction: ltr;

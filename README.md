@@ -188,7 +188,10 @@ if you want to set a custom style to this web-component all you need is to set c
 | --jb-date-input-border-bottom-width     | border bottom width defualt is `3px`                                                          |
 | --jb-date-input-label-font-size         | font size of date input label defualt is `0.8em`                                              |
 | --jb-date-input-placeholder-color       | input placeholder color defualt is `initial`                                                  |
-| --jb-date-input-placeholder-font-size   | place holder font size defualt is `1.1em`                                                     |                        
+| --jb-date-input-placeholder-font-size   | place holder font size defualt is `1.1em`                                                     |
+| --jb-date-input-value-color             | date input value color default is `#1f1735`                                                   |
+| --jb-date-input-value-font-size         | date input value font-size                                                                    |
+
 
 ## add custom element in input box
 
