@@ -192,7 +192,7 @@ if you want to set a custom style to this web-component all you need is to set c
 | --jb-date-input-value-color             | date input value color default is `#1f1735`                                                   |
 | --jb-date-input-value-font-size         | date input value font-size                                                                    |
 
-
+if you want to change opened date picker style please read [jb-calendar](https://github.com/javadbat/jb-calendar) readme file  
 ## add custom element in input box
 
 in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to plae custom DOM in `jb-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
