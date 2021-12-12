@@ -1,10 +1,10 @@
 <div class="jb-date-input-web-component">
-    <label class="--hide"><span class="label-value"></span></label>
+    <label class="--hide" for=""><span class="label-value"></span></label>
     <div class="input-box">
         <div class="jb-date-input-start-section-wrapper">
             <slot name="start-section"></slot>
         </div>
-        <input class="input-box"/>
+        <input id="CalendarInput" class="input-box" virtualkeyboardpolicy="manual"/>
         <div class="calendar-trigger">
             <slot name="calendar-trigger-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" id="CalendarIcon" viewBox="0 0 44.97 44.46">
