@@ -15,6 +15,7 @@ web component form element to get date from user
 
 - web component so it can be used in every framework and even purejs project
 
+- responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard) 
 sample: <https://codepen.io/javadbat/pen/qBRyYKY>
 
 ## instructions
