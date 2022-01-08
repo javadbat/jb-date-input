@@ -17,6 +17,8 @@ web component form element to get date from user
 
 - responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard)
 
+- support typescript
+
 sample: <https://codepen.io/javadbat/pen/qBRyYKY>
 
 ## instructions
