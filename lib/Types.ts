@@ -53,7 +53,7 @@ export type DateValidResult = {
     error:string | null;
 }
 export type DateRestrictionsValidResult = {
-    isAllValid():boolean;
+    isAllValid:boolean;
     min: {
         isValid: boolean;
         message: null | string;

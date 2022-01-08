@@ -5,7 +5,9 @@
     width: 100%;
     margin: var(--jb-date-input-margin, 12px 0);
     position: relative;
-
+    &:focus-visible{
+        outline: none;
+    }
     label {
         width: 100%;
         margin: 4px 0px;

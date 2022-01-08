@@ -14,16 +14,16 @@ if (typeof (dayjs as JalaliDayjs).calendar !== "function") {
     dayjs.extend(jalaliday);
 }
 import { ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
-const InputTypes = {
+export const InputTypes = {
     jalali: 'JALALI',
     gregorian: 'GREGORIAN'
 };
-enum ValueTypes {
+export enum ValueTypes {
     jalali = 'JALALI',
     gregorian = 'GREGORIAN',
     timestamp = 'TIME_STAMP',
 }
-class JBDateInputWebComponent extends HTMLElement {
+export class JBDateInputWebComponent extends HTMLElement {
     static get formAssociated() { return true; }
     internals_?: ElementInternals;
     elements!: ElementsObject;

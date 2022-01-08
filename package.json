@@ -32,6 +32,7 @@
 		"type": "git",
 		"url": "https://github.com/javadbat/jb-date-input"
   },
+  "types": "./dist/JBDateInput.d.ts",
   "dependencies": {
     "dayjs": ">=1.8.31",
     "jalaliday": ">=2.3.0",
