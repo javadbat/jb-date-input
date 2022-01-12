@@ -195,7 +195,7 @@ if you want to set a custom style to this web-component all you need is to set c
 | --jb-date-input-placeholder-font-size   | place holder font size defualt is `1.1em`                                                     |
 | --jb-date-input-value-color             | date input value color default is `#1f1735`                                                   |
 | --jb-date-input-value-font-size         | date input value font-size                                                                    |
-
+| --jb-date-input-calender-wrapper-bg-color  | calender background color default color is `#fff`                                             |
 if you want to change opened date picker style please read [jb-calendar](https://github.com/javadbat/jb-calendar) readme file  
 ## add custom element in input box
 
