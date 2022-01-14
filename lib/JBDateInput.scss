@@ -116,7 +116,7 @@
         display: none;
         inset-block-start: 64px;
         inset-inline-start: 0;;
-        background-color: #fff;
+        background-color: var(--jb-date-input-calender-wrapper-bg-color,#fff);
         border-radius: 24px;
         padding: 16px;
         box-shadow:
