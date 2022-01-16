@@ -1,4 +1,3 @@
-/* eslint-disable no-redeclare */
 import HTML from './JBDateInput.html';
 import CSS from './JBDateInput.scss';
 import 'jb-calendar';
@@ -14,10 +13,10 @@ if (typeof (dayjs as JalaliDayjs).calendar !== "function") {
     dayjs.extend(jalaliday);
 }
 import { ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
-export const InputTypes = {
-    jalali: 'JALALI',
-    gregorian: 'GREGORIAN'
-};
+export enum InputTypes {
+    jalali = 'JALALI',
+    gregorian = 'GREGORIAN'
+}
 export enum ValueTypes {
     jalali = 'JALALI',
     gregorian = 'GREGORIAN',
@@ -28,7 +27,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     internals_?: ElementInternals;
     elements!: ElementsObject;
     #showCalendar = false;
-    #inputType: string = this.getAttribute("value-type") || InputTypes.jalali;//JALALI,GREGORIAN;
+    #inputType: InputTypes = (this.getAttribute("value-type") as InputTypes) || InputTypes.jalali;//JALALI,GREGORIAN;
     valueType: ValueTypes = this.getAttribute("value-type") as ValueTypes || ValueTypes.gregorian;//JALALI,TIME_STAMP,GREGORIAN;
     inputFormat = 'YYYY/MM/DD';
     #inputRegex = /^(?<year>[\d,\s]{4})\/(?<month>[\d,\s]{2})\/(?<day>[\d,\s]{2})$/g;
@@ -216,7 +215,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 }
                 break;
             case 'input-type':
-                this.inputType = value;
+                this.inputType = value as InputTypes;
                 break;
             case 'direction':
                 this.elements.calendar.setAttribute('direction', value);
@@ -659,8 +658,29 @@ export class JBDateInputWebComponent extends HTMLElement {
         valueObject.timeStamp = date.unix();
         return valueObject;
     }
+    private updateCalendarView(){
+        //update jb-calendr view base on current data
+        if(this.#inputType == InputTypes.jalali){
+            if(this.#valueObject.jalali.year){
+                this.elements.calendar.data.selectedYear = this.#valueObject.jalali.year;
+            }
+            if(this.#valueObject.jalali.month){
+                this.elements.calendar.data.selectedMonth = this.#valueObject.jalali.month;
+            }
+        }
+        if(this.#inputType == InputTypes.gregorian){
+            if(this.#valueObject.gregorian.year){
+                this.elements.calendar.data.selectedYear = this.#valueObject.gregorian.year;
+            }
+            if(this.#valueObject.gregorian.month){
+                this.elements.calendar.data.selectedMonth = this.#valueObject.gregorian.month;
+            }
+        }
+    }
     setDateValueFromJalali(jalaliYear:number, jalaliMonth:number, jalaliDay:number) {
-        this.#valueObject = this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay);
+        const valueObj:JBDateInputValueObject = this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay);
+        this.#valueObject = valueObj;
+        this.updateCalendarView();
     }
     setDateValueFromTimeStamp(value:string) {
         const timeStamp = parseInt(value);
@@ -677,7 +697,7 @@ export class JBDateInputWebComponent extends HTMLElement {
             day: jalaliDate.date()
         };
         this.#valueObject.timeStamp = date.unix();
-
+        this.updateCalendarView();
     }
     setDateValueFromGregorianString(value:string) {
         const res = this.getDateObjectValueBaseOnFormat(value, this.#format);
@@ -693,6 +713,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     setDateValueFromGregorian(gregorianYear:number, gregorianMonth:number, gregorianDay:number) {
         this.#valueObject = this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
+        this.updateCalendarView();
     }
     getDateValueFromGregorian(gregorianYear:number, gregorianMonth:number, gregorianDay:number) {
         const valueObject = JSON.parse(JSON.stringify(this.#emptyValueObject));
