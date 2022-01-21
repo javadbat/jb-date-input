@@ -172,6 +172,8 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         // do something when an attribute has changed
+        console.log(name,newValue);
+        
         this.onAttributeChange(name, newValue);
     }
     onAttributeChange(name: string, value: string) {
@@ -194,7 +196,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 this.elements.input.setAttribute('name', value);
                 break;
             case 'value-type':
-                if (value in ValueTypes) {
+                if (Object.values(ValueTypes).includes(value as ValueTypes)) {
                     this.valueType = value as ValueTypes;
                 }
                 break;
