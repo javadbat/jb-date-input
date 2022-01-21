@@ -153,7 +153,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.elements.input.addEventListener('keyup', this.onInputKeyup.bind(this));
         this.elements.input.addEventListener('keydown', this.onInputKeydown.bind(this));
         this.elements.calendarTriggerButton.addEventListener('click', this.onCalendarButtonClicked.bind(this));
-        this.elements.calendar.addEventListener('select', (e)=>this.onCalendarSelect(e as CustomEvent));
+        this.elements.calendar.addEventListener('select', (e) => this.onCalendarSelect(e as CustomEvent));
         this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
     }
     initProp() {
@@ -223,7 +223,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
 
     }
-    setFormat(newFormat:string) {
+    setFormat(newFormat: string) {
         //override new format base on user config
         this.#format = newFormat;
         //if we have min and max  date setted before format set we set them again so it works
@@ -266,7 +266,7 @@ export class JBDateInputWebComponent extends HTMLElement {
 
     }
     setMaxDate(dateString: string) {
-        let maxDate:Dayjs | null = null;
+        let maxDate: Dayjs | null = null;
         if (this.valueType == "GREGORIAN") {
             const dateValueObj = this.getDateObjectValueBaseOnFormat(dateString, this.#format);
             //sometimes format set after max value restriction set by user so this object returned null in these scenario we set max after format set again
@@ -371,7 +371,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         const event = new KeyboardEvent('keyup', keyUpInitObj);
         this.dispatchEvent(event);
     }
-    onInputKeydown(e:KeyboardEvent) {
+    onInputKeydown(e: KeyboardEvent) {
         const target = (e.target as HTMLInputElement);
         if (e.keyCode == 8) {
             const carretPos = target.selectionStart!;
@@ -402,12 +402,12 @@ export class JBDateInputWebComponent extends HTMLElement {
         if (this.inputType == InputTypes.jalali) {
             //TODO: change 1300 to something more reasonable
             const currentYear = this.#valueObject.jalali.year ? this.#valueObject.jalali.year : 1300;
-            this.setDateValueFromJalali(currentYear + interval, this.#valueObject.jalali.month||1, this.#valueObject.jalali.day||1);
+            this.setDateValueFromJalali(currentYear + interval, this.#valueObject.jalali.month || 1, this.#valueObject.jalali.day || 1);
         }
         if (this.inputType == InputTypes.gregorian) {
             //TODO: change 2000 to something more reasonable
             const currentYear = this.#valueObject.gregorian.year ? this.#valueObject.gregorian.year : 2000;
-            this.setDateValueFromGregorian(currentYear + interval, this.#valueObject.gregorian.month||1, this.#valueObject.gregorian.day||1);
+            this.setDateValueFromGregorian(currentYear + interval, this.#valueObject.gregorian.month || 1, this.#valueObject.gregorian.day || 1);
         }
         this.updateinputTextFromValue();
     }
@@ -415,23 +415,23 @@ export class JBDateInputWebComponent extends HTMLElement {
         if (this.inputType == InputTypes.jalali) {
             const currentMonth = this.#valueObject.jalali.month ? this.#valueObject.jalali.month : 0;
             //TODO: change 1300 to something more reasonable
-            this.setDateValueFromJalali(this.#valueObject.jalali.year||1300, currentMonth + interval, this.#valueObject.jalali.day||1);
+            this.setDateValueFromJalali(this.#valueObject.jalali.year || 1300, currentMonth + interval, this.#valueObject.jalali.day || 1);
         }
         if (this.inputType == InputTypes.gregorian) {
             const currentMonth = this.#valueObject.gregorian.month ? this.#valueObject.gregorian.month : 0;
             //TODO: change 2000 to something more reasonable
-            this.setDateValueFromGregorian(this.#valueObject.gregorian.year||2000, currentMonth + interval, this.#valueObject.gregorian.day||1);
+            this.setDateValueFromGregorian(this.#valueObject.gregorian.year || 2000, currentMonth + interval, this.#valueObject.gregorian.day || 1);
         }
         this.updateinputTextFromValue();
     }
     addDay(interval: number) {
         if (this.inputType == InputTypes.jalali) {
             const currentDay = this.#valueObject.jalali.day ? this.#valueObject.jalali.day : 0;
-            this.setDateValueFromJalali(this.#valueObject.jalali.year||1300, this.#valueObject.jalali.month||1, currentDay + interval);
+            this.setDateValueFromJalali(this.#valueObject.jalali.year || 1300, this.#valueObject.jalali.month || 1, currentDay + interval);
         }
         if (this.inputType == InputTypes.gregorian) {
             const currentDay = this.#valueObject.gregorian.day ? this.#valueObject.gregorian.day : 0;
-            this.setDateValueFromGregorian(this.#valueObject.gregorian.year||2000, this.#valueObject.gregorian.month||1, currentDay + interval);
+            this.setDateValueFromGregorian(this.#valueObject.gregorian.year || 2000, this.#valueObject.gregorian.month || 1, currentDay + interval);
         }
         this.updateinputTextFromValue();
     }
@@ -483,7 +483,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
 
     }
-    setDateValue(value:string) {
+    setDateValue(value: string) {
         //when user change value this function called and update inner value object base on user value
         switch (this.valueType) {
             case "GREGORIAN":
@@ -523,7 +523,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         const res = regex.exec(value);
         return res;
     }
-    setDateValueFromJalaliString(value:string) {
+    setDateValueFromJalaliString(value: string) {
         // we replace '[Z]','Ž' and replace it again to Z becuse we dont want Z inside [Z] get replaced with time zone and remain constant Z : `Z--[Z]`=>`+3:30--Z`
         const res = this.getDateObjectValueBaseOnFormat(value, this.#format);
         if (res && res.groups) {
@@ -624,7 +624,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         return result;
 
     }
-    getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
+    getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number):JBDateInputValueObject{
         const valueObject = JSON.parse(JSON.stringify(this.#emptyValueObject));
         const dateValidationResult = this.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
         if (!dateValidationResult.isValid) {
@@ -641,7 +641,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                     return this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1);
                 }
             }
-            return this.#emptyValueObject;
+            return JSON.parse(JSON.stringify(this.#emptyValueObject));
         }
         const date = (dayjs as any)(`${jalaliYear}-${jalaliMonth}-${jalaliDay}`, { jalali: true });
         const jalaliDate = date.calendar('jalali');
@@ -658,31 +658,32 @@ export class JBDateInputWebComponent extends HTMLElement {
         valueObject.timeStamp = date.unix();
         return valueObject;
     }
-    private updateCalendarView(){
+    private updateCalendarView() {
         //update jb-calendr view base on current data
-        if(this.#inputType == InputTypes.jalali){
-            if(this.#valueObject.jalali.year){
+        if (this.#inputType == InputTypes.jalali) {
+            if (this.#valueObject.jalali.year) {
                 this.elements.calendar.data.selectedYear = this.#valueObject.jalali.year;
             }
-            if(this.#valueObject.jalali.month){
+            if (this.#valueObject.jalali.month) {
                 this.elements.calendar.data.selectedMonth = this.#valueObject.jalali.month;
             }
         }
-        if(this.#inputType == InputTypes.gregorian){
-            if(this.#valueObject.gregorian.year){
+        if (this.#inputType == InputTypes.gregorian) {
+            if (this.#valueObject.gregorian.year) {
                 this.elements.calendar.data.selectedYear = this.#valueObject.gregorian.year;
             }
-            if(this.#valueObject.gregorian.month){
+            if (this.#valueObject.gregorian.month) {
                 this.elements.calendar.data.selectedMonth = this.#valueObject.gregorian.month;
             }
         }
     }
-    setDateValueFromJalali(jalaliYear:number, jalaliMonth:number, jalaliDay:number) {
-        const valueObj:JBDateInputValueObject = this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay);
+    setDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
+        const valueObj: JBDateInputValueObject = this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay);
         this.#valueObject = valueObj;
         this.updateCalendarView();
+
     }
-    setDateValueFromTimeStamp(value:string) {
+    setDateValueFromTimeStamp(value: string) {
         const timeStamp = parseInt(value);
         const date = dayjs(timeStamp);
         const jalaliDate = date.calendar('jalali');
@@ -699,7 +700,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.#valueObject.timeStamp = date.unix();
         this.updateCalendarView();
     }
-    setDateValueFromGregorianString(value:string) {
+    setDateValueFromGregorianString(value: string) {
         const res = this.getDateObjectValueBaseOnFormat(value, this.#format);
         if (res && res.groups) {
             this.setDateValueFromGregorian(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
@@ -711,28 +712,29 @@ export class JBDateInputWebComponent extends HTMLElement {
             }
         }
     }
-    setDateValueFromGregorian(gregorianYear:number, gregorianMonth:number, gregorianDay:number) {
-        this.#valueObject = this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
+    setDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number) {
+        const result:JBDateInputValueObject = this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
+        this.#valueObject = result;
         this.updateCalendarView();
     }
-    getDateValueFromGregorian(gregorianYear:number, gregorianMonth:number, gregorianDay:number) {
+    getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number):JBDateInputValueObject {
         const valueObject = JSON.parse(JSON.stringify(this.#emptyValueObject));
         const dateValidationResult = this.checkGregorianDateValidation(gregorianYear, gregorianMonth, gregorianDay);
         if (!dateValidationResult.isValid) {
             if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
                 if (this.#valueObject.gregorian.month != gregorianMonth && gregorianMonth > 29) {
                     //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
-                    return this.setDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1);
+                    return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1);
                 }
             }
             if (dateValidationResult.error == "INVALID_DAY_FOR_LEAP") {
                 //if it was leap year and calender go to next year in 30 esfand
                 if (this.#valueObject.gregorian.year != gregorianYear && gregorianDay == 29) {
                     //if we update year and prev year was kabiseh so new year cant update, we update day to 39 esfand and let user change year smootly without block
-                    return this.setDateValueFromJalali(gregorianYear, gregorianMonth, gregorianDay - 1);
+                    return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1);
                 }
             }
-            return false;
+            return JSON.parse(JSON.stringify(this.#emptyValueObject));
         }
         const date = dayjs(`${gregorianYear}-${gregorianMonth}-${gregorianDay}`);
         const jalaliDate = date.calendar('jalali');
@@ -787,7 +789,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         str = str.replace('YYYY', yearString!).replace('MM', monthString!).replace('DD', dayString!);
         this._inputValue = str;
     }
-    getValueObjectFromInputText(inputText:string) {
+    getValueObjectFromInputText(inputText: string) {
         this.#inputRegex.lastIndex = 0;
         const res = this.#inputRegex.exec(inputText);
         if (res && res.groups) {
@@ -1020,16 +1022,16 @@ export class JBDateInputWebComponent extends HTMLElement {
     onCalendarButtonClicked() {
         this.showCalendar = !this.showCalendar;
     }
-    onCalendarSelect(e:CustomEvent) {
+    onCalendarSelect(e: CustomEvent) {
         const target = e.target as JBCalendarWebComponent;
         const { year, month, day } = target.value;
-        if(year && month && day) {
+        if (year && month && day) {
             if (this.inputType == InputTypes.jalali) {
                 this.setDateValueFromJalali(year, month, day);
             } else {
                 this.setDateValueFromGregorian(year, month, day);
             }
-    
+
             this.updateinputTextFromValue();
             this.showCalendar = false;
             this.callOnDateSelect();
