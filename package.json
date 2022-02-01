@@ -16,7 +16,7 @@
     "jalali",
     "web component"
   ],
-  "version": "2.0.3",
+  "version": "2.0.4",
   "bugs": "https://github.com/javadbat/jb-date-input/issues",
   "license": "MIT",
   "files": [
@@ -25,6 +25,11 @@
     "lib/",
     "dist/"
   ],
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  },
   "main": "index.js",
   "module": "index.js",
   "homepage": "https://github.com/javadbat/jb-date-input",
