@@ -206,12 +206,12 @@ for better result i suggest you use `jb-date-input-inbox-element` tag but its op
 example:
 
 ```HTML
-<JBInput>
+<jb-date-input>
     <jb-date-input-inbox-element slot="end-section">
         <div>after</div>
     </jb-date-input-inbox-element>
     <jb-date-input-inbox-element slot="start-section">
         <div>before</div>
     </jb-date-input-inbox-element>
-</JBInput>
+</jb-date-input>
 ```

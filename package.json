@@ -14,9 +14,21 @@
     "jalali date",
     "shamsi",
     "jalali",
-    "web component"
+    "web component",
+    "persian date",
+    "persian calendar",
+    "persian date input",
+    "persian date picker",
+    "shamsi date",
+    "shamsi date input",
+    "shamsi date picker",
+    "jalali date input",
+    "jalali date picker",
+    "shamsi web-component",
+    "jalali web-component",
+    "jalali web component"
   ],
-  "version": "2.0.4",
+  "version": "2.0.6",
   "bugs": "https://github.com/javadbat/jb-date-input/issues",
   "license": "MIT",
   "files": [
