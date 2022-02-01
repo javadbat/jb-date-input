@@ -200,7 +200,7 @@ if you want to set a custom style to this web-component all you need is to set c
 if you want to change opened date picker style please read [jb-calendar](https://github.com/javadbat/jb-calendar) readme file  
 ## add custom element in input box
 
-in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to plae custom DOM in `jb-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
+in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to place custom DOM in `jb-date-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
 for better result i suggest you use `jb-date-input-inbox-element` tag but its optional and you can use your own custom tag too.
 `jb-input-inbox-element` will add some style to make sure your icon will place in center and will not overflow nad make your job easier if you want more controll you can skip it and use your own tag.
 example:
