@@ -145,6 +145,20 @@ export class JBDateInputWebComponent extends HTMLElement {
             messageBox: shadowRoot.querySelector('.message-box')!
         };
         this.registerEventListener();
+        this.initDeviceSpecifics();
+    }
+    /**
+     * @description activate some features specially on mobile or other specific devices
+     * @private
+     */
+    private initDeviceSpecifics() {
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            // on mobile
+            this.elements.input.setAttribute('readonly', 'true');
+        }else{
+            // on non-mobile
+            this.elements.input.removeAttribute('readonly');
+        }
     }
     registerEventListener() {
         this.elements.input.addEventListener('blur', this.onInputBlur.bind(this));
