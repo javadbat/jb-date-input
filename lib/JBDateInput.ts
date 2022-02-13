@@ -169,6 +169,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.elements.calendarTriggerButton.addEventListener('click', this.onCalendarButtonClicked.bind(this));
         this.elements.calendar.addEventListener('select', (e) => this.onCalendarSelect(e as CustomEvent));
         this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
+        this.elements.calendar.addEventListener('blur', this.onCalendarBlur.bind(this));
     }
     initProp() {
         this.setValueObjNull();
@@ -867,6 +868,12 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.callOnChange();
         const focusedElement = e.relatedTarget;
         if (focusedElement !== this.elements.calendar) {
+            this.showCalendar = false;
+        }
+    }
+    onCalendarBlur(e:FocusEvent){
+        const focusedElement = e.relatedTarget;
+        if (focusedElement !== this.elements.input) {
             this.showCalendar = false;
         }
     }
