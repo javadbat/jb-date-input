@@ -48,9 +48,10 @@ export type JBDateInputValueObject = {
     timeStamp:number | null;
 }
 
+type DateValidationResultErrors = "INVALID_YEAR" | "INVALID_MONTH" | "INVALID_DAY" | "INVALID_MIN_MONTH_NUMBER" | "INVALID_MIN_DAY_NUMBER" | "INVALID_MAX_MONTH_NUMBER" | "INVALID_MAX_DAY_NUMBER" | "INVALID_MIN_YEAR_NUMBER" | "INVALID_MAX_YEAR_NUMBER" | "INVALID_DAY_IN_MONTH" | "INVALID_DAY_FOR_LEAP"
 export type DateValidResult = {
     isValid:boolean;
-    error:string | null;
+    error:DateValidationResultErrors | null;
 }
 export type DateRestrictionsValidResult = {
     isAllValid:boolean;

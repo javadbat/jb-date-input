@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import jalaliday from 'jalaliday';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import './inbox-element/inbox-element';
+import cloneDeep from 'lodash.clonedeep';
 dayjs.extend(isLeapYear);
 type JalaliDayjs = typeof dayjs & { calendar(calendarType: string): Dayjs; }
 if (typeof (dayjs as JalaliDayjs).calendar !== "function") {
@@ -155,7 +156,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             // on mobile
             this.elements.input.setAttribute('readonly', 'true');
-        }else{
+        } else {
             // on non-mobile
             this.elements.input.removeAttribute('readonly');
         }
@@ -187,8 +188,8 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         // do something when an attribute has changed
-        console.log(name,newValue);
-        
+        console.log(name, newValue);
+
         this.onAttributeChange(name, newValue);
     }
     onAttributeChange(name: string, value: string) {
@@ -530,7 +531,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     setValueObjNull() {
         // mean we reset calendar value and set it to null
-        this.#valueObject = JSON.parse(JSON.stringify(this.#emptyValueObject));
+        this.#valueObject = cloneDeep(this.#emptyValueObject);
     }
     getDateObjectValueBaseOnFormat(value: string, format: string) {
         const regexString = format.replace('YYYY', '(?<year>[\\d]{4})').replace('MM', '(?<month>[\\d]{2})').replace('DD', '(?<day>[\\d]{2})')
@@ -560,17 +561,41 @@ export class JBDateInputWebComponent extends HTMLElement {
             error: null
         };
         //this function check date itself validation not user setted validation
-        if (isNaN(jalaliYear) || jalaliYear > 9000 || jalaliYear < 1000) {
+        if (isNaN(jalaliYear)) {
             result.isValid = false;
             result.error = "INVALID_YEAR";
         }
-        if (isNaN(jalaliMonth) || jalaliMonth < 1 || jalaliMonth > 12) {
+        if (isNaN(jalaliMonth)) {
             result.isValid = false;
             result.error = "INVALID_MONTH";
         }
-        if (isNaN(jalaliDay) || jalaliDay > 31) {
+        if (isNaN(jalaliDay)) {
             result.isValid = false;
             result.error = "INVALID_DAY";
+        }
+        if (jalaliMonth < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_MONTH_NUMBER";
+        }
+        if (jalaliDay < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_DAY_NUMBER";
+        }
+        if (jalaliMonth > 12) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_MONTH_NUMBER";
+        }
+        if (jalaliDay > 31) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_DAY_NUMBER";
+        }
+        if (jalaliYear < 1000) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_YEAR_NUMBER";
+        }
+        if (jalaliYear > 9999) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_YEAR_NUMBER";
         }
         if (jalaliMonth > 6 && jalaliMonth < 12) {
             if (jalaliDay > 30) {
@@ -585,7 +610,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 result.error = "INVALID_DAY_IN_MONTH";
             }
         }
-        if (result.isValid) {
+        if (result.isValid && jalaliMonth == 12) {
             //if everything was ok then we check for leap year
             const date = (dayjs as any)(`${jalaliYear}-${jalaliMonth}-${jalaliDay}`, { jalali: true });
             const jalaliDate = date.calendar('jalali');
@@ -604,18 +629,43 @@ export class JBDateInputWebComponent extends HTMLElement {
             error: null
         };
         //this function check date itself validation not user setted validation
-        if (gregorianYear > 9000 || gregorianYear < 1000) {
+        if (isNaN(gregorianYear)) {
             result.isValid = false;
             result.error = "INVALID_YEAR";
         }
-        if (gregorianMonth < 1 || gregorianMonth > 12) {
+        if (isNaN(gregorianMonth)) {
             result.isValid = false;
             result.error = "INVALID_MONTH";
         }
-        if (gregorianDay > 31) {
+        if (isNaN(gregorianDay)) {
             result.isValid = false;
             result.error = "INVALID_DAY";
         }
+        if (gregorianMonth < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_MONTH_NUMBER";
+        }
+        if (gregorianDay < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_DAY_NUMBER";
+        }
+        if (gregorianMonth > 12) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_MONTH_NUMBER";
+        }
+        if (gregorianDay > 31) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_DAY_NUMBER";
+        }
+        if (gregorianYear < 1000) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_YEAR_NUMBER";
+        }
+        if (gregorianYear > 9999) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_YEAR_NUMBER";
+        }
+
         if ([2, 4, 6, 9, 11].includes(gregorianDay)) {
             //month has less than 31 day
             if (gregorianDay > 30) {
@@ -641,10 +691,28 @@ export class JBDateInputWebComponent extends HTMLElement {
         return result;
 
     }
-    getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number):JBDateInputValueObject{
-        const valueObject = JSON.parse(JSON.stringify(this.#emptyValueObject));
+    getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number): JBDateInputValueObject {
+        const valueObject = cloneDeep(this.#emptyValueObject);
         const dateValidationResult = this.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
         if (!dateValidationResult.isValid) {
+            if(dateValidationResult.error == "INVALID_MIN_DAY_NUMBER"){
+                return this.getDateValueFromJalali(jalaliYear, jalaliMonth, 1);
+            }
+            if(dateValidationResult.error == "INVALID_MIN_MONTH_NUMBER"){
+                return this.getDateValueFromJalali(jalaliYear, 1, jalaliDay);
+            }
+            if(dateValidationResult.error == "INVALID_MIN_YEAR_NUMBER"){
+                return this.getDateValueFromJalali(1300, jalaliMonth, jalaliDay);
+            }
+            if(dateValidationResult.error == "INVALID_MAX_DAY_NUMBER"){
+                return this.getDateValueFromJalali(jalaliYear, jalaliMonth, 31);
+            }
+            if(dateValidationResult.error == "INVALID_MAX_MONTH_NUMBER"){
+                return this.getDateValueFromJalali(jalaliYear, 12, jalaliDay);
+            }
+            if(dateValidationResult.error == "INVALID_MAX_YEAR_NUMBER"){
+                return this.getDateValueFromJalali(9999, jalaliMonth, jalaliDay);
+            }
             if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
                 if (this.#valueObject.jalali.month != jalaliMonth && jalaliDay == 31) {
                     //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
@@ -658,7 +726,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                     return this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1);
                 }
             }
-            return JSON.parse(JSON.stringify(this.#emptyValueObject));
+            return cloneDeep(this.#emptyValueObject);
         }
         const date = (dayjs as any)(`${jalaliYear}-${jalaliMonth}-${jalaliDay}`, { jalali: true });
         const jalaliDate = date.calendar('jalali');
@@ -730,14 +798,33 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
     }
     setDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number) {
-        const result:JBDateInputValueObject = this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
+        const result: JBDateInputValueObject = this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
         this.#valueObject = result;
         this.updateCalendarView();
     }
-    getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number):JBDateInputValueObject {
-        const valueObject = JSON.parse(JSON.stringify(this.#emptyValueObject));
+    getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number): JBDateInputValueObject {
+
+        const valueObject: JBDateInputValueObject = cloneDeep(this.#emptyValueObject);
         const dateValidationResult = this.checkGregorianDateValidation(gregorianYear, gregorianMonth, gregorianDay);
         if (!dateValidationResult.isValid) {
+            if(dateValidationResult.error == "INVALID_MIN_DAY_NUMBER"){
+                return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, 1);
+            }
+            if(dateValidationResult.error == "INVALID_MIN_MONTH_NUMBER"){
+                return this.getDateValueFromGregorian(gregorianYear, 1, gregorianDay);
+            }
+            if(dateValidationResult.error == "INVALID_MIN_YEAR_NUMBER"){
+                return this.getDateValueFromGregorian(1900, gregorianMonth, gregorianDay);
+            }
+            if(dateValidationResult.error == "INVALID_MAX_DAY_NUMBER"){
+                return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, 31);
+            }
+            if(dateValidationResult.error == "INVALID_MAX_MONTH_NUMBER"){
+                return this.getDateValueFromGregorian(gregorianYear, 12, gregorianDay);
+            }
+            if(dateValidationResult.error == "INVALID_MAX_YEAR_NUMBER"){
+                return this.getDateValueFromGregorian(9000, gregorianMonth, gregorianDay);
+            }
             if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
                 if (this.#valueObject.gregorian.month != gregorianMonth && gregorianMonth > 29) {
                     //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
@@ -751,7 +838,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                     return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1);
                 }
             }
-            return JSON.parse(JSON.stringify(this.#emptyValueObject));
+            return cloneDeep(this.#emptyValueObject);
         }
         const date = dayjs(`${gregorianYear}-${gregorianMonth}-${gregorianDay}`);
         const jalaliDate = date.calendar('jalali');
@@ -806,7 +893,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         str = str.replace('YYYY', yearString!).replace('MM', monthString!).replace('DD', dayString!);
         this._inputValue = str;
     }
-    getValueObjectFromInputText(inputText: string) {
+    getValueObjectFromInputText(inputText: string): JBDateInputValueObject {
         this.#inputRegex.lastIndex = 0;
         const res = this.#inputRegex.exec(inputText);
         if (res && res.groups) {
@@ -816,9 +903,9 @@ export class JBDateInputWebComponent extends HTMLElement {
             if (this.inputType == InputTypes.gregorian) {
                 return this.getDateValueFromGregorian(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
             }
-        } else {
-            return JSON.parse(JSON.stringify(this.#emptyValueObject));
         }
+        const emptyValue: JBDateInputValueObject = cloneDeep(this.#emptyValueObject);
+        return emptyValue;
     }
     updateValueObjFromInput(inputString: string) {
         const res = this.#inputRegex.exec(inputString);
@@ -871,7 +958,7 @@ export class JBDateInputWebComponent extends HTMLElement {
             this.showCalendar = false;
         }
     }
-    onCalendarBlur(e:FocusEvent){
+    onCalendarBlur(e: FocusEvent) {
         const focusedElement = e.relatedTarget;
         if (focusedElement !== this.elements.input) {
             this.showCalendar = false;

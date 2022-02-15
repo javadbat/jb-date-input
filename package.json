@@ -53,6 +53,7 @@
   "dependencies": {
     "dayjs": ">=1.8.31",
     "jalaliday": ">=2.3.0",
-    "jb-calendar": ">=2.0.4"
+    "jb-calendar": ">=2.0.4",
+    "lodash.clonedeep": "^4.5.0"
   }
 }
