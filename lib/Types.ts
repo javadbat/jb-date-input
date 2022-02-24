@@ -30,8 +30,8 @@ export type JBDateInputValidationItem = {
 }
 
 export type DateRestrictions = {
-    min:Dayjs | null;
-    max:Dayjs | null;
+    min:Date | null;
+    max:Date | null;
 }
 
 export type JBDateInputValueObject = {
@@ -63,6 +63,15 @@ export type DateRestrictionsValidResult = {
         isValid: boolean;
         message: null | string;
     }
+}
+export enum InputTypes {
+    jalali = 'JALALI',
+    gregorian = 'GREGORIAN'
+}
+export enum ValueTypes {
+    jalali = 'JALALI',
+    gregorian = 'GREGORIAN',
+    timestamp = 'TIME_STAMP',
 }
 //becuase this._internal is not a standard we have to extend HTMLELEMENT to use it
 declare global {
