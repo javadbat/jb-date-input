@@ -180,8 +180,6 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         // do something when an attribute has changed
-        console.log(name, newValue);
-
         this.onAttributeChange(name, newValue);
     }
     onAttributeChange(name: string, value: string) {
