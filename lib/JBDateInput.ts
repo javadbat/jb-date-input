@@ -17,8 +17,6 @@ export class JBDateInputWebComponent extends HTMLElement {
     elements!: ElementsObject;
     #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("value-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
     #showCalendar = false;
-    // #inputType: InputTypes =  || InputTypes.jalali;//JALALI,GREGORIAN;
-    // valueType: ValueTypes =  || ValueTypes.gregorian;//JALALI,TIME_STAMP,GREGORIAN;
     inputFormat = 'YYYY/MM/DD';
     #inputRegex = /^(?<year>[\d,\s]{4})\/(?<month>[\d,\s]{2})\/(?<day>[\d,\s]{2})$/g;
     #format = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
@@ -570,8 +568,8 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     private updateCalendarView() {
         //update jb-calendr view base on current data
-        this.elements.calendar.data.selectedYear = this.#dateFactory.getYearValue(this.#valueObject);
-        this.elements.calendar.data.selectedMonth = this.#dateFactory.getMonthValue(this.#valueObject);
+        this.elements.calendar.data.selectedYear = this.#dateFactory.getCalendarYear(this.#valueObject);
+        this.elements.calendar.data.selectedMonth = this.#dateFactory.getCalendarMonth(this.#valueObject);
     }
     setDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
         const valueObj: JBDateInputValueObject = this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay);
@@ -645,7 +643,7 @@ export class JBDateInputWebComponent extends HTMLElement {
             if (dateValidationResult.error == "INVALID_DAY_FOR_LEAP") {
                 //if it was leap year and calender go to next year in 30 esfand
                 if (this.#valueObject.gregorian.year != gregorianYear && gregorianDay == 29) {
-                    //if we update year and prev year was kabiseh so new year cant update, we update day to 39 esfand and let user change year smootly without block
+                    //if we update year and prev year was kabiseh so new year cant update, we update day to 29 esfand and let user change year smootly without block
                     return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1);
                 }
             }
@@ -909,6 +907,17 @@ export class JBDateInputWebComponent extends HTMLElement {
     onCalendarElementinitiated() {
         this.elements.calendar.dateRestrictions.min = this.dateRestrictions.min;
         this.elements.calendar.dateRestrictions.max = this.dateRestrictions.max;
+        this.elements.calendar.defaultCalendarData = {
+            gregorian:{
+                year:this.#dateFactory.nicheNumbers.calendarYearOnEmpty.gregorian,
+                month:this.#dateFactory.nicheNumbers.calendarMonthOnEmpty.gregorian,
+            },
+            jalali:{
+                year:this.#dateFactory.nicheNumbers.calendarYearOnEmpty.jalali,
+                month:this.#dateFactory.nicheNumbers.calendarMonthOnEmpty.jalali,
+            }
+        };
+        this.updateCalendarView();
     }
     onCalendarButtonClicked() {
         this.showCalendar = !this.showCalendar;

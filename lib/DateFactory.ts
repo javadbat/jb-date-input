@@ -14,43 +14,58 @@ export type DateFactoryConstructorArg = {
     inputType: InputTypes | null | undefined;
     valueType: ValueTypes | null | undefined;
 }
-export class DateFactory{
+export class DateFactory {
     #valueType = ValueTypes.gregorian;
     #inputType = InputTypes.jalali;
-    get inputType(){
+    //here we keep numbers that replace the year,month,day in niche situations
+    #nicheNumbers = {
+        //when year is invalid or empty and we want to show the calendar we need to show the current year or any other base on user config
+        calendarYearOnEmpty: {
+            jalali: DateFactory.todayJalaliYear,
+            gregorian: DateFactory.todayGregorianYear
+        },
+        calendarMonthOnEmpty:{
+            jalali: 1,
+            gregorian: 1
+        }
+    }
+    get nicheNumbers(){
+        return this.#nicheNumbers;
+    }
+    get inputType() {
         return this.#inputType;
     }
-    get valueType(){
+    get valueType() {
         return this.#valueType;
     }
-    constructor(args:DateFactoryConstructorArg){
-        if(args.inputType){
+    constructor(args: DateFactoryConstructorArg) {
+        if (args.inputType) {
             this.#inputType = args.inputType;
         }
-        if(args.valueType){
+        if (args.valueType) {
             this.#valueType = args.valueType;
         }
     }
 
-    setInputType(inputType:InputTypes){
+    setInputType(inputType: InputTypes) {
         this.#inputType = inputType;
     }
-    setValueType(valueType:ValueTypes){
+    setValueType(valueType: ValueTypes) {
         this.#valueType = valueType;
     }
-    getYearValue(valueObject:JBDateInputValueObject):number{
-        if(this.valueType == ValueTypes.jalali){
-            return valueObject.jalali.year || 1300;
+    getYearValue(valueObject: JBDateInputValueObject): number | null {
+        if (this.valueType == ValueTypes.jalali) {
+            return valueObject.jalali.year;
         }
-        return valueObject.gregorian.year || 2000;
+        return valueObject.gregorian.year;
     }
-    getMonthValue(valueObject:JBDateInputValueObject):number{
-        if(this.valueType == ValueTypes.jalali){
-            return valueObject.jalali.month || 1;
+    getMonthValue(valueObject: JBDateInputValueObject): number | null {
+        if (this.valueType == ValueTypes.jalali){
+            return valueObject.jalali.month ;
         }
-        return valueObject.gregorian.month || 1;
+        return valueObject.gregorian.month;
     }
-    getDateFromValueDateString(valueDateString:string, format:string):Date | null{
+    getDateFromValueDateString(valueDateString: string, format: string): Date | null {
         let resultDate: Date | null = null;
         //create min date base on input value type
         if (this.valueType == ValueTypes.timestamp) {
@@ -68,6 +83,14 @@ export class DateFactory{
             }
         }
         return resultDate;
+    }
+    getCalendarYear(valueObject: JBDateInputValueObject): number {
+        const defaultYear = this.inputType == InputTypes.gregorian? this.#nicheNumbers.calendarYearOnEmpty.gregorian: this.#nicheNumbers.calendarYearOnEmpty.jalali;
+        return this.getYearValue(valueObject) || defaultYear;
+    }
+    getCalendarMonth(valueObject: JBDateInputValueObject): number {
+        const defaultMonth = this.inputType == InputTypes.gregorian? this.#nicheNumbers.calendarMonthOnEmpty.gregorian: this.#nicheNumbers.calendarMonthOnEmpty.jalali;
+        return this.getMonthValue(valueObject) || defaultMonth;
     }
     static checkJalaliDateValidation(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
         //check if jalali date is valid
@@ -214,33 +237,33 @@ export class DateFactory{
         const res = regex.exec(value);
         return res;
     }
-    static getDayjsFromGregorian(year:number|string,month:number|string,day:number|string):Dayjs{
+    static getDayjsFromGregorian(year: number | string, month: number | string, day: number | string): Dayjs {
         return dayjs(`${year}-${month}-${day}`, 'YYYY-M-D');
     }
-    static getDayjsFromJalali(year:number|string,month:number|string,day:number|string):Dayjs{
+    static getDayjsFromJalali(year: number | string, month: number | string, day: number | string): Dayjs {
         const date = (dayjs as any)(`${year}-${month}-${day}`, { jalali: true });
         return date;
     }
-    static getDayjsFromTimestamp(timestamp:number):Dayjs{
+    static getDayjsFromTimestamp(timestamp: number): Dayjs {
         return dayjs(timestamp);
     }
-    static getDayjs(year:number|string,month:number|string,day:number|string, isJalali:boolean){
-        if(isJalali){
-            return DateFactory.getDayjsFromJalali(year,month,day);
+    static getDayjs(year: number | string, month: number | string, day: number | string, isJalali: boolean) {
+        if (isJalali) {
+            return DateFactory.getDayjsFromJalali(year, month, day);
         }
-        return DateFactory.getDayjsFromGregorian(year,month,day);
+        return DateFactory.getDayjsFromGregorian(year, month, day);
     }
-    static getDateFromGregorian(year:number,month:number,day:number):Date{
-        return new Date(year,month-1,day);
+    static getDateFromGregorian(year: number, month: number, day: number): Date {
+        return new Date(year, month - 1, day);
     }
-    static getDateFromJalali(year:number,month:number,day:number):Date{
-        const date = DateFactory.getDayjsFromJalali(year,month,day);
+    static getDateFromJalali(year: number, month: number, day: number): Date {
+        const date = DateFactory.getDayjsFromJalali(year, month, day);
         return date.toDate();
     }
-    static getDateFromTimestamp(timestamp:number):Date{
+    static getDateFromTimestamp(timestamp: number): Date {
         return new Date(timestamp);
     }
-    static checkDateRestrictions(year:number,month:number,day:number,dateInputType:InputTypes, dateRestrictions:DateRestrictions):DateRestrictionsValidResult{
+    static checkDateRestrictions(year: number, month: number, day: number, dateInputType: InputTypes, dateRestrictions: DateRestrictions): DateRestrictionsValidResult {
         //this function check if inputed date is valid date in min and max range
         const result: DateRestrictionsValidResult = {
             get isAllValid() { return (this.min.isValid && this.max.isValid); },
@@ -273,5 +296,12 @@ export class DateFactory{
             }
         }
         return result;
+    }
+    static get todayGregorianYear(): number {
+        return dayjs().year();
+    }
+    static get todayJalaliYear(): number {
+        const year = dayjs().calendar('jalali').year();
+        return year;
     }
 }
