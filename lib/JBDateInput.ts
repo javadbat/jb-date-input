@@ -10,6 +10,7 @@ import './inbox-element/inbox-element';
 import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject } from './Helpers';
+import { JBCalendarValue } from 'jb-calendar/dist/Types';
 
 export class JBDateInputWebComponent extends HTMLElement {
     static get formAssociated() { return true; }
@@ -568,8 +569,19 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     private updateCalendarView() {
         //update jb-calendr view base on current data
-        this.elements.calendar.data.selectedYear = this.#dateFactory.getCalendarYear(this.#valueObject);
-        this.elements.calendar.data.selectedMonth = this.#dateFactory.getCalendarMonth(this.#valueObject);
+        const value: JBCalendarValue = {
+            year:this.#dateFactory.getCalendarYear(this.#valueObject),
+            month:this.#dateFactory.getCalendarMonth(this.#valueObject),
+            day:this.#dateFactory.getCalendarDay(this.#valueObject)
+        };
+        if(value.year && value.month && value.day){
+            //if we have all data we update calendar value
+            this.elements.calendar.value = value;
+        }else if(value.year && value.month){
+            //if we dont have all data we just set view year and month
+            this.elements.calendar.data.selectedYear = value.year;
+            this.elements.calendar.data.selectedMonth = value.month;
+        }
     }
     setDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
         const valueObj: JBDateInputValueObject = this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay);
@@ -719,10 +731,10 @@ export class JBDateInputWebComponent extends HTMLElement {
     updateValueObjFromInput(inputString: string) {
         const res = this.#inputRegex.exec(inputString);
         if (res && res.groups) {
-            if (this.inputType == InputTypes.jalali) {
+            if (this.#dateFactory.inputType == InputTypes.jalali) {
                 this.setDateValueFromJalali(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
             }
-            if (this.inputType == InputTypes.gregorian) {
+            if (this.#dateFactory.inputType == InputTypes.gregorian) {
                 this.setDateValueFromGregorian(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
             }
         }
@@ -759,13 +771,13 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     onInputBlur(e: FocusEvent) {
         document.removeEventListener('selectionchange', this.handleCarretPosOnInputFocus.bind(this));
-        const inputText = (e.target as HTMLInputElement).value;
-        this.updateValueObjFromInput(inputText);
-        this.callOnChange();
         const focusedElement = e.relatedTarget;
         if (focusedElement !== this.elements.calendar) {
             this.showCalendar = false;
         }
+        const inputText = (e.target as HTMLInputElement).value;
+        this.updateValueObjFromInput(inputText);
+        this.callOnChange();
     }
     onCalendarBlur(e: FocusEvent) {
         const focusedElement = e.relatedTarget;
@@ -775,6 +787,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     callOnChange() {
         const validationResult = this.triggerInputValidation(true);
+        //TODO: compare value with last time value and call onChange only if value changed
         const event = new CustomEvent('change', {
             detail: {
                 isValid: validationResult.isAllValid,
@@ -947,6 +960,19 @@ export class JBDateInputWebComponent extends HTMLElement {
     onInputTypeChange() {
         this.elements.calendar.inputType = this.inputType;
         this.updateinputTextFromValue();
+    }
+    /**
+     * set opend calendar date when date input value is empty
+     * @public
+     * @param {number} year which year you want to show in empty state in calendar.
+     * @param {number} month which month you want to show in empty state in calendar.
+     * @param {InputTypes} dateType default is your configured input-type  but you can set it otherwise if you want to change other type of calendar in case of change in input-type.
+     */
+    setCalendarDefaultDateView(year:number, month:number, dateType: InputTypes | undefined) {
+        if(year && month){
+            this.#dateFactory.setCalendarDefaultDateView(year, month, dateType);
+            this.updateCalendarView();
+        }
     }
 }
 const myElementNotExists = !customElements.get('jb-date-input');

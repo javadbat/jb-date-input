@@ -25,8 +25,8 @@ export class DateFactory {
             gregorian: DateFactory.todayGregorianYear
         },
         calendarMonthOnEmpty:{
-            jalali: 1,
-            gregorian: 1
+            jalali: DateFactory.todayJalaliMonth,
+            gregorian: DateFactory.todayGregorianMonth
         }
     }
     get nicheNumbers(){
@@ -53,17 +53,23 @@ export class DateFactory {
     setValueType(valueType: ValueTypes) {
         this.#valueType = valueType;
     }
-    getYearValue(valueObject: JBDateInputValueObject): number | null {
-        if (this.valueType == ValueTypes.jalali) {
+    getYearValueBaseOnInputType(valueObject: JBDateInputValueObject): number | null {
+        if (this.#inputType == InputTypes.jalali) {
             return valueObject.jalali.year;
         }
         return valueObject.gregorian.year;
     }
-    getMonthValue(valueObject: JBDateInputValueObject): number | null {
-        if (this.valueType == ValueTypes.jalali){
+    getMonthValueBaseOnInputType(valueObject: JBDateInputValueObject): number | null {
+        if (this.#inputType == InputTypes.jalali){
             return valueObject.jalali.month ;
         }
         return valueObject.gregorian.month;
+    }
+    getDayValueBaseOnInputType(valueObject: JBDateInputValueObject): number | null {
+        if (this.#inputType == InputTypes.jalali){
+            return valueObject.jalali.day;
+        }
+        return valueObject.gregorian.day;
     }
     getDateFromValueDateString(valueDateString: string, format: string): Date | null {
         let resultDate: Date | null = null;
@@ -86,11 +92,23 @@ export class DateFactory {
     }
     getCalendarYear(valueObject: JBDateInputValueObject): number {
         const defaultYear = this.inputType == InputTypes.gregorian? this.#nicheNumbers.calendarYearOnEmpty.gregorian: this.#nicheNumbers.calendarYearOnEmpty.jalali;
-        return this.getYearValue(valueObject) || defaultYear;
+        return this.getYearValueBaseOnInputType(valueObject) || defaultYear;
     }
     getCalendarMonth(valueObject: JBDateInputValueObject): number {
         const defaultMonth = this.inputType == InputTypes.gregorian? this.#nicheNumbers.calendarMonthOnEmpty.gregorian: this.#nicheNumbers.calendarMonthOnEmpty.jalali;
-        return this.getMonthValue(valueObject) || defaultMonth;
+        return this.getMonthValueBaseOnInputType(valueObject) || defaultMonth;
+    }
+    getCalendarDay(valueObject: JBDateInputValueObject): number|null {
+        return this.getDayValueBaseOnInputType(valueObject);
+    }
+    setCalendarDefaultDateView(year:number, month:number, inputType:InputTypes = this.#inputType){
+        if(inputType == InputTypes.gregorian){
+            this.#nicheNumbers.calendarYearOnEmpty.gregorian = year;
+            this.#nicheNumbers.calendarMonthOnEmpty.gregorian = month;
+        }else if(inputType == InputTypes.jalali){
+            this.#nicheNumbers.calendarYearOnEmpty.jalali = year;
+            this.#nicheNumbers.calendarMonthOnEmpty.jalali = month;
+        }
     }
     static checkJalaliDateValidation(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
         //check if jalali date is valid
@@ -303,5 +321,12 @@ export class DateFactory {
     static get todayJalaliYear(): number {
         const year = dayjs().calendar('jalali').year();
         return year;
+    }
+    static get todayGregorianMonth(): number {
+        return dayjs().month() + 1;
+    }
+    static get todayJalaliMonth(): number {
+        const month = dayjs().calendar('jalali').month() + 1;
+        return month;
     }
 }
