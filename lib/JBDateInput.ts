@@ -765,7 +765,22 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
 
     }
+    #lastInputStringValue = '    /  /  ';
+    /**
+     * check if there is no update from last time then if change we update
+     * @param { string }newString newly typed String
+     * @return { boolean }
+     * @private
+     */
+    private checkIfInputTextIsChangedFromLastTime(newString:string):boolean{
+        if(this.#lastInputStringValue != newString){
+            this.#lastInputStringValue = newString;
+            return true;
+        }
+        return false;
+    }
     onInputFocus() {
+        this.#lastInputStringValue = this._inputValue;
         this.focus();
         document.addEventListener('selectionchange', this.handleCarretPosOnInputFocus.bind(this));
     }
@@ -776,8 +791,12 @@ export class JBDateInputWebComponent extends HTMLElement {
             this.showCalendar = false;
         }
         const inputText = (e.target as HTMLInputElement).value;
-        this.updateValueObjFromInput(inputText);
-        this.callOnChange();
+        //check if there is no update from last time then if change we update
+        if(this.checkIfInputTextIsChangedFromLastTime(inputText)){
+            this.updateValueObjFromInput(inputText);
+            this.callOnChange();
+        }
+
     }
     onCalendarBlur(e: FocusEvent) {
         const focusedElement = e.relatedTarget;
@@ -786,8 +805,8 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
     }
     callOnChange() {
-        const validationResult = this.triggerInputValidation(true);
         //TODO: compare value with last time value and call onChange only if value changed
+        const validationResult = this.triggerInputValidation(true);
         const event = new CustomEvent('change', {
             detail: {
                 isValid: validationResult.isAllValid,
