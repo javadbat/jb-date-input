@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import jalaliday from 'jalaliday';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
-import { DateRestrictions, DateRestrictionsValidResult, InputTypes } from './Types';
+import { DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes } from './Types';
 
 
 dayjs.extend(isLeapYear);
@@ -10,9 +10,210 @@ type JalaliDayjs = typeof dayjs & { calendar(calendarType: string): Dayjs; }
 if (typeof (dayjs as JalaliDayjs).calendar !== "function") {
     dayjs.extend(jalaliday);
 }
-//export type Dayjs = Dayjs;
-
+export type DateFactoryConstructorArg = {
+    inputType: InputTypes | null | undefined;
+    valueType: ValueTypes | null | undefined;
+}
 export class DateFactory{
+    #valueType = ValueTypes.gregorian;
+    #inputType = InputTypes.jalali;
+    get inputType(){
+        return this.#inputType;
+    }
+    get valueType(){
+        return this.#valueType;
+    }
+    constructor(args:DateFactoryConstructorArg){
+        if(args.inputType){
+            this.#inputType = args.inputType;
+        }
+        if(args.valueType){
+            this.#valueType = args.valueType;
+        }
+    }
+
+    setInputType(inputType:InputTypes){
+        this.#inputType = inputType;
+    }
+    setValueType(valueType:ValueTypes){
+        this.#valueType = valueType;
+    }
+    getYearValue(valueObject:JBDateInputValueObject):number{
+        if(this.valueType == ValueTypes.jalali){
+            return valueObject.jalali.year || 1300;
+        }
+        return valueObject.gregorian.year || 2000;
+    }
+    getMonthValue(valueObject:JBDateInputValueObject):number{
+        if(this.valueType == ValueTypes.jalali){
+            return valueObject.jalali.month || 1;
+        }
+        return valueObject.gregorian.month || 1;
+    }
+    getDateFromValueDateString(valueDateString:string, format:string):Date | null{
+        let resultDate: Date | null = null;
+        //create min date base on input value type
+        if (this.valueType == ValueTypes.timestamp) {
+            resultDate = DateFactory.getDateFromTimestamp(parseInt(valueDateString));
+        } else {
+            const dateValueObj = DateFactory.getDateObjectValueBaseOnFormat(valueDateString, format);
+            //sometimes format set after min value restriction set by user so this object returned null in these scenario we set min after format set again
+            if (dateValueObj !== null && dateValueObj !== undefined && dateValueObj.groups !== null && dateValueObj.groups !== undefined) {
+                if (this.valueType == ValueTypes.gregorian) {
+                    resultDate = DateFactory.getDateFromGregorian(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
+                }
+                if (this.valueType == ValueTypes.jalali) {
+                    resultDate = DateFactory.getDateFromJalali(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
+                }
+            }
+        }
+        return resultDate;
+    }
+    static checkJalaliDateValidation(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
+        //check if jalali date is valid
+        const result: DateValidResult = {
+            isValid: true,
+            error: null
+        };
+        //this function check date itself validation not user setted validation
+        if (isNaN(jalaliYear)) {
+            result.isValid = false;
+            result.error = "INVALID_YEAR";
+        }
+        if (isNaN(jalaliMonth)) {
+            result.isValid = false;
+            result.error = "INVALID_MONTH";
+        }
+        if (isNaN(jalaliDay)) {
+            result.isValid = false;
+            result.error = "INVALID_DAY";
+        }
+        if (jalaliMonth < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_MONTH_NUMBER";
+        }
+        if (jalaliDay < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_DAY_NUMBER";
+        }
+        if (jalaliMonth > 12) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_MONTH_NUMBER";
+        }
+        if (jalaliDay > 31) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_DAY_NUMBER";
+        }
+        if (jalaliYear < 1000) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_YEAR_NUMBER";
+        }
+        if (jalaliYear > 9999) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_YEAR_NUMBER";
+        }
+        if (jalaliMonth > 6 && jalaliMonth < 12) {
+            if (jalaliDay > 30) {
+
+                result.isValid = false;
+                result.error = "INVALID_DAY_IN_MONTH";
+            }
+        }
+        if (jalaliMonth == 12) {
+            if (jalaliDay > 30) {
+                result.isValid = false;
+                result.error = "INVALID_DAY_IN_MONTH";
+            }
+        }
+        if (result.isValid && jalaliMonth == 12) {
+            //if everything was ok then we check for leap year
+            const date = DateFactory.getDayjsFromJalali(jalaliYear, jalaliMonth, jalaliDay);
+            const jalaliDate = date.calendar('jalali');
+            if (jalaliDate.year() !== jalaliYear) {
+                result.isValid = false;
+                result.error = "INVALID_DAY_FOR_LEAP";
+            }
+        }
+
+        return result;
+
+    }
+    static checkGregorianDateValidation(gregorianYear: number, gregorianMonth: number, gregorianDay: number) {
+        const result: DateValidResult = {
+            isValid: true,
+            error: null
+        };
+        //this function check date itself validation not user setted validation
+        if (isNaN(gregorianYear)) {
+            result.isValid = false;
+            result.error = "INVALID_YEAR";
+        }
+        if (isNaN(gregorianMonth)) {
+            result.isValid = false;
+            result.error = "INVALID_MONTH";
+        }
+        if (isNaN(gregorianDay)) {
+            result.isValid = false;
+            result.error = "INVALID_DAY";
+        }
+        if (gregorianMonth < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_MONTH_NUMBER";
+        }
+        if (gregorianDay < 1) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_DAY_NUMBER";
+        }
+        if (gregorianMonth > 12) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_MONTH_NUMBER";
+        }
+        if (gregorianDay > 31) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_DAY_NUMBER";
+        }
+        if (gregorianYear < 1000) {
+            result.isValid = false;
+            result.error = "INVALID_MIN_YEAR_NUMBER";
+        }
+        if (gregorianYear > 9999) {
+            result.isValid = false;
+            result.error = "INVALID_MAX_YEAR_NUMBER";
+        }
+
+        if ([2, 4, 6, 9, 11].includes(gregorianDay)) {
+            //month has less than 31 day
+            if (gregorianDay > 30) {
+
+                result.isValid = false;
+                result.error = "INVALID_DAY_IN_MONTH";
+            }
+        }
+        if (gregorianMonth == 2 && gregorianDay > 28) {
+            if (gregorianDay == 29) {
+                const date = DateFactory.getDayjsFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
+                if (!date.isLeapYear()) {
+                    result.isValid = false;
+                    result.error = "INVALID_DAY_FOR_LEAP";
+                }
+            } else {
+                result.isValid = false;
+                result.error = "INVALID_DAY_IN_MONTH";
+            }
+
+        }
+
+        return result;
+
+    }
+    static getDateObjectValueBaseOnFormat(value: string, format: string) {
+        const regexString = format.replace('YYYY', '(?<year>[\\d]{4})').replace('MM', '(?<month>[\\d]{2})').replace('DD', '(?<day>[\\d]{2})')
+            .replace('HH', '(?<hour>[\\d]{2})').replace('mm', '(?<minute>[\\d]{2})').replace('ss', '(?<second>[\\d]{2})').replace('SSS', '(?<miliSecond>[\\d]{3})')
+            .replace('[Z]', 'Ž').replace('Z', '(?<zone>([\\+,-]\\d{2}:\\d{2}))').replace('Ž', 'Z');
+        const regex = new RegExp(regexString, 'g');
+        const res = regex.exec(value);
+        return res;
+    }
     static getDayjsFromGregorian(year:number|string,month:number|string,day:number|string):Dayjs{
         return dayjs(`${year}-${month}-${day}`, 'YYYY-M-D');
     }

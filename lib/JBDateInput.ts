@@ -5,22 +5,24 @@ import 'jb-calendar';
 import { JBCalendarWebComponent } from 'jb-calendar';
 
 import './inbox-element/inbox-element';
-import cloneDeep from 'lodash.clonedeep';
+//import cloneDeep from 'lodash.clonedeep';
 
 import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
 import { DateFactory } from './DateFactory';
+import { getEmptyValueObject } from './Helpers';
 
 export class JBDateInputWebComponent extends HTMLElement {
     static get formAssociated() { return true; }
     internals_?: ElementInternals;
     elements!: ElementsObject;
+    #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("value-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
     #showCalendar = false;
-    #inputType: InputTypes = (this.getAttribute("value-type") as InputTypes) || InputTypes.jalali;//JALALI,GREGORIAN;
-    valueType: ValueTypes = this.getAttribute("value-type") as ValueTypes || ValueTypes.gregorian;//JALALI,TIME_STAMP,GREGORIAN;
+    // #inputType: InputTypes =  || InputTypes.jalali;//JALALI,GREGORIAN;
+    // valueType: ValueTypes =  || ValueTypes.gregorian;//JALALI,TIME_STAMP,GREGORIAN;
     inputFormat = 'YYYY/MM/DD';
     #inputRegex = /^(?<year>[\d,\s]{4})\/(?<month>[\d,\s]{2})\/(?<day>[\d,\s]{2})$/g;
     #format = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
-    get format(){
+    get format() {
         return this.#format;
     }
     validation: ValidationResultSummary = {
@@ -34,19 +36,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     };;
     required = false;
     DefaultValidationErrorMessage = "مقدار وارد شده نا معتبر است"
-    #valueObject: JBDateInputValueObject = {
-        gregorian: {
-            year: null,
-            month: null,
-            day: null
-        },
-        jalali: {
-            year: null,
-            month: null,
-            day: null
-        },
-        timeStamp: null
-    };
+    #valueObject: JBDateInputValueObject = getEmptyValueObject();
     get value(): string {
         const value = this.getDateValue();
         return value;
@@ -81,11 +71,27 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
     }
     get inputType() {
-        return this.#inputType;
+        return this.#dateFactory.inputType;
     }
     set inputType(value) {
-        this.#inputType = value;
-        this.onInputTypeChange();
+
+        if (Object.values(InputTypes).includes(value as InputTypes)) {
+            this.#dateFactory.setInputType(value);
+            this.onInputTypeChange();
+        } else {
+            console.error(`${value} is not a valid input type`);
+        }
+
+    }
+    get valueType() {
+        return this.#dateFactory.valueType;
+    }
+    set valueType(value: ValueTypes) {
+        if (Object.values(ValueTypes).includes(value as ValueTypes)) {
+            this.#dateFactory.setValueType(value);
+        } else {
+            console.error(`${value} is not a valid value type`);
+        }
     }
     #validationList: JBDateInputValidationItem[] = [];
     get validationList() {
@@ -95,14 +101,12 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.#validationList = value;
         this.triggerInputValidation(false);
     }
-    #dateFactory: DateFactory
     constructor() {
         super();
         if (typeof this.attachInternals == "function") {
             //some browser dont support attachInternals
             this.internals_ = this.attachInternals();
         }
-        this.#dateFactory = new DateFactory();
         this.initWebComponent();
         this.initProp();
         // js standard input element to more assosicate it with form element
@@ -202,9 +206,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 this.elements.input.setAttribute('name', value);
                 break;
             case 'value-type':
-                if (Object.values(ValueTypes).includes(value as ValueTypes)) {
-                    this.valueType = value as ValueTypes;
-                }
+                this.valueType = value as ValueTypes;
                 break;
             case 'format':
                 this.setFormat(value);
@@ -224,6 +226,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 break;
             case 'input-type':
                 this.inputType = value as InputTypes;
+
                 break;
             case 'direction':
                 this.elements.calendar.setAttribute('direction', value);
@@ -247,21 +250,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     setMinDate(dateString: string) {
         let minDate: Date | null = null;
         //create min date base on input value type
-        if (this.valueType == "TIME_STAMP") {
-            minDate = DateFactory.getDateFromTimestamp(parseInt(dateString));
-        } else {
-            const dateValueObj = this.getDateObjectValueBaseOnFormat(dateString, this.#format);
-            //sometimes format set after min value restriction set by user so this object returned null in these scenario we set min after format set again
-            if (dateValueObj !== null && dateValueObj !== undefined && dateValueObj.groups !== null && dateValueObj.groups !== undefined) {
-                if (this.valueType == ValueTypes.gregorian) {
-                    minDate = DateFactory.getDateFromGregorian(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
-                }
-                if (this.valueType == ValueTypes.jalali) {
-                    minDate = DateFactory.getDateFromJalali(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
-                }
-            }
-        }
-
+        minDate = this.#dateFactory.getDateFromValueDateString(dateString,this.#format);
         if (minDate) {
             this.dateRestrictions.min = minDate;
             if (this.elements.calendar.dateRestrictions) {
@@ -274,26 +263,14 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     setMaxDate(dateString: string) {
         let maxDate: Date | null = null;
-        if (this.valueType == "TIME_STAMP") {
-            maxDate = DateFactory.getDateFromTimestamp(parseInt(dateString));
-        } else {
-            const dateValueObj = this.getDateObjectValueBaseOnFormat(dateString, this.#format);
-            //sometimes format set after min value restriction set by user so this object returned null in these scenario we set min after format set again
-            if (dateValueObj !== null && dateValueObj !== undefined && dateValueObj.groups !== null && dateValueObj.groups !== undefined) {
-                if (this.valueType == ValueTypes.gregorian) {
-                    maxDate = DateFactory.getDateFromGregorian(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
-                }
-                if (this.valueType == ValueTypes.jalali) {
-                    maxDate = DateFactory.getDateFromJalali(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
-                }
-            }
-        }
+        //create max date base on input value type
+        maxDate = this.#dateFactory.getDateFromValueDateString(dateString,this.#format);
         if (maxDate) {
             this.dateRestrictions.max = maxDate;
             if (this.elements.calendar.dateRestrictions) {
                 this.elements.calendar.dateRestrictions.max = maxDate;
             }
-        }else{
+        } else {
             console.error(`max date ${dateString} is not valid and it will be ignored`, '\n', 'please provide max date in format : ' + this.#format);
         }
 
@@ -334,12 +311,28 @@ export class JBDateInputWebComponent extends HTMLElement {
                 //prevent month input bigger than 12 for example 19 or 16
                 isIgnoreChar = true;
             }
+            if(carretPos == 6 && TypedTumber == 0 && this.elements.input.value[5] == "0"){
+                //prevent 00 for month
+                isIgnoreChar = true;
+            }
+            if(carretPos == 5 && TypedTumber == 0 && this.elements.input.value[4] == "0"){
+                //prevent 00 for month
+                isIgnoreChar = true;
+            }
             if (carretPos == 8 && TypedTumber > 3) {
                 this.inputChar("0", carretPos);
                 carretPos++;
             }
             if (carretPos == 9 && TypedTumber > 1 && this.elements.input.value[8] == "3") {
-                //prevent month input bigger than 12 for example 19 or 16
+                //prevent day input bigger than 31 for example 38 or 34
+                isIgnoreChar = true;
+            }
+            if(carretPos == 9 && TypedTumber == 0 && this.elements.input.value[8] == "0"){
+                //prevent 00 for day
+                isIgnoreChar = true;
+            }
+            if(carretPos == 8 && TypedTumber == 0 && this.elements.input.value[9] == "0"){
+                //prevent 00 for day
                 isIgnoreChar = true;
             }
             if (!isIgnoreChar) {
@@ -504,34 +497,14 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
 
     }
-    #emptyValueObject: JBDateInputValueObject = {
-        gregorian: {
-            year: null,
-            month: null,
-            day: null
-        },
-        jalali: {
-            year: null,
-            month: null,
-            day: null
-        },
-        timeStamp: null
-    }
     setValueObjNull() {
         // mean we reset calendar value and set it to null
-        this.#valueObject = cloneDeep(this.#emptyValueObject);
+        this.#valueObject = getEmptyValueObject();
     }
-    getDateObjectValueBaseOnFormat(value: string, format: string) {
-        const regexString = format.replace('YYYY', '(?<year>[\\d]{4})').replace('MM', '(?<month>[\\d]{2})').replace('DD', '(?<day>[\\d]{2})')
-            .replace('HH', '(?<hour>[\\d]{2})').replace('mm', '(?<minute>[\\d]{2})').replace('ss', '(?<second>[\\d]{2})').replace('SSS', '(?<miliSecond>[\\d]{3})')
-            .replace('[Z]', 'Ž').replace('Z', '(?<zone>([\\+,-]\\d{2}:\\d{2}))').replace('Ž', 'Z');
-        const regex = new RegExp(regexString, 'g');
-        const res = regex.exec(value);
-        return res;
-    }
+
     setDateValueFromJalaliString(value: string) {
         // we replace '[Z]','Ž' and replace it again to Z becuse we dont want Z inside [Z] get replaced with time zone and remain constant Z : `Z--[Z]`=>`+3:30--Z`
-        const res = this.getDateObjectValueBaseOnFormat(value, this.#format);
+        const res = DateFactory.getDateObjectValueBaseOnFormat(value, this.#format);
         if (res && res.groups) {
             this.setDateValueFromJalali(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
         } else {
@@ -542,146 +515,10 @@ export class JBDateInputWebComponent extends HTMLElement {
             }
         }
     }
-    checkJalaliDateValidation(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
-        //check if jalali date is valid
-        const result: DateValidResult = {
-            isValid: true,
-            error: null
-        };
-        //this function check date itself validation not user setted validation
-        if (isNaN(jalaliYear)) {
-            result.isValid = false;
-            result.error = "INVALID_YEAR";
-        }
-        if (isNaN(jalaliMonth)) {
-            result.isValid = false;
-            result.error = "INVALID_MONTH";
-        }
-        if (isNaN(jalaliDay)) {
-            result.isValid = false;
-            result.error = "INVALID_DAY";
-        }
-        if (jalaliMonth < 1) {
-            result.isValid = false;
-            result.error = "INVALID_MIN_MONTH_NUMBER";
-        }
-        if (jalaliDay < 1) {
-            result.isValid = false;
-            result.error = "INVALID_MIN_DAY_NUMBER";
-        }
-        if (jalaliMonth > 12) {
-            result.isValid = false;
-            result.error = "INVALID_MAX_MONTH_NUMBER";
-        }
-        if (jalaliDay > 31) {
-            result.isValid = false;
-            result.error = "INVALID_MAX_DAY_NUMBER";
-        }
-        if (jalaliYear < 1000) {
-            result.isValid = false;
-            result.error = "INVALID_MIN_YEAR_NUMBER";
-        }
-        if (jalaliYear > 9999) {
-            result.isValid = false;
-            result.error = "INVALID_MAX_YEAR_NUMBER";
-        }
-        if (jalaliMonth > 6 && jalaliMonth < 12) {
-            if (jalaliDay > 30) {
 
-                result.isValid = false;
-                result.error = "INVALID_DAY_IN_MONTH";
-            }
-        }
-        if (jalaliMonth == 12) {
-            if (jalaliDay > 30) {
-                result.isValid = false;
-                result.error = "INVALID_DAY_IN_MONTH";
-            }
-        }
-        if (result.isValid && jalaliMonth == 12) {
-            //if everything was ok then we check for leap year
-            const date = DateFactory.getDayjsFromJalali(jalaliYear, jalaliMonth, jalaliDay);
-            const jalaliDate = date.calendar('jalali');
-            if (jalaliDate.year() !== jalaliYear) {
-                result.isValid = false;
-                result.error = "INVALID_DAY_FOR_LEAP";
-            }
-        }
-
-        return result;
-
-    }
-    checkGregorianDateValidation(gregorianYear: number, gregorianMonth: number, gregorianDay: number) {
-        const result: DateValidResult = {
-            isValid: true,
-            error: null
-        };
-        //this function check date itself validation not user setted validation
-        if (isNaN(gregorianYear)) {
-            result.isValid = false;
-            result.error = "INVALID_YEAR";
-        }
-        if (isNaN(gregorianMonth)) {
-            result.isValid = false;
-            result.error = "INVALID_MONTH";
-        }
-        if (isNaN(gregorianDay)) {
-            result.isValid = false;
-            result.error = "INVALID_DAY";
-        }
-        if (gregorianMonth < 1) {
-            result.isValid = false;
-            result.error = "INVALID_MIN_MONTH_NUMBER";
-        }
-        if (gregorianDay < 1) {
-            result.isValid = false;
-            result.error = "INVALID_MIN_DAY_NUMBER";
-        }
-        if (gregorianMonth > 12) {
-            result.isValid = false;
-            result.error = "INVALID_MAX_MONTH_NUMBER";
-        }
-        if (gregorianDay > 31) {
-            result.isValid = false;
-            result.error = "INVALID_MAX_DAY_NUMBER";
-        }
-        if (gregorianYear < 1000) {
-            result.isValid = false;
-            result.error = "INVALID_MIN_YEAR_NUMBER";
-        }
-        if (gregorianYear > 9999) {
-            result.isValid = false;
-            result.error = "INVALID_MAX_YEAR_NUMBER";
-        }
-
-        if ([2, 4, 6, 9, 11].includes(gregorianDay)) {
-            //month has less than 31 day
-            if (gregorianDay > 30) {
-
-                result.isValid = false;
-                result.error = "INVALID_DAY_IN_MONTH";
-            }
-        }
-        if (gregorianMonth == 2 && gregorianDay > 28) {
-            if (gregorianDay == 29) {
-                const date = DateFactory.getDayjsFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
-                if (!date.isLeapYear()) {
-                    result.isValid = false;
-                    result.error = "INVALID_DAY_FOR_LEAP";
-                }
-            } else {
-                result.isValid = false;
-                result.error = "INVALID_DAY_IN_MONTH";
-            }
-
-        }
-
-        return result;
-
-    }
     getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number): JBDateInputValueObject {
-        const valueObject = cloneDeep(this.#emptyValueObject);
-        const dateValidationResult = this.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
+        const valueObject = getEmptyValueObject();
+        const dateValidationResult = DateFactory.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
         if (!dateValidationResult.isValid) {
             if (dateValidationResult.error == "INVALID_MIN_DAY_NUMBER") {
                 return this.getDateValueFromJalali(jalaliYear, jalaliMonth, 1);
@@ -714,7 +551,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                     return this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1);
                 }
             }
-            return cloneDeep(this.#emptyValueObject);
+            return getEmptyValueObject();
         }
         const date = DateFactory.getDayjsFromJalali(jalaliYear, jalaliMonth, jalaliDay);
         const jalaliDate = date.calendar('jalali');
@@ -733,22 +570,8 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     private updateCalendarView() {
         //update jb-calendr view base on current data
-        if (this.#inputType == InputTypes.jalali) {
-            if (this.#valueObject.jalali.year) {
-                this.elements.calendar.data.selectedYear = this.#valueObject.jalali.year;
-            }
-            if (this.#valueObject.jalali.month) {
-                this.elements.calendar.data.selectedMonth = this.#valueObject.jalali.month;
-            }
-        }
-        if (this.#inputType == InputTypes.gregorian) {
-            if (this.#valueObject.gregorian.year) {
-                this.elements.calendar.data.selectedYear = this.#valueObject.gregorian.year;
-            }
-            if (this.#valueObject.gregorian.month) {
-                this.elements.calendar.data.selectedMonth = this.#valueObject.gregorian.month;
-            }
-        }
+        this.elements.calendar.data.selectedYear = this.#dateFactory.getYearValue(this.#valueObject);
+        this.elements.calendar.data.selectedMonth = this.#dateFactory.getMonthValue(this.#valueObject);
     }
     setDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
         const valueObj: JBDateInputValueObject = this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay);
@@ -774,7 +597,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.updateCalendarView();
     }
     setDateValueFromGregorianString(value: string) {
-        const res = this.getDateObjectValueBaseOnFormat(value, this.#format);
+        const res = DateFactory.getDateObjectValueBaseOnFormat(value, this.#format);
         if (res && res.groups) {
             this.setDateValueFromGregorian(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
         } else {
@@ -792,8 +615,8 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number): JBDateInputValueObject {
 
-        const valueObject: JBDateInputValueObject = cloneDeep(this.#emptyValueObject);
-        const dateValidationResult = this.checkGregorianDateValidation(gregorianYear, gregorianMonth, gregorianDay);
+        const valueObject: JBDateInputValueObject = getEmptyValueObject();
+        const dateValidationResult = DateFactory.checkGregorianDateValidation(gregorianYear, gregorianMonth, gregorianDay);
         if (!dateValidationResult.isValid) {
             if (dateValidationResult.error == "INVALID_MIN_DAY_NUMBER") {
                 return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, 1);
@@ -826,7 +649,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                     return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1);
                 }
             }
-            return cloneDeep(this.#emptyValueObject);
+            return getEmptyValueObject();
         }
         const date = DateFactory.getDayjsFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
         const jalaliDate = date.calendar('jalali');
@@ -892,7 +715,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 return this.getDateValueFromGregorian(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
             }
         }
-        const emptyValue: JBDateInputValueObject = cloneDeep(this.#emptyValueObject);
+        const emptyValue: JBDateInputValueObject = getEmptyValueObject();
         return emptyValue;
     }
     updateValueObjFromInput(inputString: string) {
@@ -997,7 +820,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     checkInputValidation(value: string) {
         //check validation in date has 3 step: 1-check required 2- check restrictions like min and max 3- check user manual validation list(regex or function)
-        const dateObjValue = this.getDateObjectValueBaseOnFormat(value, this.inputFormat);
+        const dateObjValue = DateFactory.getDateObjectValueBaseOnFormat(value, this.inputFormat);
         const validationResult: ValidationResult = {
             validationList: [],
             isAllValid: true,
