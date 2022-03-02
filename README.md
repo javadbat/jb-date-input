@@ -55,7 +55,7 @@ you can just add script tag to your html file and then use web component how eve
 
 ```
 
-### format
+## format
 
 defualt format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
 you can change it however you need and `[Z]` mean the exact Z charecter that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
@@ -67,7 +67,7 @@ you can change format by format attribute:
 
 ```
 
-### valueType
+## valueType
 
 we have 3 value type:
 
@@ -77,7 +77,7 @@ we have 3 value type:
     <jb-date-input value="1399-05-01T12:05:39.530Z" valueType="JALALI"/>
 ```
 
-### min and max date limit
+## min and max date limit
 
 you can set minimum date and maximum date range for your app 
 
@@ -85,7 +85,7 @@ you can set minimum date and maximum date range for your app
  <jb-date-input label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z">
  </jb-date-input>
 ```
-### custom validation
+## custom validation
 
 beside of min and max you can also set your own custom validation like any other jb web components family to achive this you must create a array of validations and assign them to component
 
@@ -118,7 +118,7 @@ const showError = true
 const validationObj = dom.triggerInputValidation(showError)
 ```
 
-### events
+## events
 
 ```js
 //when defualt property are defined best time for impl your config like min and max date
@@ -128,7 +128,7 @@ document.querySelector('jb-date-input').addEventListener('init',this.onCalendarE
 document.querySelector('jb-date-input').addEventListener('load',this.onCalendarElementLoaded);
 ```
 
-### date input type
+## date input type
 
 jb-calendar support both jalali and gregorian(miladi) calendar input type. like value-type that let you determine how you want to provide/expect data to/from jb-date-input you can specify how user must fill the date input.
 to achive this you have to set `input-type` attribute or set `inputType` object to component dom directly.
@@ -147,7 +147,21 @@ document.querySelector('jb-date-input').inputType = "GREGORIAN"
 document.querySelector('jb-date-input').inputType = "JALALI"
 ```
 
-### customize calendar button trigger
+## set default date for calendar when opened
+
+when date input value is empty we show today year and month in opened calendar by default but you can change it to another date. for example you want user fill they birthdate you can set it to 20 years ago so user can pick his/her birthday easier and faster. to doing so all you have to do is to use `setCalendarDefaultDateView`function like this:
+
+```javascript
+const year = 1360
+const month = 5
+//just set year and month for current input-type date type
+document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month);
+//set default year and month for gregorian input-type
+document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'GREGORIAN');
+//set default year and month for jalali input-type
+document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'JALALI');
+```
+## customize calendar button trigger
 
 you can change calendar icon base on your own need to doing so you just have to put your custom html inside web component with `slot="calendar-trigger-icon"` like below:
 
@@ -174,7 +188,7 @@ you can change calendar icon base on your own need to doing so you just have to 
         </div>
     </jb-date-input>
 ```
-### set custom style
+## set custom style
 
 in some cases in your project you need to change defualt style of web-component for example you need zero margin or different border-radius and etc.    
 if you want to set a custom style to this web-component all you need is to set css variable in parent scope of web-component 

@@ -29,14 +29,13 @@
         border-bottom: solid var(--jb-date-input-border-bottom-width, 3px) var(--jb-date-input-border-color, #f7f6f6);
         border-radius: var(--jb-date-input-border-radius, 16px);
         margin: 4px 0px;
-        display: block;
         transition: ease 0.3s all;
         overflow: hidden;
         display: grid;
         grid-template-columns: auto 1fr auto auto;
         box-shadow: var(--jb-date-input-box-shadow, none);
         text-align: var(--jb-date-input-text-align, initial) ;
-
+        align-items: center;
         &:focus-within {
             border-color: var(--jb-date-input-border-color-focus, #1e2832);
         }
