@@ -5,6 +5,7 @@ export type ElementsObject = {
     calendarTriggerButton: HTMLDivElement;
     calendar: JBCalendarWebComponent;
     calendarWrapper: HTMLDivElement;
+    calendarContainer: HTMLDivElement;
     label: HTMLLabelElement;
     labelValue: HTMLSpanElement;
     messageBox: HTMLDivElement;

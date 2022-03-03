@@ -62,10 +62,10 @@ export class JBDateInputWebComponent extends HTMLElement {
     set showCalendar(value) {
         this.#showCalendar = value;
         if (value == true) {
-            this.elements.calendarWrapper.classList.add('--show');
+            this.elements.calendarContainer.classList.add('--show');
             this.elements.calendarTriggerButton.classList.add('--active');
         } else {
-            this.elements.calendarWrapper.classList.remove('--show');
+            this.elements.calendarContainer.classList.remove('--show');
             this.elements.calendarTriggerButton.classList.remove('--active');
         }
     }
@@ -135,6 +135,7 @@ export class JBDateInputWebComponent extends HTMLElement {
             input: shadowRoot.querySelector('.input-box input')!,
             calendarTriggerButton: shadowRoot.querySelector('.calendar-trigger')!,
             calendar: shadowRoot.querySelector('jb-calendar')!,
+            calendarContainer: shadowRoot.querySelector('.calendar-container')!,
             calendarWrapper: shadowRoot.querySelector('.calendar-wrapper')!,
             labelValue: shadowRoot.querySelector('label .label-value')!,
             label: shadowRoot.querySelector('label')!,
@@ -151,6 +152,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             // on mobile
             this.elements.input.setAttribute('readonly', 'true');
+            //TODO: handle back button and prevent back when calendar is open
         } else {
             // on non-mobile
             this.elements.input.removeAttribute('readonly');
@@ -166,6 +168,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.elements.calendar.addEventListener('select', (e) => this.onCalendarSelect(e as CustomEvent));
         this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
         this.elements.calendar.addEventListener('blur', this.onCalendarBlur.bind(this));
+        this.elements.calendarContainer.addEventListener('click', this.onCalendarContainerClicked.bind(this));
     }
     initProp() {
         this.setValueObjNull();
@@ -802,6 +805,13 @@ export class JBDateInputWebComponent extends HTMLElement {
         const focusedElement = e.relatedTarget;
         if (focusedElement !== this.elements.input) {
             this.showCalendar = false;
+        }
+    }
+    onCalendarContainerClicked(e: MouseEvent) {
+        const isCalendarWrapperClicked = e.composedPath().findIndex(x=>x == this.elements.calendarWrapper);
+        if(isCalendarWrapperClicked == -1){
+            this.showCalendar = false;
+            this.elements.input.blur();
         }
     }
     callOnChange() {
