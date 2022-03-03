@@ -1,4 +1,8 @@
 #changelog
+## [2.3.0] - 2022-03-03
+
+### new features
+- make calendar pop-up more mobile friendly by making it open overly
 ## [2.2.0] - 2022-03-02
 ### new features
 - add default date for calendar in date input empty state with `setCalendarDefaultDateView`
