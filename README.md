@@ -197,8 +197,8 @@ if you want to set a custom style to this web-component all you need is to set c
 ```css
 body{
 /* if you need more margin */
-  --jb-date-input-margin: 16px 32px
-/* if you dont waant rounded corner */
+  --jb-date-input-margin: 16px 32px;
+/* if you dont want rounded corner */
   --jb-date-input-border-radius:0px;
 /* if you want different text color*/
   --jb-date-input-value-color:red;
