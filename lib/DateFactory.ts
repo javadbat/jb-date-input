@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import jalaliday from 'jalaliday';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
-import { DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes } from './Types';
+import { DateInObject, DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes } from './Types';
 import { getEmptyValueObject } from './Helpers';
 
 
@@ -39,6 +39,18 @@ export class DateFactory {
     }
     get nicheNumbers() {
         return this.#nicheNumbers;
+    }
+    get yearOnEmptyBaseOnValueType(){
+        if(this.#valueType == ValueTypes.jalali){
+            return this.#nicheNumbers.calendarYearOnEmpty.jalali;
+        }
+        return this.#nicheNumbers.calendarYearOnEmpty.gregorian;
+    }
+    get monthOnEmptyBaseOnValueType(): number {
+        if (this.valueType == ValueTypes.jalali) {
+            return this.#nicheNumbers.calendarMonthOnEmpty.jalali;
+        }
+        return this.#nicheNumbers.calendarMonthOnEmpty.gregorian;
     }
     get inputType() {
         return this.#inputType;
@@ -80,20 +92,19 @@ export class DateFactory {
         return valueObject.gregorian.day;
     }
     getDateFromValueDateString(valueDateString: string): Date | null {
-        const format = this.#valueFormat;
         let resultDate: Date | null = null;
         //create min date base on input value type
         if (this.valueType == ValueTypes.timestamp) {
             resultDate = DateFactory.getDateFromTimestamp(parseInt(valueDateString));
         } else {
-            const dateValueObj = DateFactory.getDateObjectValueBaseOnFormat(valueDateString, format);
+            const dateValueObj = this.getDateObjectValueBaseOnFormat(valueDateString);
             //sometimes format set after min value restriction set by user so this object returned null in these scenario we set min after format set again
-            if (dateValueObj !== null && dateValueObj !== undefined && dateValueObj.groups !== null && dateValueObj.groups !== undefined) {
+            if (dateValueObj !== null && dateValueObj !== undefined && dateValueObj.year !== null && dateValueObj.month !== null && dateValueObj.day !== null) {
                 if (this.valueType == ValueTypes.gregorian) {
-                    resultDate = DateFactory.getDateFromGregorian(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
+                    resultDate = DateFactory.getDateFromGregorian(dateValueObj.year, dateValueObj.month, dateValueObj.day);
                 }
                 if (this.valueType == ValueTypes.jalali) {
-                    resultDate = DateFactory.getDateFromJalali(parseInt(dateValueObj.groups.year), parseInt(dateValueObj.groups.month), parseInt(dateValueObj.groups.day));
+                    resultDate = DateFactory.getDateFromJalali(dateValueObj.year, dateValueObj.month, dateValueObj.day);
                 }
             }
         }
@@ -297,40 +308,63 @@ export class DateFactory {
         return result;
 
     }
-    getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number,oldGregorianYear:number|null, oldGregorianMonth:number|null): JBDateInputValueObject {
+    getDateValueObjectBaseOnInputType(year:number,month:number,day:number,oldYear:number|null, oldMonth:number|null): JBDateInputValueObject{
+        if(this.#inputType == InputTypes.gregorian){
+            return this.#getDateValueFromGregorian(year,month,day,oldYear,oldMonth);
+        }
+        if(this.#inputType == InputTypes.jalali){
+            return this.#getDateValueFromJalali(year,month,day,oldYear,oldMonth);
+        }
+        console.error("INVALID_INPUT_TYPE");
+        return getEmptyValueObject();
+    }
+    getDateValueObjectBaseOnValueType(year:number,month:number,day:number,oldYear:number|null, oldMonth:number|null): JBDateInputValueObject{
+        if(this.#valueType == ValueTypes.gregorian){
+            return this.#getDateValueFromGregorian(year,month,day,oldYear,oldMonth);
+        }
+        if(this.#valueType == ValueTypes.jalali){
+            return this.#getDateValueFromJalali(year,month,day,oldYear,oldMonth);
+        }
+        if(this.#valueType == ValueTypes.timestamp){
+            return this.#getDateValueFromGregorian(year,month,day,oldYear,oldMonth);
+        }
+        console.error("INVALID_INPUT_TYPE");
+        return getEmptyValueObject();
+    }
+    #getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number,oldGregorianYear:number|null, oldGregorianMonth:number|null): JBDateInputValueObject {
 
         const valueObject: JBDateInputValueObject = getEmptyValueObject();
         const dateValidationResult = DateFactory.checkGregorianDateValidation(gregorianYear, gregorianMonth, gregorianDay);
         if (!dateValidationResult.isValid) {
             if (dateValidationResult.error == "INVALID_MIN_DAY_NUMBER") {
-                return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, 1, oldGregorianYear, oldGregorianMonth);
+                return this.#getDateValueFromGregorian(gregorianYear, gregorianMonth, 1, oldGregorianYear, oldGregorianMonth);
             }
             if (dateValidationResult.error == "INVALID_MIN_MONTH_NUMBER") {
-                return this.getDateValueFromGregorian(gregorianYear, 1, gregorianDay, oldGregorianYear, oldGregorianMonth);
+                return this.#getDateValueFromGregorian(gregorianYear, 1, gregorianDay, oldGregorianYear, oldGregorianMonth);
             }
             if (dateValidationResult.error == "INVALID_MIN_YEAR_NUMBER") {
-                return this.getDateValueFromGregorian(1900, gregorianMonth, gregorianDay, oldGregorianYear, oldGregorianMonth);
+                return this.#getDateValueFromGregorian(1900, gregorianMonth, gregorianDay, oldGregorianYear, oldGregorianMonth);
             }
             if (dateValidationResult.error == "INVALID_MAX_DAY_NUMBER") {
-                return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, 31, oldGregorianYear, oldGregorianMonth);
+                return this.#getDateValueFromGregorian(gregorianYear, gregorianMonth, 31, oldGregorianYear, oldGregorianMonth);
             }
             if (dateValidationResult.error == "INVALID_MAX_MONTH_NUMBER") {
-                return this.getDateValueFromGregorian(gregorianYear, 12, gregorianDay, oldGregorianYear, oldGregorianMonth);
+                return this.#getDateValueFromGregorian(gregorianYear, 12, gregorianDay, oldGregorianYear, oldGregorianMonth);
             }
             if (dateValidationResult.error == "INVALID_MAX_YEAR_NUMBER") {
-                return this.getDateValueFromGregorian(9000, gregorianMonth, gregorianDay, oldGregorianYear, oldGregorianMonth);
+                return this.#getDateValueFromGregorian(9000, gregorianMonth, gregorianDay, oldGregorianYear, oldGregorianMonth);
             }
             if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
                 if (oldGregorianMonth != gregorianMonth && gregorianDay > 29) {
                     //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
-                    return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1, oldGregorianYear, oldGregorianMonth);
+                    return this.#getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1, oldGregorianYear, oldGregorianMonth);
                 }
             }
             if (dateValidationResult.error == "INVALID_DAY_FOR_LEAP") {
                 //if it was leap year and calender go to next year in 30 esfand
                 if (oldGregorianYear != gregorianYear && gregorianDay == 29) {
                     //if we update year and prev year was kabiseh so new year cant update, we update day to 29 esfand and let user change year smootly without block
-                    return this.getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1, oldGregorianYear, oldGregorianMonth);
+                    return this.#getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1, oldGregorianYear, oldGregorianMonth);
                 }
             }
             return getEmptyValueObject();
@@ -350,39 +384,39 @@ export class DateFactory {
         valueObject.timeStamp = date.unix();
         return valueObject;
     }
-    getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number, oldJalaliYear:number|null, oldJalaliMonth:number|null): JBDateInputValueObject {
+    #getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number, oldJalaliYear:number|null, oldJalaliMonth:number|null): JBDateInputValueObject {
         const valueObject = getEmptyValueObject();
         const dateValidationResult = DateFactory.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
         if (!dateValidationResult.isValid) {
             if (dateValidationResult.error == "INVALID_MIN_DAY_NUMBER") {
-                return this.getDateValueFromJalali(jalaliYear, jalaliMonth, 1, oldJalaliYear, oldJalaliMonth);
+                return this.#getDateValueFromJalali(jalaliYear, jalaliMonth, 1, oldJalaliYear, oldJalaliMonth);
             }
             if (dateValidationResult.error == "INVALID_MIN_MONTH_NUMBER") {
-                return this.getDateValueFromJalali(jalaliYear, 1, jalaliDay, oldJalaliYear, oldJalaliMonth);
+                return this.#getDateValueFromJalali(jalaliYear, 1, jalaliDay, oldJalaliYear, oldJalaliMonth);
             }
             if (dateValidationResult.error == "INVALID_MIN_YEAR_NUMBER") {
-                return this.getDateValueFromJalali(1300, jalaliMonth, jalaliDay, oldJalaliYear, oldJalaliMonth);
+                return this.#getDateValueFromJalali(1300, jalaliMonth, jalaliDay, oldJalaliYear, oldJalaliMonth);
             }
             if (dateValidationResult.error == "INVALID_MAX_DAY_NUMBER") {
-                return this.getDateValueFromJalali(jalaliYear, jalaliMonth, 31, oldJalaliYear, oldJalaliMonth);
+                return this.#getDateValueFromJalali(jalaliYear, jalaliMonth, 31, oldJalaliYear, oldJalaliMonth);
             }
             if (dateValidationResult.error == "INVALID_MAX_MONTH_NUMBER") {
-                return this.getDateValueFromJalali(jalaliYear, 12, jalaliDay, oldJalaliYear, oldJalaliMonth);
+                return this.#getDateValueFromJalali(jalaliYear, 12, jalaliDay, oldJalaliYear, oldJalaliMonth);
             }
             if (dateValidationResult.error == "INVALID_MAX_YEAR_NUMBER") {
-                return this.getDateValueFromJalali(9999, jalaliMonth, jalaliDay, oldJalaliYear, oldJalaliMonth);
+                return this.#getDateValueFromJalali(9999, jalaliMonth, jalaliDay, oldJalaliYear, oldJalaliMonth);
             }
             if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
                 if (oldJalaliMonth != jalaliMonth && jalaliDay == 31) {
                     //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
-                    return this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1, oldJalaliYear, oldJalaliMonth);
+                    return this.#getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1, oldJalaliYear, oldJalaliMonth);
                 }
             }
             if (dateValidationResult.error == "INVALID_DAY_FOR_LEAP") {
                 //if it was leap year and calender go to next year in 30 esfand
                 if (oldJalaliYear != jalaliYear && jalaliDay == 30) {
                     //if we update year and prev year was kabiseh so new year cant update, we update day to 39 esfand and let user change year smootly without block
-                    return this.getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1, oldJalaliYear, oldJalaliMonth);
+                    return this.#getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1, oldJalaliYear, oldJalaliMonth);
                 }
             }
             return getEmptyValueObject();
@@ -402,7 +436,21 @@ export class DateFactory {
         valueObject.timeStamp = date.unix();
         return valueObject;
     }
-    static getDateObjectValueBaseOnFormat(value: string, format: string) {
+    getDateObjectValueBaseOnFormat(valueString:string):DateInObject{
+        const res = DateFactory.#getDateObjectValueBaseOnFormat(valueString, this.#valueFormat);
+        const dateInObject:DateInObject = {
+            year:null,
+            month:null,
+            day:null,
+        };
+        if(res && res.groups){
+            dateInObject.year = parseInt(res.groups.year) ;
+            dateInObject.month = parseInt(res.groups.month) ;
+            dateInObject.day = parseInt(res.groups.day) ;
+        }
+        return dateInObject;
+    }
+    static #getDateObjectValueBaseOnFormat(value: string, format: string) {
         const regexString = format.replace('YYYY', '(?<year>[\\d]{4})').replace('MM', '(?<month>[\\d]{2})').replace('DD', '(?<day>[\\d]{2})')
             .replace('HH', '(?<hour>[\\d]{2})').replace('mm', '(?<minute>[\\d]{2})').replace('ss', '(?<second>[\\d]{2})').replace('SSS', '(?<miliSecond>[\\d]{3})')
             .replace('[Z]', 'Ž').replace('Z', '(?<zone>([\\+,-]\\d{2}:\\d{2}))').replace('Ž', 'Z');

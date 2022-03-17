@@ -34,18 +34,14 @@ export type DateRestrictions = {
     min:Date | null;
     max:Date | null;
 }
-
+export type DateInObject = {
+    year:number | null;
+    month:number | null;
+    day:number | null;
+}
 export type JBDateInputValueObject = {
-    gregorian:{
-        year:number | null;
-        month:number | null;
-        day:number | null;
-    };
-    jalali:{
-        year:number | null;
-        month:number | null;
-        day:number | null;
-    };
+    gregorian:DateInObject;
+    jalali:DateInObject;
     timeStamp:number | null;
 }
 
