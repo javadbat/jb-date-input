@@ -760,7 +760,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     checkInputValidation(value: string) {
         //check validation in date has 3 step: 1-check required 2- check restrictions like min and max 3- check user manual validation list(regex or function)
-        const dateObjValue = this.#dateFactory.getDateObjectValueBaseOnFormat(value);
+        const dateObjValue = this.#dateFactory.getDateObjectValueBaseOnFormat(value,this.inputFormat);
         const validationResult: ValidationResult = {
             validationList: [],
             isAllValid: true,

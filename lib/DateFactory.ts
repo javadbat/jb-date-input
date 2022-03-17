@@ -436,8 +436,8 @@ export class DateFactory {
         valueObject.timeStamp = date.unix();
         return valueObject;
     }
-    getDateObjectValueBaseOnFormat(valueString:string):DateInObject{
-        const res = DateFactory.#getDateObjectValueBaseOnFormat(valueString, this.#valueFormat);
+    getDateObjectValueBaseOnFormat(valueString:string,format:string = this.#valueFormat):DateInObject{
+        const res = DateFactory.#executeFormatAndExtractValue(valueString, format);
         const dateInObject:DateInObject = {
             year:null,
             month:null,
@@ -450,7 +450,7 @@ export class DateFactory {
         }
         return dateInObject;
     }
-    static #getDateObjectValueBaseOnFormat(value: string, format: string) {
+    static #executeFormatAndExtractValue(value: string, format: string) {
         const regexString = format.replace('YYYY', '(?<year>[\\d]{4})').replace('MM', '(?<month>[\\d]{2})').replace('DD', '(?<day>[\\d]{2})')
             .replace('HH', '(?<hour>[\\d]{2})').replace('mm', '(?<minute>[\\d]{2})').replace('ss', '(?<second>[\\d]{2})').replace('SSS', '(?<miliSecond>[\\d]{3})')
             .replace('[Z]', 'Ž').replace('Z', '(?<zone>([\\+,-]\\d{2}:\\d{2}))').replace('Ž', 'Z');
