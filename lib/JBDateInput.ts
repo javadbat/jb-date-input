@@ -11,6 +11,7 @@ import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRe
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject } from './Helpers';
 import { JBCalendarValue } from 'jb-calendar/dist/Types';
+import { faToEnDigits } from '../../../common/js/PersianHelper';
 
 export class JBDateInputWebComponent extends HTMLElement {
     static get formAssociated() { return true; }
@@ -96,8 +97,8 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.#validationList = value;
         this.triggerInputValidation(false);
     }
-    get yearValue():number|null{
-        switch(this.valueType){
+    get yearValue(): number | null {
+        switch (this.valueType) {
             case ValueTypes.jalali:
                 return this.#valueObject.jalali.year;
             case ValueTypes.gregorian:
@@ -108,8 +109,8 @@ export class JBDateInputWebComponent extends HTMLElement {
                 return null;
         }
     }
-    get monthValue():number|null{
-        switch(this.valueType){
+    get monthValue(): number | null {
+        switch (this.valueType) {
             case ValueTypes.jalali:
                 return this.#valueObject.jalali.month;
             case ValueTypes.gregorian:
@@ -120,8 +121,8 @@ export class JBDateInputWebComponent extends HTMLElement {
                 return null;
         }
     }
-    get dayValue():number|null{
-        switch(this.valueType){
+    get dayValue(): number | null {
+        switch (this.valueType) {
             case ValueTypes.jalali:
                 return this.#valueObject.jalali.day;
             case ValueTypes.gregorian:
@@ -132,8 +133,8 @@ export class JBDateInputWebComponent extends HTMLElement {
                 return null;
         }
     }
-    get yearBaseOnInputType():number|null{
-        switch(this.inputType){
+    get yearBaseOnInputType(): number | null {
+        switch (this.inputType) {
             case InputTypes.jalali:
                 return this.#valueObject.jalali.year;
             case InputTypes.gregorian:
@@ -142,8 +143,8 @@ export class JBDateInputWebComponent extends HTMLElement {
                 return null;
         }
     }
-    get monthBaseOnInputType():number|null{
-        switch(this.inputType){
+    get monthBaseOnInputType(): number | null {
+        switch (this.inputType) {
             case InputTypes.jalali:
                 return this.#valueObject.jalali.month;
             case InputTypes.gregorian:
@@ -152,8 +153,8 @@ export class JBDateInputWebComponent extends HTMLElement {
                 return null;
         }
     }
-    get dayBaseOnInputType():number|null{
-        switch(this.inputType){
+    get dayBaseOnInputType(): number | null {
+        switch (this.inputType) {
             case InputTypes.jalali:
                 return this.#valueObject.jalali.day;
             case InputTypes.gregorian:
@@ -161,6 +162,18 @@ export class JBDateInputWebComponent extends HTMLElement {
             default:
                 return null;
         }
+    }
+    get typedYear():string{
+        const typedYear = this.inputValue.substring(0,3);
+        return typedYear;
+    }
+    get typedMonth():string{
+        const typedMonth = this.inputValue.substring(5,6);
+        return typedMonth;
+    }
+    get typedDay():string{
+        const typedDay = this.inputValue.substring(8,9);
+        return typedDay;
     }
     constructor() {
         super();
@@ -226,6 +239,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.elements.input.addEventListener('keypress', this.onInputKeyPress.bind(this));
         this.elements.input.addEventListener('keyup', this.onInputKeyup.bind(this));
         this.elements.input.addEventListener('keydown', this.onInputKeydown.bind(this));
+        this.elements.input.addEventListener('beforeinput', this.onInputBeforeInput.bind(this));
         this.elements.calendarTriggerButton.addEventListener('click', this.onCalendarButtonClicked.bind(this));
         this.elements.calendar.addEventListener('select', (e) => this.onCalendarSelect(e as CustomEvent));
         this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
@@ -244,7 +258,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.callOnInitEvent();
     }
     static get observedAttributes() {
-        return ['label', 'value-type', 'message', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction'];
+        return ['label', 'value-type', 'message', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'use-persian-number'];
     }
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         // do something when an attribute has changed
@@ -294,6 +308,8 @@ export class JBDateInputWebComponent extends HTMLElement {
                 break;
             case 'direction':
                 this.elements.calendar.setAttribute('direction', value);
+                break;
+            case 'use-persian-number':
                 break;
         }
 
@@ -350,64 +366,106 @@ export class JBDateInputWebComponent extends HTMLElement {
             this._inputValue = newValue;
         }
     }
+    isValidChar(char: string) {
+        //allow 0-9 ۰-۹ and / char only
+        return /[\u06F0-\u06F90-9/]/g.test(char);
+    }
+    standardChar(char: string) {
+        //TODO: convert en to persian or persian to en base on user config
+        return faToEnDigits(char);
+    }
+    onInputBeforeInput(e: InputEvent) {
+        //TODO: handel range selection
+        const inputSelecteionStart = (e.target as HTMLInputElement).selectionStart!;
+        const baseCarretPos = inputSelecteionStart;
+        const inputedString: string | null = e.data;
+        if (inputedString) {
+            inputedString.split('').forEach((inputedChar, i) => {
+                let carretPos = baseCarretPos + i;
+                if (!this.isValidChar(inputedChar)) {
+                    e.preventDefault();
+                    return;
+                }
+                //standard char
+                const sChar = this.standardChar(inputedChar);
+                if (carretPos == 4 || carretPos == 7) {
+                    // in / pos
+                    if (inputedChar == '/') {
+                        (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
+                    }
+                    //push carrot if it behind / char
+                    carretPos++;
+                }
+                // we want user typed char ignored in some scenario
+                let isIgnoreChar = false;
+                const typedNumber = parseInt(sChar);
+                if (carretPos == 5 && typedNumber > 1) {
+                    this.inputChar("0", carretPos);
+                    carretPos++;
+                }
+                if (carretPos == 5 && typedNumber == 1 && this.elements.input.value[6] > "2") {
+                    //prevent month input bigger than 12 for example 19 or 16
+                    isIgnoreChar = true;
+                }
+                if (carretPos == 6 && typedNumber == 0 && this.elements.input.value[5] == "0") {
+                    //prevent 00 for month
+                    isIgnoreChar = true;
+                }
+                if (carretPos == 5 && typedNumber == 0 && this.elements.input.value[4] == "0") {
+                    //prevent 00 for month
+                    isIgnoreChar = true;
+                }
+                if (carretPos == 8 && typedNumber > 3) {
+                    this.inputChar("0", carretPos);
+                    carretPos++;
+                }
+                if (carretPos == 9 && typedNumber > 1 && this.elements.input.value[8] == "3") {
+                    //prevent day input bigger than 31 for example 38 or 34
+                    isIgnoreChar = true;
+                }
+                if (carretPos == 9 && typedNumber == 0 && this.elements.input.value[8] == "0") {
+                    //prevent 00 for day
+                    isIgnoreChar = true;
+                }
+                if (carretPos == 8 && typedNumber == 0 && this.elements.input.value[9] == "0") {
+                    //prevent 00 for day
+                    isIgnoreChar = true;
+                }
+                if(carretPos == 8 && typedNumber == 3 && this.elements.input.value[9] > "1"){
+                    // when day is 09 and user type 3 it prevent 39 as a day 1400/08/|19 => type 1400/08/39 X we dont let it happen
+                    this.inputChar("0", 9);
+                }
+                if (!isIgnoreChar) {
+                    this.inputChar(inputedChar, carretPos);
+                    (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
+                }
+
+            });
+            e.preventDefault();
+        }
+    }
     onInputKeyPress(e: KeyboardEvent) {
         //TODO: raise keypress event
-        let carretPos = (e.target as HTMLInputElement).selectionStart!;
-        const inputedChar: string = e.key;
-        if (carretPos == 4 || carretPos == 7) {
-            // in / pos
-            if (inputedChar == '/') {
-                (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
-            }
-            if (!Number.isNaN(inputedChar)) {
-                carretPos++;
-            }
-        }
-        if (!Number.isNaN(inputedChar)) {
-            // we want user typed char ignored in some scenario
-            let isIgnoreChar = false;
-            const TypedTumber = parseInt(inputedChar);
-            if (carretPos == 5 && TypedTumber > 1) {
-                this.inputChar("0", carretPos);
-                carretPos++;
-            }
-            if (carretPos == 6 && TypedTumber > 2 && this.elements.input.value[5] == "1") {
-                //prevent month input bigger than 12 for example 19 or 16
-                isIgnoreChar = true;
-            }
-            if (carretPos == 6 && TypedTumber == 0 && this.elements.input.value[5] == "0") {
-                //prevent 00 for month
-                isIgnoreChar = true;
-            }
-            if (carretPos == 5 && TypedTumber == 0 && this.elements.input.value[4] == "0") {
-                //prevent 00 for month
-                isIgnoreChar = true;
-            }
-            if (carretPos == 8 && TypedTumber > 3) {
-                this.inputChar("0", carretPos);
-                carretPos++;
-            }
-            if (carretPos == 9 && TypedTumber > 1 && this.elements.input.value[8] == "3") {
-                //prevent day input bigger than 31 for example 38 or 34
-                isIgnoreChar = true;
-            }
-            if (carretPos == 9 && TypedTumber == 0 && this.elements.input.value[8] == "0") {
-                //prevent 00 for day
-                isIgnoreChar = true;
-            }
-            if (carretPos == 8 && TypedTumber == 0 && this.elements.input.value[9] == "0") {
-                //prevent 00 for day
-                isIgnoreChar = true;
-            }
-            if (!isIgnoreChar) {
-                this.inputChar(inputedChar, carretPos);
-                (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
-            }
-
-        }
-        e.preventDefault();
-
-
+        const eventInitDic: KeyboardEventInit = {
+            bubbles: e.bubbles,
+            cancelable: e.cancelable,
+            composed: e.composed,
+            key: e.key,
+            code: e.code,
+            location: e.location,
+            repeat: e.repeat,
+            ctrlKey: e.ctrlKey,
+            shiftKey: e.shiftKey,
+            altKey: e.altKey,
+            metaKey: e.metaKey,
+            detail: e.detail,
+            isComposing: e.isComposing,
+            keyCode: e.keyCode,
+            charCode: e.charCode,
+            which: e.which,
+        };
+        const keyPressEvent = new KeyboardEvent('keypress', eventInitDic);
+        this.dispatchEvent(keyPressEvent);
     }
     onInputKeyup(e: KeyboardEvent) {
         //update value if it is valid
@@ -465,7 +523,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
         const currentMonth = this.monthValue || 1;
         const currentDay = this.dayValue || 1;
-        this.setDateValueFromNumbers(currentYear + interval,currentMonth,currentDay);
+        this.setDateValueFromNumbers(currentYear + interval, currentMonth, currentDay);
         this.updateinputTextFromValue();
     }
     addMonth(interval: number) {
@@ -760,7 +818,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     checkInputValidation(value: string) {
         //check validation in date has 3 step: 1-check required 2- check restrictions like min and max 3- check user manual validation list(regex or function)
-        const dateObjValue = this.#dateFactory.getDateObjectValueBaseOnFormat(value,this.inputFormat);
+        const dateObjValue = this.#dateFactory.getDateObjectValueBaseOnFormat(value, this.inputFormat);
         const validationResult: ValidationResult = {
             validationList: [],
             isAllValid: true,
