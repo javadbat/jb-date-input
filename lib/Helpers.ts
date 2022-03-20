@@ -56,6 +56,10 @@ export function handleMonthBeforeInput(this: JBDateInputWebComponent, typedNumbe
         //prevent month input bigger than 12 for example 19 or 16
         isIgnoreChar = true;
     }
+    if(carretPos == 6 && typedNumber> 2 && this.elements.input.value[5] == "1"){
+        //prevent month input bigger than 12 for example 19 or 16
+        isIgnoreChar = true;
+    }
     if (carretPos == 6 && typedNumber == 0 && this.elements.input.value[5] == "0") {
         //prevent 00 for month
         isIgnoreChar = true;
@@ -64,5 +68,6 @@ export function handleMonthBeforeInput(this: JBDateInputWebComponent, typedNumbe
         //prevent 00 for month
         isIgnoreChar = true;
     }
+
     return {isIgnoreChar: isIgnoreChar, carretPos: carretPos};
 }
