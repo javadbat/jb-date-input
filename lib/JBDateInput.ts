@@ -163,16 +163,16 @@ export class JBDateInputWebComponent extends HTMLElement {
                 return null;
         }
     }
-    get typedYear():string{
-        const typedYear = this.inputValue.substring(0,4);
+    get typedYear(): string {
+        const typedYear = this.inputValue.substring(0, 4);
         return typedYear;
     }
-    get typedMonth():string{
-        const typedMonth = this.inputValue.substring(5,7);
+    get typedMonth(): string {
+        const typedMonth = this.inputValue.substring(5, 7);
         return typedMonth;
     }
-    get typedDay():string{
-        const typedDay = this.inputValue.substring(8,10);
+    get typedDay(): string {
+        const typedDay = this.inputValue.substring(8, 10);
         return typedDay;
     }
     constructor() {
@@ -370,9 +370,12 @@ export class JBDateInputWebComponent extends HTMLElement {
         //allow 0-9 ۰-۹ and / char only
         return /[\u06F0-\u06F90-9/]/g.test(char);
     }
-    standardChar(char: string) {
+    standardString(dateString: string) {
         //TODO: convert en to persian or persian to en base on user config
-        return faToEnDigits(char);
+        const sNumString = faToEnDigits(dateString);
+        //convert dsd137/06/31rer to 1373/06/31
+        const sString = sNumString.replace(/[^\u06F0-\u06F90-9/]/g, '');
+        return sString;
     }
     onInputBeforeInput(e: InputEvent) {
         //TODO: handel range selection
@@ -380,14 +383,14 @@ export class JBDateInputWebComponent extends HTMLElement {
         const baseCarretPos = inputSelecteionStart;
         const inputedString: string | null = e.data;
         if (inputedString) {
-            inputedString.split('').forEach((inputedChar, i) => {
+            // make string something like 1373/06/31 from dsd۱۳۷۳/06/31rer
+            const standardString = this.standardString(inputedString);
+            standardString.split('').forEach((inputedChar, i) => {
                 let carretPos = baseCarretPos + i;
                 if (!this.isValidChar(inputedChar)) {
                     e.preventDefault();
                     return;
                 }
-                //standard char
-                const sChar = this.standardChar(inputedChar);
                 if (carretPos == 4 || carretPos == 7) {
                     // in / pos
                     if (inputedChar == '/') {
@@ -398,16 +401,19 @@ export class JBDateInputWebComponent extends HTMLElement {
                 }
                 // we want user typed char ignored in some scenario
                 let isIgnoreChar = false;
-                const typedNumber = parseInt(sChar);
+                if(inputedChar == '/'){
+                    return;
+                }
+                const typedNumber = parseInt(inputedChar);
                 if (carretPos == 5 && typedNumber > 1) {
                     this.inputChar("0", carretPos);
                     carretPos++;
                 }
-                const monthRes = handleMonthBeforeInput.call(this,typedNumber, carretPos);
+                const monthRes = handleMonthBeforeInput.call(this, typedNumber, carretPos);
                 carretPos = monthRes.carretPos;
-                const dayRes = handleDayBeforeInput.call(this,typedNumber,carretPos);
+                const dayRes = handleDayBeforeInput.call(this, typedNumber, carretPos);
                 carretPos = dayRes.carretPos;
-                isIgnoreChar = isIgnoreChar||dayRes.isIgnoreChar||monthRes.isIgnoreChar;
+                isIgnoreChar = isIgnoreChar || dayRes.isIgnoreChar || monthRes.isIgnoreChar;
                 if (!isIgnoreChar) {
                     this.inputChar(inputedChar, carretPos);
                     (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
