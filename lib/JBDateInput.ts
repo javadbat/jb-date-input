@@ -9,7 +9,7 @@ import './inbox-element/inbox-element';
 
 import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
 import { DateFactory } from './DateFactory';
-import { getEmptyValueObject } from './Helpers';
+import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
 import { JBCalendarValue } from 'jb-calendar/dist/Types';
 import { faToEnDigits } from '../../../common/js/PersianHelper';
 
@@ -164,15 +164,15 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
     }
     get typedYear():string{
-        const typedYear = this.inputValue.substring(0,3);
+        const typedYear = this.inputValue.substring(0,4);
         return typedYear;
     }
     get typedMonth():string{
-        const typedMonth = this.inputValue.substring(5,6);
+        const typedMonth = this.inputValue.substring(5,7);
         return typedMonth;
     }
     get typedDay():string{
-        const typedDay = this.inputValue.substring(8,9);
+        const typedDay = this.inputValue.substring(8,10);
         return typedDay;
     }
     constructor() {
@@ -403,38 +403,11 @@ export class JBDateInputWebComponent extends HTMLElement {
                     this.inputChar("0", carretPos);
                     carretPos++;
                 }
-                if (carretPos == 5 && typedNumber == 1 && this.elements.input.value[6] > "2") {
-                    //prevent month input bigger than 12 for example 19 or 16
-                    isIgnoreChar = true;
-                }
-                if (carretPos == 6 && typedNumber == 0 && this.elements.input.value[5] == "0") {
-                    //prevent 00 for month
-                    isIgnoreChar = true;
-                }
-                if (carretPos == 5 && typedNumber == 0 && this.elements.input.value[4] == "0") {
-                    //prevent 00 for month
-                    isIgnoreChar = true;
-                }
-                if (carretPos == 8 && typedNumber > 3) {
-                    this.inputChar("0", carretPos);
-                    carretPos++;
-                }
-                if (carretPos == 9 && typedNumber > 1 && this.elements.input.value[8] == "3") {
-                    //prevent day input bigger than 31 for example 38 or 34
-                    isIgnoreChar = true;
-                }
-                if (carretPos == 9 && typedNumber == 0 && this.elements.input.value[8] == "0") {
-                    //prevent 00 for day
-                    isIgnoreChar = true;
-                }
-                if (carretPos == 8 && typedNumber == 0 && this.elements.input.value[9] == "0") {
-                    //prevent 00 for day
-                    isIgnoreChar = true;
-                }
-                if(carretPos == 8 && typedNumber == 3 && this.elements.input.value[9] > "1"){
-                    // when day is 09 and user type 3 it prevent 39 as a day 1400/08/|19 => type 1400/08/39 X we dont let it happen
-                    this.inputChar("0", 9);
-                }
+                const monthRes = handleMonthBeforeInput.call(this,typedNumber, carretPos);
+                carretPos = monthRes.carretPos;
+                const dayRes = handleDayBeforeInput.call(this,typedNumber,carretPos);
+                carretPos = dayRes.carretPos;
+                isIgnoreChar = isIgnoreChar||dayRes.isIgnoreChar||monthRes.isIgnoreChar;
                 if (!isIgnoreChar) {
                     this.inputChar(inputedChar, carretPos);
                     (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
@@ -445,7 +418,6 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
     }
     onInputKeyPress(e: KeyboardEvent) {
-        //TODO: raise keypress event
         const eventInitDic: KeyboardEventInit = {
             bubbles: e.bubbles,
             cancelable: e.cancelable,
