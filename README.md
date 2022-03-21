@@ -9,7 +9,7 @@ web component form element to get date from user
 
 - support keyboard arrow key and fast date input with keyboard
 
-- customizable style with css variable
+- customizable style with css variables
 
 - can set min and max date value
 
@@ -19,7 +19,13 @@ web component form element to get date from user
 
 - support typescript
 
-sample: <https://codepen.io/javadbat/pen/qBRyYKY>
+- good typing experience for desktop user
+
+- have 3 value type so you can get inputed value in gregorian, jalali or timestamp base on your project need
+
+- customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`
+
+Demo & Sample in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>
 
 ## instructions
 

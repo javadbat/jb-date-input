@@ -1,4 +1,8 @@
 #changelog
+## [3.0.0] - 2022-03-20
+### changed
+ - refactor all date related functions from `dayjs` to `date-fns`
+
 ## [2.4.0] - 2022-03-20
 
 ### new features
