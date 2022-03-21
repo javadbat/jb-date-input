@@ -175,6 +175,9 @@ export class JBDateInputWebComponent extends HTMLElement {
         const typedDay = this.inputValue.substring(8, 10);
         return typedDay;
     }
+    get valueFormat() {
+        return this.#dateFactory.valueFormat;
+    }
     constructor() {
         super();
         if (typeof this.attachInternals == "function") {
