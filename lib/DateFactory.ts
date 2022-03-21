@@ -1,16 +1,10 @@
-import dayjs, { Dayjs } from 'dayjs';
-import jalaliday from 'jalaliday';
-import isLeapYear from 'dayjs/plugin/isLeapYear';
+
 import { DateInObject, DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes } from './Types';
 import { getEmptyValueObject } from './Helpers';
+import {getYear, getMonth, getTime as getTimeStamp, isEqual, isLeapYear, getDate} from 'date-fns';
+import {newDate,isLeapYear as isJalaliLeapYear,isAfter,isBefore,getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate} from 'date-fns-jalali';
 
 
-dayjs.extend(isLeapYear);
-type JalaliDayjs = typeof dayjs & { calendar(calendarType: string): Dayjs; }
-
-if (typeof (dayjs as JalaliDayjs).calendar !== "function") {
-    dayjs.extend(jalaliday);
-}
 export type DateFactoryConstructorArg = {
     inputType: InputTypes | null | undefined;
     valueType: ValueTypes | null | undefined;
@@ -229,11 +223,13 @@ export class DateFactory {
         }
         if (result.isValid && jalaliMonth == 12) {
             //if everything was ok then we check for leap year
-            const date = DateFactory.getDayjsFromJalali(jalaliYear, jalaliMonth, jalaliDay);
-            const jalaliDate = date.calendar('jalali');
-            if (jalaliDate.year() !== jalaliYear) {
-                result.isValid = false;
-                result.error = "INVALID_DAY_FOR_LEAP";
+            if (jalaliMonth == 12 && jalaliDay == 30){
+                const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay);
+                if(!isJalaliLeapYear(date)){
+                    result.isValid = false;
+                    result.error = "INVALID_DAY_FOR_LEAP";
+                }
+
             }
         }
 
@@ -293,8 +289,8 @@ export class DateFactory {
         }
         if (gregorianMonth == 2 && gregorianDay > 28) {
             if (gregorianDay == 29) {
-                const date = DateFactory.getDayjsFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
-                if (!date.isLeapYear()) {
+                const date = DateFactory.getDateFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
+                if (!isLeapYear(date)) {
                     result.isValid = false;
                     result.error = "INVALID_DAY_FOR_LEAP";
                 }
@@ -330,6 +326,23 @@ export class DateFactory {
         }
         console.error("INVALID_INPUT_TYPE");
         return getEmptyValueObject();
+    }
+    getDateValueObjectFromTimeStamp(timestamp:number): JBDateInputValueObject{
+        const date = new Date(timestamp);
+        const result:JBDateInputValueObject = {
+            gregorian: {
+                year: getYear(date),
+                month: getMonth(date) + 1,
+                day: getDate(date)
+            },
+            jalali: {
+                year: getJalaliYear(date),
+                month: getJalaliMonth(date) + 1,
+                day: getJalaliDate(date)
+            },
+            timeStamp : getTimeStamp(date),
+        };
+        return result;
     }
     #getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number,oldGregorianYear:number|null, oldGregorianMonth:number|null): JBDateInputValueObject {
 
@@ -369,19 +382,18 @@ export class DateFactory {
             }
             return getEmptyValueObject();
         }
-        const date = DateFactory.getDayjsFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
-        const jalaliDate = date.calendar('jalali');
+        const date = DateFactory.getDateFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
         valueObject.gregorian = {
-            year: date.year(),
-            month: date.month() + 1,
-            day: date.date()
+            year: getYear(date),
+            month: getMonth(date) + 1,
+            day: getDate(date)
         };
         valueObject.jalali = {
-            year: jalaliDate.year(),
-            month: jalaliDate.month() + 1,
-            day: jalaliDate.date()
+            year: getJalaliYear(date),
+            month: getJalaliMonth(date) + 1,
+            day: getJalaliDate(date)
         };
-        valueObject.timeStamp = date.unix();
+        valueObject.timeStamp = getTimeStamp(date);
         return valueObject;
     }
     #getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number, oldJalaliYear:number|null, oldJalaliMonth:number|null): JBDateInputValueObject {
@@ -421,19 +433,18 @@ export class DateFactory {
             }
             return getEmptyValueObject();
         }
-        const date = DateFactory.getDayjsFromJalali(jalaliYear, jalaliMonth, jalaliDay);
-        const jalaliDate = date.calendar('jalali');
+        const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay);
         valueObject.gregorian = {
-            year: date.year(),
-            month: date.month() + 1,
-            day: date.date()
+            year: getYear(date),
+            month: getMonth(date)+1,
+            day: getDate(date)
         };
         valueObject.jalali = {
-            year: jalaliDate.year(),
-            month: jalaliDate.month() + 1,
-            day: jalaliDate.date()
+            year: getJalaliYear(date),
+            month: getJalaliMonth(date)+1,
+            day: getJalaliDate(date)
         };
-        valueObject.timeStamp = date.unix();
+        valueObject.timeStamp = getTimeStamp(date);
         return valueObject;
     }
     getDateObjectValueBaseOnFormat(valueString:string,format:string = this.#valueFormat):DateInObject{
@@ -458,28 +469,18 @@ export class DateFactory {
         const res = regex.exec(value);
         return res;
     }
-    static getDayjsFromGregorian(year: number | string, month: number | string, day: number | string): Dayjs {
-        return dayjs(`${year}-${month}-${day}`, 'YYYY-M-D');
-    }
-    static getDayjsFromJalali(year: number | string, month: number | string, day: number | string): Dayjs {
-        const date = (dayjs as any)(`${year}-${month}-${day}`, { jalali: true });
-        return date;
-    }
-    static getDayjsFromTimestamp(timestamp: number): Dayjs {
-        return dayjs(timestamp);
-    }
-    static getDayjs(year: number | string, month: number | string, day: number | string, isJalali: boolean) {
-        if (isJalali) {
-            return DateFactory.getDayjsFromJalali(year, month, day);
+    static getDate(year: number, month: number, day: number, inputType:InputTypes):Date{
+        if(inputType == InputTypes.jalali){
+            return DateFactory.getDateFromJalali(year,month,day);
         }
-        return DateFactory.getDayjsFromGregorian(year, month, day);
+        return DateFactory.getDateFromGregorian(year,month,day);
     }
     static getDateFromGregorian(year: number, month: number, day: number): Date {
         return new Date(year, month - 1, day);
     }
     static getDateFromJalali(year: number, month: number, day: number): Date {
-        const date = DateFactory.getDayjsFromJalali(year, month, day);
-        return date.toDate();
+        const date = newDate(year, month - 1, day);
+        return date;
     }
     static getDateFromTimestamp(timestamp: number): Date {
         return new Date(timestamp);
@@ -497,9 +498,10 @@ export class DateFactory {
                 message: null
             }
         };
-        const date = DateFactory.getDayjs(year, month, day, dateInputType == InputTypes.jalali);
+        const date = DateFactory.getDate(year, month, day, dateInputType);
         if (dateRestrictions.min) {
-            const minValid = date.isAfter(dateRestrictions.min) || date.isSame(dateRestrictions.min);
+            
+            const minValid = isAfter(date,dateRestrictions.min) || isEqual(date, dateRestrictions.min);
             if (!minValid) {
                 result.min = {
                     isValid: false,
@@ -508,7 +510,7 @@ export class DateFactory {
             }
         }
         if (dateRestrictions.max) {
-            const maxValid = date.isBefore(dateRestrictions.max) || date.isSame(dateRestrictions.max);
+            const maxValid = isBefore(date,dateRestrictions.max) || isEqual(date, dateRestrictions.max);
             if (!maxValid) {
                 result.max = {
                     isValid: false,
@@ -519,17 +521,16 @@ export class DateFactory {
         return result;
     }
     static get todayGregorianYear(): number {
-        return dayjs().year();
+        return getYear(new Date());
     }
     static get todayJalaliYear(): number {
-        const year = dayjs().calendar('jalali').year();
+        const year = getJalaliYear(new Date());
         return year;
     }
     static get todayGregorianMonth(): number {
-        return dayjs().month() + 1;
+        return getMonth(new Date()) + 1;
     }
     static get todayJalaliMonth(): number {
-        const month = dayjs().calendar('jalali').month() + 1;
-        return month;
+        return getJalaliMonth(new Date()) + 1;
     }
 }

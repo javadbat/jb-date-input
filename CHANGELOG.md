@@ -1,4 +1,15 @@
 #changelog
+## [2.4.0] - 2022-03-20
+
+### new features
+- now support persian number and let user type number in persian format and dont prevent user with persian keyboard
+### changed
+ - refactor date based function and move them to date factory
+ - move format single source of truth to date factory
+
+### fixed
+- prevent some typing mistake for day and month
+- fix paste functionality and controll pasted value as well as typed value
 ## [2.3.0] - 2022-03-03
 
 ### new features

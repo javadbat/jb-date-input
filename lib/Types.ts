@@ -1,4 +1,3 @@
-import { Dayjs } from 'dayjs';
 import {JBCalendarWebComponent} from 'jb-calendar';
 export type ElementsObject = {
     input: HTMLInputElement;

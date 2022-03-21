@@ -563,19 +563,7 @@ export class JBDateInputWebComponent extends HTMLElement {
 
     setDateValueFromTimeStamp(value: string) {
         const timeStamp = parseInt(value);
-        const date = DateFactory.getDayjsFromTimestamp(timeStamp);
-        const jalaliDate = date.calendar('jalali');
-        this.#valueObject.gregorian = {
-            year: date.year(),
-            month: date.month() + 1,
-            day: date.date()
-        };
-        this.#valueObject.jalali = {
-            year: jalaliDate.year(),
-            month: jalaliDate.month() + 1,
-            day: jalaliDate.date()
-        };
-        this.#valueObject.timeStamp = date.unix();
+        this.#valueObject = this.#dateFactory.getDateValueObjectFromTimeStamp(timeStamp);
         this.updateCalendarView();
     }
     /**
