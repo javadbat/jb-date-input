@@ -171,6 +171,8 @@ document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'J
 if you want to show persian number instead of English number char you just have to set `use-persian-number` attribute like this:
 ```javascript
 <jb-date-input use-persian-number></jb-date-input >
+//or
+<jb-date-input use-persian-number="true"></jb-date-input >
 ```
 ## customize calendar button trigger
 
