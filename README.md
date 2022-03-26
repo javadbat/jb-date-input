@@ -167,6 +167,11 @@ document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'G
 //set default year and month for jalali input-type
 document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'JALALI');
 ```
+## show persian number
+if you want to show persian number instead of English number char you just have to set `use-persian-number` attribute like this:
+```javascript
+<jb-date-input use-persian-number></jb-date-input >
+```
 ## customize calendar button trigger
 
 you can change calendar icon base on your own need to doing so you just have to put your custom html inside web component with `slot="calendar-trigger-icon"` like below:

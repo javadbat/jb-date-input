@@ -313,6 +313,12 @@ export class JBDateInputWebComponent extends HTMLElement {
                 this.elements.calendar.setAttribute('direction', value);
                 break;
             case 'use-persian-number':
+                if(value == 'true' || value == ''){
+                    this.elements.calendar.usePersianNumber = true;
+                }
+                if(value == 'false' || value == null){
+                    this.elements.calendar.usePersianNumber = false;
+                }
                 break;
         }
 
