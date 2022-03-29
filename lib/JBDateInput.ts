@@ -11,7 +11,7 @@ import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRe
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
 import { JBCalendarValue } from 'jb-calendar/dist/Types';
-import { faToEnDigits } from '../../../common/js/PersianHelper';
+import { enToFaDigits, faToEnDigits } from '../../../common/js/PersianHelper';
 
 export class JBDateInputWebComponent extends HTMLElement {
     static get formAssociated() { return true; }
@@ -20,7 +20,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("value-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
     #showCalendar = false;
     inputFormat = 'YYYY/MM/DD';
-    #inputRegex = /^(?<year>[\d,\s]{4})\/(?<month>[\d,\s]{2})\/(?<day>[\d,\s]{2})$/g;
+    #inputRegex = /^(?<year>[\u06F0-\u06F90-9,\s]{4})\/(?<month>[\u06F0-\u06F90-9,\s]{2})\/(?<day>[\u06F0-\u06F90-9,\s]{2})$/g;
     validation: ValidationResultSummary = {
         isValid: null,
         message: '',
@@ -45,12 +45,20 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.updateinputTextFromValue();
     }
     get inputValue() {
-        return this._inputValue;
+        return this.#inputValue;
     }
-    get _inputValue() {
+    //standarded input value
+    get #sInputValue():string{
+        let value = this.#inputValue;
+        if(this.#usePersianDigits){
+            value = faToEnDigits(value);
+        }
+        return value;
+    }
+    get #inputValue() {
         return this.elements!.input.value;
     }
-    set _inputValue(value) {
+    set #inputValue(value) {
         this.elements!.input.value = value;
     }
     get showCalendar() {
@@ -175,8 +183,28 @@ export class JBDateInputWebComponent extends HTMLElement {
         const typedDay = this.inputValue.substring(8, 10);
         return typedDay;
     }
+    get sTypedYear(): string {
+        const typedYear = this.#sInputValue.substring(0, 4);
+        return typedYear;
+    }
+    get sTypedMonth(): string {
+        const typedMonth = this.#sInputValue.substring(5, 7);
+        return typedMonth;
+    }
+    get sTypedDay(): string {
+        const typedDay = this.#sInputValue.substring(8, 10);
+        return typedDay;
+    }
     get valueFormat() {
         return this.#dateFactory.valueFormat;
+    }
+    #usePersianDigits = false;
+    get usePersianDigits() {
+        return this.#usePersianDigits;
+    }
+    set usePersianDigits(value) {
+        this.#usePersianDigits = value;
+        this.updateinputTextFromValue();
     }
     constructor() {
         super();
@@ -237,21 +265,21 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
     }
     registerEventListener() {
-        this.elements.input.addEventListener('blur', this.onInputBlur.bind(this));
-        this.elements.input.addEventListener('focus', this.onInputFocus.bind(this));
-        this.elements.input.addEventListener('keypress', this.onInputKeyPress.bind(this));
-        this.elements.input.addEventListener('keyup', this.onInputKeyup.bind(this));
+        this.elements.input.addEventListener('blur', this.onInputBlur.bind(this),{passive:true});
+        this.elements.input.addEventListener('focus', this.onInputFocus.bind(this),{passive:true});
+        this.elements.input.addEventListener('keypress', this.onInputKeyPress.bind(this),{passive:true});
+        this.elements.input.addEventListener('keyup', this.onInputKeyup.bind(this),{passive:true});
         this.elements.input.addEventListener('keydown', this.onInputKeydown.bind(this));
         this.elements.input.addEventListener('beforeinput', this.onInputBeforeInput.bind(this));
         this.elements.calendarTriggerButton.addEventListener('click', this.onCalendarButtonClicked.bind(this));
         this.elements.calendar.addEventListener('select', (e) => this.onCalendarSelect(e as CustomEvent));
         this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
-        this.elements.calendar.addEventListener('blur', this.onCalendarBlur.bind(this));
-        this.elements.calendarContainer.addEventListener('click', this.onCalendarContainerClicked.bind(this));
+        this.elements.calendar.addEventListener('blur', this.onCalendarBlur.bind(this),{passive:true});
+        this.elements.calendarContainer.addEventListener('click', this.onCalendarContainerClicked.bind(this),{passive:true});
     }
     initProp() {
         this.setValueObjNull();
-        this._inputValue = '    /  /  ';
+        this.#inputValue = '    /  /  ';
         this.value = this.getAttribute('value') || '';
         this.validation = {
             isValid: null,
@@ -314,9 +342,11 @@ export class JBDateInputWebComponent extends HTMLElement {
                 break;
             case 'use-persian-number':
                 if(value == 'true' || value == ''){
+                    this.usePersianDigits = true;
                     this.elements.calendar.usePersianNumber = true;
                 }
                 if(value == 'false' || value == null){
+                    this.usePersianDigits = false;
                     this.elements.calendar.usePersianNumber = false;
                 }
                 break;
@@ -366,14 +396,24 @@ export class JBDateInputWebComponent extends HTMLElement {
 
     }
     inputChar(char: string, pos: number) {
+        if(pos==4 || pos==7){
+            char = '/';
+        }
+        if(pos>9 || pos<0){
+            return;
+        }
         this.#inputRegex.lastIndex = 0;
-        const newValueArr = this._inputValue.split('');
+        const newValueArr = this.#inputValue.split('');
+        if(this.#usePersianDigits){
+            char = enToFaDigits(char);
+        }
         newValueArr[pos] = char;
         const newValue = newValueArr.join('');
-        const res = this.#inputRegex.test(newValue);
-        if (res) {
-            this._inputValue = newValue;
-        }
+        //due ro performance issue i remove validation check on evry char input
+        // const isValid = this.#inputRegex.test(newValue);
+        // if (isValid) {
+        this.#inputValue = newValue;
+        //}
     }
     isValidChar(char: string) {
         //allow 0-9 ۰-۹ and / char only
@@ -431,6 +471,18 @@ export class JBDateInputWebComponent extends HTMLElement {
             });
             e.preventDefault();
         }
+        if (e.inputType == 'deleteContentBackward' || e.inputType == 'deleteContentForward' || e.inputType == 'delete' || e.inputType == 'deleteByCut' || e.inputType == 'deleteByDrag') {
+            const inputSelectionEnd = (e.target as HTMLInputElement).selectionEnd!;
+            let d= 0;
+            if(e.inputType == 'deleteContentBackward'){
+                d = -1;
+            }
+            for(let i=inputSelecteionStart; i<=inputSelectionEnd; i++){
+                this.inputChar(' ', i+d);
+            }
+            this.elements.input.setSelectionRange(inputSelecteionStart +d, inputSelecteionStart +d);
+            e.preventDefault();
+        }
     }
     onInputKeyPress(e: KeyboardEvent) {
         const eventInitDic: KeyboardEventInit = {
@@ -458,10 +510,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         //update value if it is valid
         const validationResult = this.triggerInputValidation(false);
         if (validationResult.isAllValid) {
-            this.updateValueObjFromInput((e.target as HTMLInputElement).value);
-        }
-        if (e.keyCode == 38 || e.keyCode == 40) {
-            e.preventDefault();
+            this.updateValueObjFromInput(this.#sInputValue);
         }
         this.callOnInputKeyup(e);
     }
@@ -481,12 +530,6 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     onInputKeydown(e: KeyboardEvent) {
         const target = (e.target as HTMLInputElement);
-        if (e.keyCode == 8) {
-            const carretPos = target.selectionStart!;
-            this.inputChar(' ', carretPos - 1);
-            target.setSelectionRange(carretPos - 1, carretPos - 1);
-            e.preventDefault();
-        }
         if (e.keyCode == 38 || e.keyCode == 40) {
             //up and down button
             const carretPos = target.selectionStart!;
@@ -620,11 +663,14 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     updateinputTextFromValue() {
         let str = this.inputFormat;
-
         const { year, month, day } = this.inputType == InputTypes.jalali ? this.#valueObject.jalali : this.#valueObject.gregorian;
-        let yearString: string, monthString: string, dayString: string;
+        let yearString = '    ', monthString='  ', dayString='  ';
         if (year != null && !isNaN(year)) {
-            if (year < 1000) {
+            if (year < 10) {
+                yearString = '000' + year;
+            } else if(year < 100){
+                yearString = '00' + year;
+            } else if(year<1000){
                 yearString = '0' + year;
             } else {
                 yearString = year.toString();
@@ -644,17 +690,14 @@ export class JBDateInputWebComponent extends HTMLElement {
                 dayString = day.toString();
             }
         }
-        if (year == null || isNaN(year)) {
-            yearString = '    ';
+        //convert to fa char if needed
+        if(this.#usePersianDigits){
+            yearString = enToFaDigits(yearString);
+            monthString = enToFaDigits(monthString);
+            dayString = enToFaDigits(dayString);
         }
-        if (month == null || isNaN(month)) {
-            monthString = '  ';
-        }
-        if (day == null || isNaN(day)) {
-            dayString = '  ';
-        }
-        str = str.replace('YYYY', yearString!).replace('MM', monthString!).replace('DD', dayString!);
-        this._inputValue = str;
+        str = str.replace('YYYY', yearString).replace('MM', monthString).replace('DD', dayString);
+        this.#inputValue = str;
     }
     getValueObjectFromInputText(inputText: string): JBDateInputValueObject {
         this.#inputRegex.lastIndex = 0;
@@ -683,17 +726,17 @@ export class JBDateInputWebComponent extends HTMLElement {
     handleCarretPosOnInputFocus() {
         const carretPos = this.elements.input.selectionStart;
         if (carretPos) {
-            if (this.elements.input.value.slice(0, 4) == "    " && carretPos <= 4) {
+            if (this.typedYear == "    " && carretPos <= 4) {
                 //if year was null we move cursor to first char of year
                 this.elements.input.setSelectionRange(0, 0);
                 return;
             }
-            if (this.elements.input.value.slice(5, 7) == "  " && carretPos > 4 && carretPos <= 7) {
+            if (this.typedMonth == "  " && carretPos > 4 && carretPos <= 7) {
                 //if month was null we move cursor to first char of month
                 this.elements.input.setSelectionRange(5, 5);
                 return;
             }
-            if (this.elements.input.value.slice(8, 10) == "  " && carretPos > 7 && carretPos <= 10) {
+            if (this.typedDay == "  " && carretPos > 7 && carretPos <= 10) {
                 //if day was null we move cursor to first char of day
                 this.elements.input.setSelectionRange(8, 8);
                 return;
@@ -716,7 +759,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         return false;
     }
     onInputFocus() {
-        this.#lastInputStringValue = this._inputValue;
+        this.#lastInputStringValue = this.#sInputValue;
         this.focus();
         document.addEventListener('selectionchange', this.handleCarretPosOnInputFocus.bind(this));
     }
@@ -726,7 +769,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         if (focusedElement !== this.elements.calendar) {
             this.showCalendar = false;
         }
-        const inputText = (e.target as HTMLInputElement).value;
+        const inputText = this.#sInputValue;
         //check if there is no update from last time then if change we update
         if (this.checkIfInputTextIsChangedFromLastTime(inputText)) {
             this.updateValueObjFromInput(inputText);
@@ -762,7 +805,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     triggerInputValidation(showError = true) {
         // this method is for use out of component  for example if user click on submit button and developer want to check if all fields are valid
         //takeAction determine if we want to show user error in web component difualtManner or developer will handle it by himself
-        const inputText = this.elements.input.value;
+        const inputText = this.#sInputValue;
 
         const validationResult = this.checkInputValidation(inputText);
         const firstFault = validationResult.validationList.find(x => !x.isValid);

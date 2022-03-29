@@ -1,4 +1,7 @@
 #changelog
+## [3.2.0] - 2022-03-29
+### new features
+- now `use-persian-number` attribute will chnage input number char tp persian format
 ## [3.1.0] - 2022-03-26
 ### new features
 - add `use-persian-number` attribute
