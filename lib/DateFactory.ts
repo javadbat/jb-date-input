@@ -1,7 +1,7 @@
 
 import { DateInObject, DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes } from './Types';
 import { getEmptyValueObject } from './Helpers';
-import {getYear, getMonth, getTime as getTimeStampinMiliSecond, getUnixTime as getTimeStamp, isEqual, isLeapYear, getDate} from 'date-fns';
+import {getYear, getMonth, getTime as getTimeStamp, getUnixTime as getTimeStampInSecond, isEqual, isLeapYear, getDate} from 'date-fns';
 import {newDate,isLeapYear as isJalaliLeapYear,isAfter,isBefore,getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate} from 'date-fns-jalali';
 
 
