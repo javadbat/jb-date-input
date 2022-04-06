@@ -327,7 +327,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 this.setMaxDate(value);
                 break;
             case 'required':
-                if (value == "" || value == "true") {
+                if (value === "" || value == "true") {
                     this.required = true;
                 } else {
                     this.required = false;
