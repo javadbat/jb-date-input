@@ -15,7 +15,7 @@
         display: block;
         font-size:  var(--jb-date-input-label-font-size, 0.8em);;
         color:  var(--jb-date-input-label-color, #1f1735);
-
+        font-weight: var(--jb-date-input-label-weight, normal);
         &.--hide {
             display: none;
         }
@@ -99,7 +99,7 @@
     .message-box {
         font-size: 0.7em;
         padding: 2px 8px;
-        color: #929292;
+        color: var(--jb-date-input-message-box-color, #929292);
         display: var(--jb-date-input-message-box-display, block);
 
         &:empty {
@@ -107,7 +107,7 @@
         }
 
         &.error {
-            color: red;
+            color: var(--jb-date-input-message-box-color-error, red);
         }
     }
 
@@ -137,7 +137,7 @@
         }
         .calendar-wrapper{
             background-color: var(--jb-date-input-calender-wrapper-bg-color,#fff);
-            border-radius: 24px;
+            border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px);
             padding: 16px;
             box-shadow:
                 12px 12px 16px 0 rgba(0, 0, 0, 0.25),
@@ -147,7 +147,7 @@
             justify-content: center;
             box-sizing: border-box;
             @include mobile{
-                border-radius: 24px 24px 0 0;
+                border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px) var(--jb-date-input-calender-wrapper-border-radius, 24px) 0 0;
                 grid-area: calendar-wrapper;
                 padding: 0;
                 padding: 32px 0;
