@@ -1,4 +1,7 @@
 #changelog
+## [3.3.0] - 2022-09-10
+### new features
+- add UMD build in dist folder for non npm user
 ## [3.2.0] - 2022-03-29
 ### new features
 - now `use-persian-number` attribute will chnage input number char tp persian format

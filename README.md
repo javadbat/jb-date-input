@@ -56,8 +56,8 @@ import 'jb-date-input';
 you can just add script tag to your html file and then use web component how ever you need
 
 ```HTML
-<script src="https://unpkg.com/jb-date-input"></script>
-<script src="https://unpkg.com/jb-calendar"></script>
+<script src="https://unpkg.com/jb-date-input/dist/JBDateInput.umd.js"></script>
+<script src="https://unpkg.com/jb-calendar/dist/JBCalendar.umd.js"></script>
 
 ```
 
