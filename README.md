@@ -24,9 +24,13 @@ web component form element to get date from user
 
 - good typing experience for desktop user
 
+- it use your page font by default. 
+
 - have 3 value type so you can get inputed value in gregorian, jalali or timestamp base on your project need
 
 - customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`
+
+- support `esm` import build for modern `ECMA Script` nodejs app. 
 
 Demo & Sample in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>
 
@@ -53,7 +57,7 @@ import 'jb-date-input';
 ```HTML
 <jb-date-input label="date label"></jb-date-input>
 ```
-
+remember if you are using it in a `ltr`(left to right) direction page you must set `dir="ltr"`.
 #### using cdn
 
 beware that jb-date-input umd build do not exclude external dependancy and bundled as a standalone module, so only use this way if you dont access npm in your app.   
