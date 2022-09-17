@@ -1,4 +1,7 @@
 #changelog
+## [3.4.0] - 2022-09-10
+### fixed
+- use es builded npm module and treeshaker for umd dependancies
 ## [3.3.0] - 2022-09-10
 ### new features
 - add UMD build in dist folder for non npm user

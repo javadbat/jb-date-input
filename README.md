@@ -2,6 +2,9 @@
 
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/jb-date-input)
 [![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/master/LICENSE)
+![NPM Downloads](https://img.shields.io/npm/dw/jb-date-input)
+![NPM License](https://img.shields.io/npm/l/jb-date-input)
+![npm](https://img.shields.io/npm/v/jb-date-input)
 
 web component form element to get date from user
 
@@ -53,14 +56,18 @@ import 'jb-date-input';
 
 #### using cdn
 
-you can just add script tag to your html file and then use web component how ever you need
+beware that jb-date-input umd build do not exclude external dependancy and bundled as a standalone module, so only use this way if you dont access npm in your app.   
+
+1- you can just add script tag to your html file and then use web component how ever you need.    
 
 ```HTML
 <script src="https://unpkg.com/jb-date-input/dist/JBDateInput.umd.js"></script>
-<script src="https://unpkg.com/jb-calendar/dist/JBCalendar.umd.js"></script>
-
 ```
+2- use it in your `.html` file like any other tag:
 
+```HTML
+<jb-date-input label="date label"></jb-date-input>
+```
 ## format
 
 defualt format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
