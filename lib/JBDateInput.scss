@@ -11,7 +11,7 @@
     }
     label {
         width: 100%;
-        margin: 4px 0px;
+        margin: var(--jb-date-input-label-margin, 4px 0px);
         display: block;
         font-size:  var(--jb-date-input-label-font-size, 0.8em);;
         color:  var(--jb-date-input-label-color, #1f1735);
