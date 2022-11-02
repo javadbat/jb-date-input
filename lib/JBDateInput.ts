@@ -10,7 +10,7 @@ import './inbox-element/inbox-element';
 import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
-import { JBCalendarValue } from 'jb-calendar/dist/Types';
+import { JBCalendarValue } from 'jb-calendar/lib/Types';
 import { enToFaDigits, faToEnDigits } from '../../../common/js/PersianHelper';
 
 export class JBDateInputWebComponent extends HTMLElement {
