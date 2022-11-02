@@ -1,4 +1,7 @@
 #changelog
+## [3.4.1] - 2022-11-02
+### fixed
+- import type problem  from jb-calendar
 ## [3.4.0] - 2022-09-10
 ### fixed
 - use es builded npm module and treeshaker for umd dependancies
