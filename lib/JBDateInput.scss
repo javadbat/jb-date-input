@@ -29,7 +29,7 @@
         background-color: var(--jb-date-input-bgcolor, #f7f6f6);
         border-bottom: solid var(--jb-date-input-border-bottom-width, 3px) var(--jb-date-input-border-color, #f7f6f6);
         border-radius: var(--jb-date-input-border-radius, 16px);
-        margin: 4px 0px;
+        margin: var(--jb-date-input-input-margin, 4px 0px);
         transition: ease 0.3s all;
         overflow: hidden;
         display: grid;
@@ -39,6 +39,7 @@
         align-items: center;
         &:focus-within {
             border-color: var(--jb-date-input-border-color-focus, #1e2832);
+            box-shadow: var(--jb-date-input-box-shadow-focus, none);
         }
 
         input {

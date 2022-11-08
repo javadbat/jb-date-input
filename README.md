@@ -254,6 +254,9 @@ body{
 | --jb-date-input-calender-wrapper-bg-color     | calender background color default color is `#fff`                                             |
 | --jb-date-input-calendar-wrapper-z-index      | opend calendar `z-index` is `10` but you can change it to number you want                     |
 | --jb-date-input-calender-wrapper-border-radius| calendar border radius default is `24px`                                                      |
+| --jb-date-input-input-margin                  | input margin default is `4px 0`                                                               |
+| --jb-date-input-box-shadow                    | input box-shadow default is none                                                              |
+| --jb-date-input-box-shadow-focus              | input box-shadow when input is focused default is none                                        |
 
 if you want to change opened date picker style please read [jb-calendar](https://github.com/javadbat/jb-calendar) readme file  
 ## add custom element in input box

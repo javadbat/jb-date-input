@@ -1,4 +1,7 @@
 #changelog
+## [3.4.2] - 2022-11-02
+### new features
+- add `--jb-date-input-box-shadow-focus` and `--jb-date-input-input-margin` css variable
 ## [3.4.1] - 2022-11-02
 ### fixed
 - import type problem  from jb-calendar
