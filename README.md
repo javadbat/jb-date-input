@@ -230,33 +230,37 @@ body{
 ```
 #### variable list
  
-| css variable name                             | description                                                                                   |
-| -------------                                 | -------------                                                                                 |
-| --jb-date-input-margin                        | web-component margin default is `0 12px`                                                      |
-| --jb-date-input-border-radius                 | web-component border-radius default is `16px`                                                 |
-| --jb-date-input-border-color                  | border color of select in normal mode                                                         |
-| --jb-date-input-border-color-focus            | border color when user focus on input                                                         |
-| --jb-date-input-bgcolor                       | background color of input                                                                     |
-| --jb-date-input-message-box-display           | default is block but if you set it to none message box will be hidden                         |
-| --jb-date-input-message-box-color             | change color of message under box                                                             | 
-| --jb-date-input-message-box-color-error       | change color of message under box                                                             | 
-| --jb-date-input-text-align                    | text align of input                                                                           |
-| --jb-date-input-box-height                    | height of input box                                                                           |
-| --jb-date-input-border-width                  | general border width default is `1px`                                                         |
-| --jb-date-input-border-bottom-width           | border bottom width default is `3px`                                                          |
-| --jb-date-input-label-font-size               | font size of date input label default is `0.8em`                                              |
-| --jb-date-input-label-margin                  | change label margin default is `0 4px`                                                        |
-| --jb-date-input-label-weight                  | label font-weight default is normal                                                           |
-| --jb-date-input-placeholder-color             | input placeholder color default is `initial`                                                  |
-| --jb-date-input-placeholder-font-size         | place holder font size default is `1.1em`                                                     |
-| --jb-date-input-value-color                   | date input value color default is `#1f1735`                                                   |
-| --jb-date-input-value-font-size               | date input value font-size                                                                    |
-| --jb-date-input-calender-wrapper-bg-color     | calender background color default color is `#fff`                                             |
-| --jb-date-input-calendar-wrapper-z-index      | opend calendar `z-index` is `10` but you can change it to number you want                     |
-| --jb-date-input-calender-wrapper-border-radius| calendar border radius default is `24px`                                                      |
-| --jb-date-input-input-margin                  | input margin default is `4px 0`                                                               |
-| --jb-date-input-box-shadow                    | input box-shadow default is none                                                              |
-| --jb-date-input-box-shadow-focus              | input box-shadow when input is focused default is none                                        |
+| --jb-date-input-margin                        | web-component margin default is `0 12px`                                  |
+| --jb-date-input-border-radius                 | web-component border-radius default is `16px`                             |
+| css variable name                             | description                                                               |
+| -------------                                 | -------------                                                             |
+| --jb-date-input-border-color                  | border color of select in normal mode                                     |
+| --jb-date-input-border-color-focus            | border color when user focus on input                                     |
+| --jb-date-input-bgcolor                       | background color of input                                                 |
+| --jb-date-input-message-box-display           | default is block but if you set it to none message box will be hidden     |
+| --jb-date-input-message-box-color             | change color of message under box                                         | 
+| --jb-date-input-message-box-color-error       | change color of message under box                                         |
+| --jb-date-input-message-box-font-size         | font-size of message box under the input box                              |
+| --jb-date-input-message-box-font-weight       | font-weight of message box under the input box                            |
+| --jb-date-input-message-box-padding           | font-size of message box under the input box                              | 
+| --jb-date-input-text-align                    | text align of input                                                       |
+| --jb-date-input-box-height                    | height of input box                                                       |
+| --jb-date-input-border-width                  | general border width default is `1px`                                     |
+| --jb-date-input-border-bottom-width           | border bottom width default is `3px`                                      |
+| --jb-date-input-label-font-size               | font size of date input label default is `0.8em`                          |
+| --jb-date-input-label-margin                  | change label margin default is `0 4px`                                    |
+| --jb-date-input-label-weight                  | label font-weight default is normal                                       |
+| --jb-date-input-placeholder-color             | input placeholder color default is `initial`                              |
+| --jb-date-input-placeholder-font-size         | place holder font size default is `1.1em`                                 |
+| --jb-date-input-value-color                   | date input value color default is `#1f1735`                               |
+| --jb-date-input-value-font-size               | date input value font-size                                                |
+| --jb-date-input-calender-wrapper-bg-color     | calender background color default color is `#fff`                         |
+| --jb-date-input-calendar-wrapper-z-index      | opend calendar `z-index` is `10` but you can change it to number you want |
+| --jb-date-input-calender-wrapper-border-radius| calendar border radius default is `24px`                                  |
+| --jb-date-input-input-margin                  | input margin default is `4px 0`                                           |
+| --jb-date-input-box-shadow                    | input box-shadow default is none                                          |
+| --jb-date-input-box-shadow-focus              | input box-shadow when input is focused default is none                    |
+
 
 if you want to change opened date picker style please read [jb-calendar](https://github.com/javadbat/jb-calendar) readme file  
 ## add custom element in input box

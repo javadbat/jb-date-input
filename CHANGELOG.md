@@ -1,4 +1,7 @@
 #changelog
+## [3.4.3] - 2022-11-02
+### new features
+- add `--jb-date-input-message-box-padding` and `--jb-date-input-message-box-text-align` and `--jb-date-input-message-box-font-weight` css variable
 ## [3.4.2] - 2022-11-02
 ### new features
 - add `--jb-date-input-box-shadow-focus` and `--jb-date-input-input-margin` css variable

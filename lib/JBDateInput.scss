@@ -98,8 +98,10 @@
     }
 
     .message-box {
-        font-size: 0.7em;
-        padding: 2px 8px;
+        font-size: var(--jb-date-input-message-box-font-size, 0.7em);
+        font-weight: var(--jb-date-input-message-box-font-weight, normal);
+        text-align: var(--jb-date-input-message-box-text-align, initial);
+        padding: var(--jb-date-input-message-box-padding, 2px 8px);
         color: var(--jb-date-input-message-box-color, #929292);
         display: var(--jb-date-input-message-box-display, block);
 
