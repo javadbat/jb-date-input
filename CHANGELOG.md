@@ -1,4 +1,7 @@
 #changelog
+## [3.5.0] - 2022-12-14
+### new features
+- add y overflow handler on desktop calendar picker container to swipe up when calendar was not completly on sight.
 ## [3.4.3] - 2022-11-02
 ### new features
 - add `--jb-date-input-message-box-padding` and `--jb-date-input-message-box-text-align` and `--jb-date-input-message-box-font-weight` css variable

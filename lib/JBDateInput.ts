@@ -64,16 +64,19 @@ export class JBDateInputWebComponent extends HTMLElement {
     get showCalendar() {
         return this.#showCalendar;
     }
+
     set showCalendar(value) {
         this.#showCalendar = value;
         if (value == true) {
             this.elements.calendarContainer.classList.add('--show');
+            
             this.elements.calendarTriggerButton.classList.add('--active');
         } else {
             this.elements.calendarContainer.classList.remove('--show');
             this.elements.calendarTriggerButton.classList.remove('--active');
         }
     }
+   
     get inputType() {
         return this.#dateFactory.inputType;
     }
@@ -276,6 +279,8 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
         this.elements.calendar.addEventListener('blur', this.onCalendarBlur.bind(this),{passive:true});
         this.elements.calendarContainer.addEventListener('click', this.onCalendarContainerClicked.bind(this),{passive:true});
+        this.elements.calendarContainer.addEventListener('mouseenter',this.#fixCalendarContainerPos);
+        this.elements.calendarContainer.addEventListener('mouseleave',this.#resetCalendarContainerPos);
     }
     initProp() {
         this.setValueObjNull();
@@ -973,6 +978,17 @@ export class JBDateInputWebComponent extends HTMLElement {
             this.#dateFactory.setCalendarDefaultDateView(year, month, dateType);
             this.updateCalendarView();
         }
+    }
+    #fixCalendarContainerPos = ()=> {
+        const bcr = this.elements.calendarContainer.getBoundingClientRect();
+        console.log(bcr);
+        const overflowSize = document.body.clientHeight - bcr.bottom;
+        if(overflowSize < 0){
+            this.elements.calendarContainer.style.transform = `translateY(${overflowSize}px)`;
+        }
+    }
+    #resetCalendarContainerPos = ()=>{
+        this.elements.calendarContainer.style.transform = `translateY(${0}px)`;
     }
 }
 const myElementNotExists = !customElements.get('jb-date-input');
