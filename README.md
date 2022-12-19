@@ -33,8 +33,8 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 - support `esm` import build for modern `ECMA Script` nodejs app. 
 
 Demo & Sample    
-in github: <https://javadbat.github.io/jb-date-input/>
-in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>
+in github: <https://javadbat.github.io/jb-date-input/>    
+in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>    
 
 ## instructions
 
