@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jb-date-input sample</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <h1>JB-Date-Input</h1>
+        <h2>jalali(shamcy) date input web component</h2>
+        <p>easy to use web component for date input that support both jalali and gregorian date and have good UI/UX for
+            both mobile and desktop user </p>
+        <div class="component-wrapper">
+            <jb-date-input label="تاریخ شمسی" input-type="JALALI">loading</jb-date-input>
+        </div>
+        <div class="component-wrapper">
+            <jb-date-input label="تاریخ شمسی با اعداد فارسی" input-type="JALALI" use-persian-number
+            message="کارکتر های عددی تایپ شده و تقویم به صورت فارسی خواهند بود">loading</jb-date-input>
+        </div>
+        <div class="component-wrapper gregorian">
+            <jb-date-input label="gregorian date" direction="ltr" input-type="GREGORIAN">loading</jb-date-input>
+        </div>
+        <div class="custom-style component-wrapper">
+            <jb-date-input label="با ظاهر متفاوت" input-type="JALALI" use-persian-number
+            message="به کمک css میتوانید ظاهر را تغییر دهید">loading</jb-date-input>
+        </div>
+        <div class="desc">
+            you can read more and get this package from
+            <a href="https://www.npmjs.com/package/jb-date-input" target="_blank">npm</a>
+            or
+            <a href="https://github.com/javadbat/jb-date-input" target="_blank">github</a>
+        </div>
+    </div>
+    <script src="https://unpkg.com/jb-date-input/dist/JBDateInput.umd.js"></script>
+</body>
+
+</html>
