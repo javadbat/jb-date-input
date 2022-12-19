@@ -6,7 +6,7 @@
 ![NPM License](https://img.shields.io/npm/l/jb-date-input)
 ![npm](https://img.shields.io/npm/v/jb-date-input)
 
-web component form element to get date from user
+web component date input (picker) to get date (jalali & gregorian) from user.
 
 - support jalali date as well as gregorian date
 
@@ -32,7 +32,9 @@ web component form element to get date from user
 
 - support `esm` import build for modern `ECMA Script` nodejs app. 
 
-Demo & Sample in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>
+Demo & Sample    
+in github: <https://javadbat.github.io/jb-date-input/>
+in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>
 
 ## instructions
 
@@ -230,10 +232,10 @@ body{
 ```
 #### variable list
  
-| --jb-date-input-margin                        | web-component margin default is `0 12px`                                  |
-| --jb-date-input-border-radius                 | web-component border-radius default is `16px`                             |
 | css variable name                             | description                                                               |
 | -------------                                 | -------------                                                             |
+| --jb-date-input-margin                        | web-component margin default is `0 12px`                                  |
+| --jb-date-input-border-radius                 | web-component border-radius default is `16px`                             |
 | --jb-date-input-border-color                  | border color of select in normal mode                                     |
 | --jb-date-input-border-color-focus            | border color when user focus on input                                     |
 | --jb-date-input-bgcolor                       | background color of input                                                 |
