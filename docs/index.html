@@ -11,22 +11,36 @@
 
 <body>
     <div class="page-wrapper">
-        <h1>JB-Date-Input</h1>
+        <h1>JB-DATE-INPUT</h1>
         <h2>jalali(shamcy) date input web component</h2>
-        <p>easy to use web component for date input that support both jalali and gregorian date and have good UI/UX for
+        <p>Easy to use web component for date input (jalali and gregorian) intended to have good UI/UX for
             both mobile and desktop user </p>
+            <h2>Usage</h2>
+        <p>Since jb-date-input is a web-component you can use it in pure html site and any JS framework like React, Angular, Vue,... so you have 2 way to using it: </p>
+        <ul>
+            <li>use  <a href="https://www.npmjs.com/package/jb-date-input" target="_blank">npm</a> if your app is nodejs and support it's ecosystem</li>
+            <li>add Components's script from CDN</li>
+        </ul>
+        <p>in first way you just have to install jb-date-input and import it's scripts anyway in app and then use it anywhere with simple HTML Tag 	&lt;jb-date-input	&gt;	&lt;/jb-date-input	&gt;  <a href="https://www.npmjs.com/package/jb-date-input" target="_blank">read more detail here</a></p>
+        <p>
+            in second way just add following script tag in your html and then write 	&lt;jb-date-input	&gt;	&lt;/jb-date-input	&gt; tag anywhere in your HTML file
+        </p>
+        <code>
+            &lt;script src="https://unpkg.com/jb-date-input/dist/JBDateInput.umd.js"&gt;&lt;/script&gt;
+        </code>
+        <h2>examples</h2>
         <div class="component-wrapper">
             <jb-date-input label="تاریخ شمسی" input-type="JALALI">loading</jb-date-input>
         </div>
         <div class="component-wrapper">
-            <jb-date-input label="تاریخ شمسی با اعداد فارسی" input-type="JALALI" use-persian-number
+            <jb-date-input  label="تاریخ شمسی با اعداد فارسی" input-type="JALALI" use-persian-number
             message="کارکتر های عددی تایپ شده و تقویم به صورت فارسی خواهند بود">loading</jb-date-input>
         </div>
         <div class="component-wrapper gregorian">
             <jb-date-input label="gregorian date" direction="ltr" input-type="GREGORIAN">loading</jb-date-input>
         </div>
         <div class="custom-style component-wrapper">
-            <jb-date-input label="با ظاهر متفاوت" input-type="JALALI" use-persian-number
+            <jb-date-input  label="با ظاهر متفاوت" input-type="JALALI" use-persian-number
             message="به کمک css میتوانید ظاهر را تغییر دهید">loading</jb-date-input>
         </div>
         <div class="desc">

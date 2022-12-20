@@ -2,18 +2,25 @@
 
 .page-wrapper{
     display:flex;
-    justify-content:start;
-    align-items:center;
     flex-direction:column;
     padding-top:64px;
-    width:100%;
+    width:calc(100% - 64px);
+    max-width:1200px;
+    margin: 0 auto;
     height:100vh;
     font-family: 'Vazir',tahoma, arial;
-    direction:rtl;
+    direction:ltr;
+  }
+  @media (max-width:768px) {
+    .page-wrapper{
+      text-align: center;
+      align-items:center;
+    }
   }
   .component-wrapper{
     width:500px;
     max-width: calc(100% - 64px);
+    direction: rtl;
   }
   .gregorian{
     direction:ltr
