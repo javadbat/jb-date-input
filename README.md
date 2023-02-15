@@ -3,8 +3,6 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/jb-date-input)
 [![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/master/LICENSE)
 ![NPM Downloads](https://img.shields.io/npm/dw/jb-date-input)
-![NPM License](https://img.shields.io/npm/l/jb-date-input)
-![npm](https://img.shields.io/npm/v/jb-date-input)
 
 web component date input (picker) to get date (jalali & gregorian) from user.
 
