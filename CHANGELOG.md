@@ -1,4 +1,9 @@
 #changelog
+## [3.6.0] - 2023-2-16
+### new features
+- add swipe up gesture for year selection.
+- add swipe down gesture for month selection.
+- add font-weight effect on calender title hover for better UX, so user can see they are clickable.
 ## [3.5.0] - 2022-12-14
 ### new features
 - add y overflow handler on desktop calendar picker container to swipe up when calendar was not completly on sight.
