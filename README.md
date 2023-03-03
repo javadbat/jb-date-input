@@ -57,7 +57,6 @@ import 'jb-date-input';
 ```HTML
 <jb-date-input label="date label"></jb-date-input>
 ```
-remember if you are using it in a `ltr`(left to right) direction page you must set `dir="ltr"`.
 #### using cdn
 
 beware that jb-date-input umd build do not exclude external dependancy and bundled as a standalone module, so only use this way if you dont access npm in your app.   
