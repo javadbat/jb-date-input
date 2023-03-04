@@ -39,9 +39,12 @@
     --jb-date-input-calender-wrapper-border-radius:0;
     --jb-calendar-arrow-button-border-radius:0;
   }
+  .rtl-dir{
+    direction: rtl;
+  }
   .desc{
     margin-top:16px;
-    fonst-size:0.7em;
+    font-size:0.7em;
     color:#888;
   }
   
