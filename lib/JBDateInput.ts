@@ -13,6 +13,7 @@ import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } fro
 import { JBCalendarValue } from 'jb-calendar/lib/Types';
 import { enToFaDigits, faToEnDigits } from '../../../common/js/PersianHelper';
 
+export {JBDateInputValidationItem,InputTypes,ValueTypes};
 export class JBDateInputWebComponent extends HTMLElement {
     static get formAssociated() { return true; }
     internals_?: ElementInternals;

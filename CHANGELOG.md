@@ -1,4 +1,10 @@
 #changelog
+## [3.7.2] - 2023-2-16
+### fixed
+- export some missing type from component
+## [3.7.0] - 2023-2-16
+### new features
+- update calendar to support swipe true direction in rtl pages
 ## [3.6.0] - 2023-2-16
 ### new features
 - add swipe up gesture for year selection.
