@@ -1,4 +1,7 @@
 #changelog
+## [3.7.12] - 2023-2-16
+### fixed
+- fix component problems with typescript
 ## [3.7.2] - 2023-2-16
 ### fixed
 - export some missing type from component

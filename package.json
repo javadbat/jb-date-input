@@ -28,13 +28,14 @@
     "jalali web-component",
     "jalali web component"
   ],
-  "version": "3.7.11",
+  "version": "3.7.12",
   "bugs": "https://github.com/javadbat/jb-date-input/issues",
   "license": "MIT",
   "files": [
     "LICENSE",
     "README.md",
     "lib/",
+    "lib/Types.ts",
     "dist/"
   ],
   "exports": {
