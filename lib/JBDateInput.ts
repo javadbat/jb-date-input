@@ -5,15 +5,26 @@ import 'jb-calendar';
 import { JBCalendarWebComponent } from 'jb-calendar';
 
 import './inbox-element/inbox-element';
+// eslint-disable-next-line no-duplicate-imports
+import {JBDDateInputInboxElementWebComponent} from './inbox-element/inbox-element';
 //import cloneDeep from 'lodash.clonedeep';
 
 import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
-import { JBCalendarValue } from 'jb-calendar/lib/Types';
+// import { JBCalendarValue } from 'jb-calendar/lib/Types';
 import { enToFaDigits, faToEnDigits } from '../../../common/js/PersianHelper';
 
-export {JBDateInputValidationItem,InputTypes,ValueTypes};
+export {JBDateInputValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject,JBDDateInputInboxElementWebComponent};
+type JBCalendarValue = {
+    day: number | null;
+    month: number | null;
+    year: number | null;
+}
+if(HTMLElement== undefined){
+    //in case of server render or old browser
+    console.error('you cant render web component on a server side');
+}
 export class JBDateInputWebComponent extends HTMLElement {
     static get formAssociated() { return true; }
     internals_?: ElementInternals;

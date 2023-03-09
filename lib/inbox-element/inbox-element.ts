@@ -1,6 +1,6 @@
 import HTML from './inbox-element.html';
 import CSS from './inbox-element.scss';
-class JBDDateInputInboxElementWebComponent extends HTMLElement {
+export class JBDDateInputInboxElementWebComponent extends HTMLElement {
 
 
     constructor() {
