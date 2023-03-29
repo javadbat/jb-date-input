@@ -286,7 +286,9 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.elements.input.addEventListener('keyup', this.onInputKeyup.bind(this),{passive:true});
         this.elements.input.addEventListener('keydown', this.onInputKeydown.bind(this));
         this.elements.input.addEventListener('beforeinput', this.onInputBeforeInput.bind(this));
-        this.elements.calendarTriggerButton.addEventListener('click', this.onCalendarButtonClicked.bind(this));
+        this.elements.calendarTriggerButton.addEventListener('focus', this.onCalendarButtonFocused.bind(this));
+        this.elements.calendarTriggerButton.addEventListener('blur', this.onCalendarButtonBlur.bind(this));
+        this.elements.calendarTriggerButton.addEventListener('click', this.onCalendarButtonClick.bind(this));
         this.elements.calendar.addEventListener('select', (e) => this.onCalendarSelect(e as CustomEvent));
         this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
         this.elements.calendar.addEventListener('blur', this.onCalendarBlur.bind(this),{passive:true});
@@ -775,7 +777,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
         return false;
     }
-    onInputFocus() {
+    onInputFocus(e:FocusEvent) {
         this.#lastInputStringValue = this.#sInputValue;
         this.focus();
         document.addEventListener('selectionchange', this.handleCarretPosOnInputFocus.bind(this));
@@ -783,7 +785,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     onInputBlur(e: FocusEvent) {
         document.removeEventListener('selectionchange', this.handleCarretPosOnInputFocus.bind(this));
         const focusedElement = e.relatedTarget;
-        if (focusedElement !== this.elements.calendar) {
+        if (focusedElement !== this.elements.calendar && focusedElement !== this.elements.calendarTriggerButton) {
             this.showCalendar = false;
         }
         const inputText = this.#sInputValue;
@@ -796,7 +798,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     onCalendarBlur(e: FocusEvent) {
         const focusedElement = e.relatedTarget;
-        if (focusedElement !== this.elements.input) {
+        if (focusedElement !== this.elements.input && focusedElement !== this.elements.calendarTriggerButton) {
             this.showCalendar = false;
         }
     }
@@ -954,8 +956,32 @@ export class JBDateInputWebComponent extends HTMLElement {
         };
         this.updateCalendarView();
     }
-    onCalendarButtonClicked() {
-        this.showCalendar = !this.showCalendar;
+    #isCalendarButtonClickEventIsAfterFocusEvent = false;
+    onCalendarButtonFocused(e:FocusEvent) {
+        const prevFocused = e.relatedTarget;
+        if(this.showCalendar && prevFocused && [this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(prevFocused)){
+            //if calendar was displayed but user click on icon we hide it here
+            (prevFocused as HTMLInputElement).focus();
+            this.showCalendar = false;
+        }else{
+            // if user focus on calendar button from outside of calendar area we show calendar
+            this.#isCalendarButtonClickEventIsAfterFocusEvent = true;
+            this.showCalendar = true;
+        }
+
+    }
+    onCalendarButtonBlur(e:FocusEvent) {
+        if(![this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(e.relatedTarget!)){
+            this.showCalendar = false;
+        }
+    }
+    onCalendarButtonClick(){
+        const focusedElement = this.shadowRoot?.activeElement;
+        if(focusedElement && !this.#isCalendarButtonClickEventIsAfterFocusEvent && focusedElement == this.elements.calendarTriggerButton){
+            //check if this click is event exactly after focus or not if its after focus we just pass but if its not and its a second click we close menu or reopen menu if closed before
+            this.showCalendar = !this.showCalendar;
+        }
+        this.#isCalendarButtonClickEventIsAfterFocusEvent = false;
     }
     onCalendarSelect(e: CustomEvent) {
         const target = e.target as JBCalendarWebComponent;
@@ -993,7 +1019,6 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     #fixCalendarContainerPos = ()=> {
         const bcr = this.elements.calendarContainer.getBoundingClientRect();
-        console.log(bcr);
         const overflowSize = document.body.clientHeight - bcr.bottom;
         if(overflowSize < 0){
             this.elements.calendarContainer.style.transform = `translateY(${overflowSize}px)`;

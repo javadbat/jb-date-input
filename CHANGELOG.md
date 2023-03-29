@@ -1,4 +1,7 @@
 #changelog
+## [3.7.13] - 2023-2-16
+### fixed
+- fix calendar open and close problem #13 on calendar button clicked
 ## [3.7.12] - 2023-2-16
 ### fixed
 - fix component problems with typescript
