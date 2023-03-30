@@ -28,7 +28,9 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`
 
-- support `esm` import build for modern `ECMA Script` nodejs app. 
+- support `esm` import build for modern `ECMA Script` nodejs app.
+
+- compatible with native HTML `form` element to send data to server.
 
 Demo & Sample    
 in github: <https://javadbat.github.io/jb-date-input/>    

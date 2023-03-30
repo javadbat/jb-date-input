@@ -1,4 +1,7 @@
 #changelog
+## [3.8.0] - 2023-3-30
+### new features
+- make component compatible with native form element value getter. 
 ## [3.7.13] - 2023-3-30
 ### fixed
 - fix calendar open and close problem #13 on calendar button clicked

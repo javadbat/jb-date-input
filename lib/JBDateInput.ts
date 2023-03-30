@@ -26,7 +26,7 @@ if(HTMLElement== undefined){
     console.error('you cant render web component on a server side');
 }
 export class JBDateInputWebComponent extends HTMLElement {
-    static get formAssociated() { return true; }
+    static formAssociated = true;
     internals_?: ElementInternals;
     elements!: ElementsObject;
     #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("value-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
@@ -45,16 +45,23 @@ export class JBDateInputWebComponent extends HTMLElement {
     required = false;
     DefaultValidationErrorMessage = "مقدار وارد شده نا معتبر است"
     #valueObject: JBDateInputValueObject = getEmptyValueObject();
+    get name() { return this.getAttribute('name'); }
+    get form() { return this.internals_!.form; }
     get value(): string {
         const value = this.getDateValue();
         return value;
     }
     set value(value: string) {
-        if (this.internals_ && typeof this.internals_.setFormValue == "function") {
-            this.internals_.setFormValue(value);
-        }
+        
         this.setDateValue(value);
         this.updateinputTextFromValue();
+        this.#updateFormAssossicatedValue();
+    }
+    #updateFormAssossicatedValue():void{
+        //in html form we need to get date input value in native way this function update and set value of the input so form can get it when needed
+        if (this.internals_ && typeof this.internals_.setFormValue == "function") {
+            this.internals_.setFormValue(this.value);
+        }
     }
     get inputValue() {
         return this.#inputValue;
@@ -609,6 +616,7 @@ export class JBDateInputWebComponent extends HTMLElement {
                 this.setDateValueFromTimeStamp(value);
                 break;
         }
+        this.#updateFormAssossicatedValue();
 
     }
     setValueObjNull() {
@@ -679,6 +687,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth);
         this.#valueObject = result;
         this.updateCalendarView();
+        this.#updateFormAssossicatedValue();
     }
     updateinputTextFromValue() {
         let str = this.inputFormat;
