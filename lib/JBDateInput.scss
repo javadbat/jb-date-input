@@ -4,7 +4,7 @@
 }
 .jb-date-input-web-component {
     width: 100%;
-    margin: var(--jb-date-input-margin, 12px 0);
+    margin: var(--jb-date-input-margin, 0 0);
     position: relative;
     &:focus-visible{
         outline: none;
@@ -44,7 +44,7 @@
 
         input {
             border: none;
-            width: calc(100% - 36px);
+            width: 100%;
             box-sizing: border-box;
             height: 100%;
             background-color: transparent;

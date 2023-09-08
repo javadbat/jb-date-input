@@ -234,7 +234,7 @@ body{
  
 | css variable name                             | description                                                               |
 | -------------                                 | -------------                                                             |
-| --jb-date-input-margin                        | web-component margin default is `0 12px`                                  |
+| --jb-date-input-margin                        | web-component margin default is `0 0`                                  |
 | --jb-date-input-border-radius                 | web-component border-radius default is `16px`                             |
 | --jb-date-input-border-color                  | border color of select in normal mode                                     |
 | --jb-date-input-border-color-focus            | border color when user focus on input                                     |

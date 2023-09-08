@@ -1,4 +1,7 @@
 #changelog
+## [3.8.1] - 2023-9-8
+### fixed
+- fix useless margin and size reduction
 ## [3.8.0] - 2023-3-30
 ### new features
 - make component compatible with native form element value getter. 
