@@ -51,17 +51,21 @@ export class JBDateInputWebComponent extends HTMLElement {
         const value = this.getDateValue();
         return value;
     }
-    set value(value: string) {
-        
-        this.setDateValue(value);
+    set value(value: string | Date) {
+        this.#setDateValue(value);
         this.updateinputTextFromValue();
-        this.#updateFormAssossicatedValue();
     }
     #updateFormAssossicatedValue():void{
         //in html form we need to get date input value in native way this function update and set value of the input so form can get it when needed
         if (this.internals_ && typeof this.internals_.setFormValue == "function") {
             this.internals_.setFormValue(this.value);
         }
+    }
+    /**
+     * @description return date value if value valid and return null if inputed value is not valid
+     */
+    get valueInDate():Date|null{
+        return this.#dateFactory.getDateValueFromValueObject(this.#valueObject);
     }
     get inputValue() {
         return this.#inputValue;
@@ -602,22 +606,26 @@ export class JBDateInputWebComponent extends HTMLElement {
      * @return {String} value base on format and date type
      */
     getDateValue(type: ValueTypes = this.valueType): string {
-        return this.#dateFactory.getDateValueFromValueObject(this.#valueObject, type);
+        return this.#dateFactory.getDateValueStringFromValueObject(this.#valueObject, type);
     }
-
-    setDateValue(value: string) {
-        //when user change value this function called and update inner value object base on user value
-        switch (this.#dateFactory.valueType) {
-            case ValueTypes.gregorian:
-            case ValueTypes.jalali:
-                this.setDateValueFromString(value);
-                break;
-            case ValueTypes.timestamp:
-                this.setDateValueFromTimeStamp(value);
-                break;
+    /**
+     * when user change value this function called and update inner value object base on user value
+     */
+    #setDateValue(value: string | Date) {
+        if(typeof value == "string"){
+            switch (this.#dateFactory.valueType) {
+                case ValueTypes.gregorian:
+                case ValueTypes.jalali:
+                    this.#setDateValueFromString(value);
+                    break;
+                case ValueTypes.timestamp:
+                    this.#setDateValueFromTimeStamp(value);
+                    break;
+            }
+        }else if(value instanceof Date){
+            this.#setDateValueFromDate(value);
         }
         this.#updateFormAssossicatedValue();
-
     }
     setValueObjNull() {
         // mean we reset calendar value and set it to null
@@ -639,17 +647,26 @@ export class JBDateInputWebComponent extends HTMLElement {
             this.elements.calendar.data.selectedMonth = value.month;
         }
     }
-
-    setDateValueFromTimeStamp(value: string) {
+    /**
+     * @description set date value from javascript Date
+     */
+    #setDateValueFromDate(value:Date){
+        const valueObject = this.#dateFactory.getDateObjectValueFromDateValue(value);
+        this.#valueObject = valueObject;
+        this.updateCalendarView();
+    }
+    /**
+     * @description set date value from timestamp base on valueType
+     */
+    #setDateValueFromTimeStamp(value: string) {
         const timeStamp = parseInt(value);
         this.#valueObject = this.#dateFactory.getDateValueObjectFromTimeStamp(timeStamp);
         this.updateCalendarView();
     }
     /**
-     * set date value from string base on valueType
-     * @param {string} value 
+     * @description set date value from string base on valueType
      */
-    setDateValueFromString(value: string) {
+    #setDateValueFromString(value: string) {
         const dateInObject = this.#dateFactory.getDateObjectValueBaseOnFormat(value);
 
         if (dateInObject.year && dateInObject.month && dateInObject.day) {
@@ -918,7 +935,7 @@ export class JBDateInputWebComponent extends HTMLElement {
 
         if (typeof validation.validator == "function") {
             const valueObject = this.getValueObjectFromInputText(text);
-            const valueText = this.#dateFactory.getDateValueFromValueObject(valueObject);
+            const valueText = this.#dateFactory.getDateValueStringFromValueObject(valueObject);
             // we cant use this.#valueObj becuase in some scenario its not updated
             testRes = validation.validator(text, valueObject, valueText);
         }

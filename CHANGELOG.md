@@ -1,4 +1,7 @@
 #changelog
+## [3.9.0] - 2023-10-20
+### new features
+- add `Date` value support as a value input and output 
 ## [3.8.1] - 2023-9-8
 ### fixed
 - fix useless margin and size reduction

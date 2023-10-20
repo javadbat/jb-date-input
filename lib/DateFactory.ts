@@ -1,8 +1,8 @@
 
 import { DateInObject, DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes } from './Types';
 import { getEmptyValueObject } from './Helpers';
-import {getYear, getMonth, getTime as getTimeStamp, getUnixTime as getTimeStampInSecond, isEqual, isLeapYear, getDate} from 'date-fns';
-import {newDate,isLeapYear as isJalaliLeapYear,isAfter,isBefore,getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate} from 'date-fns-jalali';
+import { getYear, getMonth, getTime as getTimeStamp, getUnixTime as getTimeStampInSecond, isEqual, isLeapYear, getDate } from 'date-fns';
+import { newDate, isLeapYear as isJalaliLeapYear, isAfter, isBefore, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate } from 'date-fns-jalali';
 
 
 export type DateFactoryConstructorArg = {
@@ -34,8 +34,8 @@ export class DateFactory {
     get nicheNumbers() {
         return this.#nicheNumbers;
     }
-    get yearOnEmptyBaseOnValueType(){
-        if(this.#valueType == ValueTypes.jalali){
+    get yearOnEmptyBaseOnValueType() {
+        if (this.#valueType == ValueTypes.jalali) {
             return this.#nicheNumbers.calendarYearOnEmpty.jalali;
         }
         return this.#nicheNumbers.calendarYearOnEmpty.gregorian;
@@ -104,7 +104,17 @@ export class DateFactory {
         }
         return resultDate;
     }
-    getDateValueFromValueObject(valueObject: JBDateInputValueObject, type = this.valueType): string {
+    getDateValueFromValueObject(valueObject: JBDateInputValueObject):Date | null{
+        if(valueObject.gregorian.year && valueObject.gregorian.month && valueObject.gregorian.day){
+            const date = new Date(valueObject.gregorian.year,valueObject.gregorian.month,valueObject.gregorian.day);
+            return date;
+        }
+        return null;
+    }
+    /**
+     * @description use when user want component value and convert valueObject to user formatted value string base on format and value type
+     */
+    getDateValueStringFromValueObject(valueObject: JBDateInputValueObject, type = this.valueType): string {
         //this function convert inputed date to expected format base on valueType
         const emptyYearString = '0000';
         const emptyMonthString = '00';
@@ -136,7 +146,7 @@ export class DateFactory {
                 case 'JALALI':
                     return getJalaliValue();
                 case 'TIME_STAMP':
-                    if(valueObject.timeStamp){
+                    if (valueObject.timeStamp) {
                         return valueObject.timeStamp.toString();
                     }
             }
@@ -223,9 +233,9 @@ export class DateFactory {
         }
         if (result.isValid && jalaliMonth == 12) {
             //if everything was ok then we check for leap year
-            if (jalaliMonth == 12 && jalaliDay == 30){
+            if (jalaliMonth == 12 && jalaliDay == 30) {
                 const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay);
-                if(!isJalaliLeapYear(date)){
+                if (!isJalaliLeapYear(date)) {
                     result.isValid = false;
                     result.error = "INVALID_DAY_FOR_LEAP";
                 }
@@ -304,47 +314,53 @@ export class DateFactory {
         return result;
 
     }
-    getDateValueObjectBaseOnInputType(year:number,month:number,day:number,oldYear:number|null, oldMonth:number|null): JBDateInputValueObject{
-        if(this.#inputType == InputTypes.gregorian){
-            return this.#getDateValueFromGregorian(year,month,day,oldYear,oldMonth);
+    getDateValueObjectBaseOnInputType(year: number, month: number, day: number, oldYear: number | null, oldMonth: number | null): JBDateInputValueObject {
+        if (this.#inputType == InputTypes.gregorian) {
+            return this.#getDateValueFromGregorian(year, month, day, oldYear, oldMonth);
         }
-        if(this.#inputType == InputTypes.jalali){
-            return this.#getDateValueFromJalali(year,month,day,oldYear,oldMonth);
-        }
-        console.error("INVALID_INPUT_TYPE");
-        return getEmptyValueObject();
-    }
-    getDateValueObjectBaseOnValueType(year:number,month:number,day:number,oldYear:number|null, oldMonth:number|null): JBDateInputValueObject{
-        if(this.#valueType == ValueTypes.gregorian){
-            return this.#getDateValueFromGregorian(year,month,day,oldYear,oldMonth);
-        }
-        if(this.#valueType == ValueTypes.jalali){
-            return this.#getDateValueFromJalali(year,month,day,oldYear,oldMonth);
-        }
-        if(this.#valueType == ValueTypes.timestamp){
-            return this.#getDateValueFromGregorian(year,month,day,oldYear,oldMonth);
+        if (this.#inputType == InputTypes.jalali) {
+            return this.#getDateValueFromJalali(year, month, day, oldYear, oldMonth);
         }
         console.error("INVALID_INPUT_TYPE");
         return getEmptyValueObject();
     }
-    getDateValueObjectFromTimeStamp(timestamp:number): JBDateInputValueObject{
+    getDateValueObjectBaseOnValueType(year: number, month: number, day: number, oldYear: number | null, oldMonth: number | null): JBDateInputValueObject {
+        if (this.#valueType == ValueTypes.gregorian) {
+            return this.#getDateValueFromGregorian(year, month, day, oldYear, oldMonth);
+        }
+        if (this.#valueType == ValueTypes.jalali) {
+            return this.#getDateValueFromJalali(year, month, day, oldYear, oldMonth);
+        }
+        if (this.#valueType == ValueTypes.timestamp) {
+            return this.#getDateValueFromGregorian(year, month, day, oldYear, oldMonth);
+        }
+        console.error("INVALID_INPUT_TYPE");
+        return getEmptyValueObject();
+    }
+    getDateValueObjectFromTimeStamp(timestamp: number): JBDateInputValueObject {
         const date = new Date(timestamp);
-        const result:JBDateInputValueObject = {
+        return this.getDateObjectValueFromDateValue(date);
+    }
+    /**
+  * @description this function return date object base on javascript Date type
+  */
+    getDateObjectValueFromDateValue(inputValue: Date): JBDateInputValueObject {
+        const result: JBDateInputValueObject = {
             gregorian: {
-                year: getYear(date),
-                month: getMonth(date) + 1,
-                day: getDate(date)
+                year: getYear(inputValue),
+                month: getMonth(inputValue) + 1,
+                day: getDate(inputValue)
             },
             jalali: {
-                year: getJalaliYear(date),
-                month: getJalaliMonth(date) + 1,
-                day: getJalaliDate(date)
+                year: getJalaliYear(inputValue),
+                month: getJalaliMonth(inputValue) + 1,
+                day: getJalaliDate(inputValue)
             },
-            timeStamp : getTimeStamp(date),
+            timeStamp: getTimeStamp(inputValue),
         };
         return result;
     }
-    #getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number,oldGregorianYear:number|null, oldGregorianMonth:number|null): JBDateInputValueObject {
+    #getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number, oldGregorianYear: number | null, oldGregorianMonth: number | null): JBDateInputValueObject {
 
         const valueObject: JBDateInputValueObject = getEmptyValueObject();
         const dateValidationResult = DateFactory.checkGregorianDateValidation(gregorianYear, gregorianMonth, gregorianDay);
@@ -396,7 +412,7 @@ export class DateFactory {
         valueObject.timeStamp = getTimeStamp(date);
         return valueObject;
     }
-    #getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number, oldJalaliYear:number|null, oldJalaliMonth:number|null): JBDateInputValueObject {
+    #getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number, oldJalaliYear: number | null, oldJalaliMonth: number | null): JBDateInputValueObject {
         const valueObject = getEmptyValueObject();
         const dateValidationResult = DateFactory.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
         if (!dateValidationResult.isValid) {
@@ -436,31 +452,33 @@ export class DateFactory {
         const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay);
         valueObject.gregorian = {
             year: getYear(date),
-            month: getMonth(date)+1,
+            month: getMonth(date) + 1,
             day: getDate(date)
         };
         valueObject.jalali = {
             year: getJalaliYear(date),
-            month: getJalaliMonth(date)+1,
+            month: getJalaliMonth(date) + 1,
             day: getJalaliDate(date)
         };
         valueObject.timeStamp = getTimeStamp(date);
         return valueObject;
     }
-    getDateObjectValueBaseOnFormat(valueString:string,format:string = this.#valueFormat):DateInObject{
+    getDateObjectValueBaseOnFormat(valueString: string, format: string = this.#valueFormat): DateInObject {
         const res = DateFactory.#executeFormatAndExtractValue(valueString, format);
-        const dateInObject:DateInObject = {
-            year:null,
-            month:null,
-            day:null,
+        const dateInObject: DateInObject = {
+            year: null,
+            month: null,
+            day: null,
         };
-        if(res && res.groups){
-            dateInObject.year = parseInt(res.groups.year) ;
-            dateInObject.month = parseInt(res.groups.month) ;
-            dateInObject.day = parseInt(res.groups.day) ;
+        if (res && res.groups) {
+            dateInObject.year = parseInt(res.groups.year);
+            dateInObject.month = parseInt(res.groups.month);
+            dateInObject.day = parseInt(res.groups.day);
         }
         return dateInObject;
     }
+
+
     static #executeFormatAndExtractValue(value: string, format: string) {
         const regexString = format.replace('YYYY', '(?<year>[\\d]{4})').replace('MM', '(?<month>[\\d]{2})').replace('DD', '(?<day>[\\d]{2})')
             .replace('HH', '(?<hour>[\\d]{2})').replace('mm', '(?<minute>[\\d]{2})').replace('ss', '(?<second>[\\d]{2})').replace('SSS', '(?<miliSecond>[\\d]{3})')
@@ -469,11 +487,11 @@ export class DateFactory {
         const res = regex.exec(value);
         return res;
     }
-    static getDate(year: number, month: number, day: number, inputType:InputTypes):Date{
-        if(inputType == InputTypes.jalali){
-            return DateFactory.getDateFromJalali(year,month,day);
+    static getDate(year: number, month: number, day: number, inputType: InputTypes): Date {
+        if (inputType == InputTypes.jalali) {
+            return DateFactory.getDateFromJalali(year, month, day);
         }
-        return DateFactory.getDateFromGregorian(year,month,day);
+        return DateFactory.getDateFromGregorian(year, month, day);
     }
     static getDateFromGregorian(year: number, month: number, day: number): Date {
         return new Date(year, month - 1, day);
@@ -500,8 +518,8 @@ export class DateFactory {
         };
         const date = DateFactory.getDate(year, month, day, dateInputType);
         if (dateRestrictions.min) {
-            
-            const minValid = isAfter(date,dateRestrictions.min) || isEqual(date, dateRestrictions.min);
+
+            const minValid = isAfter(date, dateRestrictions.min) || isEqual(date, dateRestrictions.min);
             if (!minValid) {
                 result.min = {
                     isValid: false,
@@ -510,7 +528,7 @@ export class DateFactory {
             }
         }
         if (dateRestrictions.max) {
-            const maxValid = isBefore(date,dateRestrictions.max) || isEqual(date, dateRestrictions.max);
+            const maxValid = isBefore(date, dateRestrictions.max) || isEqual(date, dateRestrictions.max);
             if (!maxValid) {
                 result.max = {
                     isValid: false,

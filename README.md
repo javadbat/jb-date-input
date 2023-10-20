@@ -145,6 +145,12 @@ document.querySelector('jb-date-input').addEventListener('init',this.onCalendarE
 
 //when calendar init all property and function and dom created and bind successully
 document.querySelector('jb-date-input').addEventListener('load',this.onCalendarElementLoaded);
+document.querySelector('jb-date-input').addEventListener('change',(e)=>{
+    //value in string
+    console.log(e.target.value)
+    //value in js Date object
+    console.log(e.target.valueInDate)
+});
 ```
 
 ## date input type
@@ -180,6 +186,19 @@ document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'G
 //set default year and month for jalali input-type
 document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'JALALI');
 ```
+## get value
+you can get the selected date by using following method:
+```javascript
+    // return string value base on your provided format and value type
+    document.querySelector('jb-date-input').value   
+
+    // return javascript Date value (or null)
+    document.querySelector('jb-date-input').valueInDate
+
+```
+note that providing & getting value with `Date` is faster and more perfomant than using value string
+
+
 ## show persian number
 if you want to show persian number instead of English number char you just have to set `use-persian-number` attribute like this:
 ```javascript
@@ -262,6 +281,7 @@ body{
 | --jb-date-input-input-margin                  | input margin default is `4px 0`                                           |
 | --jb-date-input-box-shadow                    | input box-shadow default is none                                          |
 | --jb-date-input-box-shadow-focus              | input box-shadow when input is focused default is none                    |
+| --jb-date-input-calendar-trigger-display      | set it no none to hide calendar icon                                      |
 
 
 if you want to change opened date picker style please read [jb-calendar](https://github.com/javadbat/jb-calendar) readme file  

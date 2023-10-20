@@ -70,7 +70,7 @@
         }
 
         .calendar-trigger {
-            display: block;
+            display: var(--jb-date-input-calendar-trigger-display, block);
             width:  var(--jb-date-input-calendar-trigger-width, 28px);
             height: var(--jb-date-input-calendar-trigger-height, 28px);
             margin: 4px 0;
