@@ -86,15 +86,16 @@ you can change format by format attribute:
 
 ```
 
-## valueType
+## Value Type
 
 we have 3 value type:
 
 ```html
-    <jb-date-input value="2020-08-01T14:05:39.530Z" valueType="GREGORIAN"/>
-    <jb-date-input value="1596291030322" valueType="TIME_STAMP"/>
-    <jb-date-input value="1399-05-01T12:05:39.530Z" valueType="JALALI"/>
+    <jb-date-input value="2020-08-01T14:05:39.530Z" value-type="GREGORIAN"/>
+    <jb-date-input value="1596291030322" value-type="TIME_STAMP"/>
+    <jb-date-input value="1399-05-01T12:05:39.530Z" value-type="JALALI"/>
 ```
+by setting value type you can tell component what type of value you provideing to it and expecting from it. remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
 
 ## min and max date limit
 
