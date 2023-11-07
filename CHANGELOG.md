@@ -1,4 +1,7 @@
 #changelog
+## [3.9.2] - 2023-11-7
+### fixed
+- fix get Date value directly
 ## [3.9.0] - 2023-10-20
 ### new features
 - add `Date` value support as a value input and output 

@@ -106,7 +106,7 @@ export class DateFactory {
     }
     getDateValueFromValueObject(valueObject: JBDateInputValueObject):Date | null{
         if(valueObject.gregorian.year && valueObject.gregorian.month && valueObject.gregorian.day){
-            const date = new Date(valueObject.gregorian.year,valueObject.gregorian.month,valueObject.gregorian.day);
+            const date = new Date(valueObject.gregorian.year,valueObject.gregorian.month -1 ,valueObject.gregorian.day);
             return date;
         }
         return null;
