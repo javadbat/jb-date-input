@@ -25,6 +25,7 @@ if(HTMLElement== undefined){
     //in case of server render or old browser
     console.error('you cant render web component on a server side');
 }
+const emptyInputValueString = '    /  /  ';
 export class JBDateInputWebComponent extends HTMLElement {
     static formAssociated = true;
     internals_?: ElementInternals;
@@ -53,7 +54,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     set value(value: string | Date) {
         this.#setDateValue(value);
-        this.updateinputTextFromValue();
+        this.#updateinputTextFromValue();
     }
     #updateFormAssossicatedValue():void{
         //in html form we need to get date input value in native way this function update and set value of the input so form can get it when needed
@@ -70,6 +71,19 @@ export class JBDateInputWebComponent extends HTMLElement {
     get inputValue() {
         return this.#inputValue;
     }
+    #placeholder:string|null = null;
+    get placeholder(){
+        return this.#placeholder;
+    }
+    set placeholder(value:string | null){
+        this.#placeholder = value;
+        if(value !== null){
+            this.elements.input.placeholder = value;
+        }else{
+            this.elements.input.placeholder= "";
+        }
+        this.#updateinputTextFromValue();
+    }
     //standarded input value
     get #sInputValue():string{
         let value = this.#inputValue;
@@ -81,7 +95,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     get #inputValue() {
         return this.elements!.input.value;
     }
-    set #inputValue(value) {
+    set #inputValue(value:string) {
         this.elements!.input.value = value;
     }
     get showCalendar() {
@@ -230,7 +244,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     set usePersianDigits(value) {
         this.#usePersianDigits = value;
-        this.updateinputTextFromValue();
+        this.#updateinputTextFromValue();
     }
     constructor() {
         super();
@@ -309,7 +323,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     initProp() {
         this.setValueObjNull();
-        this.#inputValue = '    /  /  ';
+        this.#inputValue = emptyInputValueString;
         this.value = this.getAttribute('value') || '';
         this.validation = {
             isValid: null,
@@ -319,7 +333,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.callOnInitEvent();
     }
     static get observedAttributes() {
-        return ['label', 'value-type', 'message', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'use-persian-number'];
+        return ['label', 'value-type', 'message', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'use-persian-number','placeholder'];
     }
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         // do something when an attribute has changed
@@ -351,10 +365,10 @@ export class JBDateInputWebComponent extends HTMLElement {
                 this.setFormat(value);
                 break;
             case 'min':
-                this.setMinDate(value);
+                this.#setMinDate(value);
                 break;
             case 'max':
-                this.setMaxDate(value);
+                this.#setMaxDate(value);
                 break;
             case 'required':
                 if (value === "" || value == "true") {
@@ -380,6 +394,9 @@ export class JBDateInputWebComponent extends HTMLElement {
                     this.elements.calendar.usePersianNumber = false;
                 }
                 break;
+            case 'placeholder':
+                this.placeholder = value;
+                break;
         }
 
     }
@@ -389,14 +406,14 @@ export class JBDateInputWebComponent extends HTMLElement {
         //if we have min and max  date setted before format set we set them again so it works
         const minDate = this.getAttribute('min');
         if (minDate) {
-            this.setMinDate(minDate);
+            this.#setMinDate(minDate);
         }
         const maxDate = this.getAttribute('max');
         if (maxDate) {
-            this.setMaxDate(maxDate);
+            this.#setMaxDate(maxDate);
         }
     }
-    setMinDate(dateString: string) {
+    #setMinDate(dateString: string) {
         let minDate: Date | null = null;
         //create min date base on input value type
         minDate = this.#dateFactory.getDateFromValueDateString(dateString);
@@ -410,7 +427,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
 
     }
-    setMaxDate(dateString: string) {
+    #setMaxDate(dateString: string) {
         let maxDate: Date | null = null;
         //create max date base on input value type
         maxDate = this.#dateFactory.getDateFromValueDateString(dateString);
@@ -462,6 +479,11 @@ export class JBDateInputWebComponent extends HTMLElement {
         const baseCarretPos = inputSelecteionStart;
         const inputedString: string | null = e.data;
         if (inputedString) {
+            //insert mode
+            //check if we are in placeholder mode we update or input text to standard mode
+            if(this.placeholder && this.#inputValue === ""){
+                this.#inputValue = emptyInputValueString;
+            }
             // make string something like 1373/06/31 from dsd۱۳۷۳/06/31rer
             const standardString = this.standardString(inputedString);
             standardString.split('').forEach((inputedChar, i) => {
@@ -502,15 +524,21 @@ export class JBDateInputWebComponent extends HTMLElement {
             e.preventDefault();
         }
         if (e.inputType == 'deleteContentBackward' || e.inputType == 'deleteContentForward' || e.inputType == 'delete' || e.inputType == 'deleteByCut' || e.inputType == 'deleteByDrag') {
+            //delete mode
             const inputSelectionEnd = (e.target as HTMLInputElement).selectionEnd!;
             let d= 0;
             if(e.inputType == 'deleteContentBackward'){
+                //backspace delete
                 d = -1;
             }
             for(let i=inputSelecteionStart; i<=inputSelectionEnd; i++){
                 this.inputChar(' ', i+d);
             }
             this.elements.input.setSelectionRange(inputSelecteionStart +d, inputSelecteionStart +d);
+            //show placeholder if input were empty
+            if(this.placeholder && this.#inputValue == emptyInputValueString){
+                this.#inputValue = "";
+            }
             e.preventDefault();
         }
     }
@@ -583,22 +611,22 @@ export class JBDateInputWebComponent extends HTMLElement {
         const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
         const currentMonth = this.monthValue || 1;
         const currentDay = this.dayValue || 1;
-        this.setDateValueFromNumbers(currentYear + interval, currentMonth, currentDay);
-        this.updateinputTextFromValue();
+        this.#setDateValueFromNumbers(currentYear + interval, currentMonth, currentDay);
+        this.#updateinputTextFromValue();
     }
     addMonth(interval: number) {
         const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
         const currentMonth = this.monthValue || 1;
         const currentDay = this.dayValue || 1;
-        this.setDateValueFromNumbers(currentYear, currentMonth + interval, currentDay);
-        this.updateinputTextFromValue();
+        this.#setDateValueFromNumbers(currentYear, currentMonth + interval, currentDay);
+        this.#updateinputTextFromValue();
     }
     addDay(interval: number) {
         const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
         const currentMonth = this.monthValue || 1;
         const currentDay = this.dayValue || 1;
-        this.setDateValueFromNumbers(currentYear, currentMonth, currentDay + interval);
-        this.updateinputTextFromValue();
+        this.#setDateValueFromNumbers(currentYear, currentMonth, currentDay + interval);
+        this.#updateinputTextFromValue();
     }
     /**
      * will convert current valueObject to expected value string
@@ -670,7 +698,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         const dateInObject = this.#dateFactory.getDateObjectValueBaseOnFormat(value);
 
         if (dateInObject.year && dateInObject.month && dateInObject.day) {
-            this.setDateValueFromNumbers(dateInObject.year, dateInObject.month, dateInObject.day);
+            this.#setDateValueFromNumbers(dateInObject.year, dateInObject.month, dateInObject.day);
         } else {
             if (value !== null && value !== undefined && value !== '') {
                 console.error('your inputed Date doest match defualt or your specified Format');
@@ -685,7 +713,7 @@ export class JBDateInputWebComponent extends HTMLElement {
      * @param {number} month jalali or gregorian month
      * @param {number} day jalali or gregorian day
      */
-    setDateValueFromNumbers(year: number, month: number, day: number) {
+    #setDateValueFromNumbers(year: number, month: number, day: number) {
         const prevYear = this.yearValue;
         const prevMonth = this.monthValue;
         const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnValueType(year, month, day, prevYear, prevMonth);
@@ -698,7 +726,7 @@ export class JBDateInputWebComponent extends HTMLElement {
      * @param {number} month jalali or gregorian month
      * @param {number} day jalali or gregorian day
      */
-    setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number) {
+    #setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number) {
         const prevYear = this.yearBaseOnInputType;
         const prevMonth = this.monthBaseOnInputType;
         const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth);
@@ -706,9 +734,15 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.updateCalendarView();
         this.#updateFormAssossicatedValue();
     }
-    updateinputTextFromValue() {
-        let str = this.inputFormat;
+    #updateinputTextFromValue() {
         const { year, month, day } = this.inputType == InputTypes.jalali ? this.#valueObject.jalali : this.#valueObject.gregorian;
+        if(this.placeholder && !(year && month && day)){
+            //if we have placeholder and inputed value were all null we show placeholder until user input some value
+            this.#inputValue = "";
+            return;
+        }
+        //
+        let str = this.inputFormat;
         let yearString = '    ', monthString='  ', dayString='  ';
         if (year != null && !isNaN(year)) {
             if (year < 10) {
@@ -760,7 +794,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     updateValueObjFromInput(inputString: string) {
         const res = this.#inputRegex.exec(inputString);
         if (res && res.groups) {
-            this.setDateValueFromNumberBaseOnInputType(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
+            this.#setDateValueFromNumberBaseOnInputType(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
         }
     }
     focus() {
@@ -1013,8 +1047,8 @@ export class JBDateInputWebComponent extends HTMLElement {
         const target = e.target as JBCalendarWebComponent;
         const { year, month, day } = target.value;
         if (year && month && day) {
-            this.setDateValueFromNumberBaseOnInputType(year, month, day);
-            this.updateinputTextFromValue();
+            this.#setDateValueFromNumberBaseOnInputType(year, month, day);
+            this.#updateinputTextFromValue();
             this.showCalendar = false;
             this.callOnDateSelect();
             this.callOnChange();
@@ -1028,7 +1062,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     onInputTypeChange() {
         this.elements.calendar.inputType = this.inputType;
-        this.updateinputTextFromValue();
+        this.#updateinputTextFromValue();
     }
     /**
      * set opend calendar date when date input value is empty

@@ -105,6 +105,17 @@ you can set minimum date and maximum date range for your app
  <jb-date-input label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z">
  </jb-date-input>
 ```
+## placeholder
+
+you can set placeholder to show it to user when input is empty. to doing so just set `placeholder` attribute in HTML DOM or `placeholder` in JavaScript: 
+
+```html
+ <jb-date-input placeholder="Enter Date Here">
+ </jb-date-input>
+```
+```js
+document.querySelector('jb-date-input').placeholder = `Enter Date Here`;
+```
 ## custom validation
 
 beside of min and max you can also set your own custom validation like any other jb web components family to achive this you must create a array of validations and assign them to component

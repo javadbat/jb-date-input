@@ -1,4 +1,7 @@
 #changelog
+## [3.10.0] - 2023-11-12
+### new features
+- add placeholder support when input is empty
 ## [3.9.2] - 2023-11-7
 ### fixed
 - fix get Date value directly
