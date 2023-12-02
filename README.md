@@ -99,11 +99,24 @@ by setting value type you can tell component what type of value you provideing t
 
 ## min and max date limit
 
-you can set minimum date and maximum date range for your app 
+you can set minimum date and maximum date range for your date input in 2 way:    
+
+1- by html attribute in string format of your value
 
 ```html
  <jb-date-input label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z">
  </jb-date-input>
+```
+2- by call `setMinDate` and `setMaxDate` function and providing string or Date format:
+
+```javascript
+const today = new Date();
+document.querySelector('jb-date-input').setMinDate(today)
+const max = new Date('2022-08-15T08:51:23.176Z');
+document.querySelector('jb-date-input').setMaxDate(max);
+// or string
+document.querySelector('jb-date-input').setMinDate('2022-08-15T08:51:23.176Z');
+
 ```
 ## placeholder
 

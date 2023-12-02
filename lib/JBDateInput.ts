@@ -413,34 +413,46 @@ export class JBDateInputWebComponent extends HTMLElement {
             this.#setMaxDate(maxDate);
         }
     }
-    #setMinDate(dateString: string) {
+    setMinDate(minDate: string | Date){
+        this.#setMinDate(minDate);
+    }
+    #setMinDate(dateInput: string | Date) {
         let minDate: Date | null = null;
         //create min date base on input value type
-        minDate = this.#dateFactory.getDateFromValueDateString(dateString);
+        if(typeof dateInput == "string"){
+            minDate = this.#dateFactory.getDateFromValueDateString(dateInput);
+        }else{
+            minDate = dateInput;
+        }
         if (minDate) {
             this.dateRestrictions.min = minDate;
             if (this.elements.calendar.dateRestrictions) {
                 this.elements.calendar.dateRestrictions.min = minDate;
             }
         } else {
-            console.error(`min date ${dateString} is not valid and it will be ignored`, '\n', 'please provide min date in format : ' + this.#dateFactory.valueFormat);
+            console.error(`min date ${dateInput} is not valid and it will be ignored`, '\n', 'please provide min date in format : ' + this.#dateFactory.valueFormat);
         }
 
     }
-    #setMaxDate(dateString: string) {
+    setMaxDate(maxDate: string | Date){
+        this.#setMaxDate(maxDate);
+    }
+    #setMaxDate(dateInput: string | Date) {
         let maxDate: Date | null = null;
         //create max date base on input value type
-        maxDate = this.#dateFactory.getDateFromValueDateString(dateString);
+        if(typeof dateInput == "string"){
+            maxDate = this.#dateFactory.getDateFromValueDateString(dateInput);
+        }else{
+            maxDate = dateInput;
+        }
         if (maxDate) {
             this.dateRestrictions.max = maxDate;
             if (this.elements.calendar.dateRestrictions) {
                 this.elements.calendar.dateRestrictions.max = maxDate;
             }
         } else {
-            console.error(`max date ${dateString} is not valid and it will be ignored`, '\n', 'please provide max date in format : ' + this.#dateFactory.valueFormat);
+            console.error(`max date ${dateInput} is not valid and it will be ignored`, '\n', 'please provide max date in format : ' + this.#dateFactory.valueFormat);
         }
-
-
     }
     inputChar(char: string, pos: number) {
         if(pos==4 || pos==7){
