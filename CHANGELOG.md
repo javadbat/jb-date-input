@@ -1,4 +1,7 @@
 #changelog
+## [3.11.1] - 2023-12-13
+### new features
+- fix `:dir(ltr)` bug of calendar
 ## [3.11.0] - 2023-11-12
 ### new features
 - add Date to valid type for min & max date restriction input
