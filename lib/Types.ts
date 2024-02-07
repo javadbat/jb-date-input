@@ -64,12 +64,14 @@ export enum InputTypes {
     jalali = 'JALALI',
     gregorian = 'GREGORIAN'
 }
+export type InputType = 'JALALI' | 'GREGORIAN';
+export type ValueType = 'JALALI' | 'GREGORIAN' | 'TIME_STAMP';
 export enum ValueTypes {
-    jalali = 'JALALI',
-    gregorian = 'GREGORIAN',
-    timestamp = 'TIME_STAMP',
+    jalali='JALALI' ,
+    gregorian='GREGORIAN' ,
+    timeStamp= 'TIME_STAMP'
 }
-//becuase this._internal is not a standard we have to extend HTMLELEMENT to use it
+//because this._internal is not a standard we have to extend HTML ELEMENT to use it
 declare global {
     interface ElementInternals{
         setFormValue(value:string):void;

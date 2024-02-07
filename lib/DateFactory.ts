@@ -1,5 +1,5 @@
 
-import { DateInObject, DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes } from './Types';
+import { DateInObject, DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes, ValueType, InputType } from './Types';
 import { getEmptyValueObject } from './Helpers';
 import { getYear, getMonth, getTime as getTimeStamp, getUnixTime as getTimeStampInSecond, isEqual, isLeapYear, getDate } from 'date-fns';
 import { newDate, isLeapYear as isJalaliLeapYear, isAfter, isBefore, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate } from 'date-fns-jalali';
@@ -10,8 +10,8 @@ export type DateFactoryConstructorArg = {
     valueType: ValueTypes | null | undefined;
 }
 export class DateFactory {
-    #valueType = ValueTypes.gregorian;
-    #inputType = InputTypes.jalali;
+    #valueType:ValueType = "GREGORIAN";
+    #inputType:InputType = InputTypes.jalali;
     //here we keep numbers that replace the year,month,day in niche situations
     #nicheNumbers = {
         //when year is invalid or empty and we want to show the calendar we need to show the current year or any other base on user config
@@ -35,13 +35,13 @@ export class DateFactory {
         return this.#nicheNumbers;
     }
     get yearOnEmptyBaseOnValueType() {
-        if (this.#valueType == ValueTypes.jalali) {
+        if (this.#valueType == "JALALI") {
             return this.#nicheNumbers.calendarYearOnEmpty.jalali;
         }
         return this.#nicheNumbers.calendarYearOnEmpty.gregorian;
     }
     get monthOnEmptyBaseOnValueType(): number {
-        if (this.valueType == ValueTypes.jalali) {
+        if (this.valueType == "JALALI") {
             return this.#nicheNumbers.calendarMonthOnEmpty.jalali;
         }
         return this.#nicheNumbers.calendarMonthOnEmpty.gregorian;
@@ -49,7 +49,7 @@ export class DateFactory {
     get inputType() {
         return this.#inputType;
     }
-    get valueType() {
+    get valueType():ValueType{
         return this.#valueType;
     }
     constructor(args: DateFactoryConstructorArg) {
@@ -61,10 +61,10 @@ export class DateFactory {
         }
     }
 
-    setInputType(inputType: InputTypes) {
+    setInputType(inputType: InputType) {
         this.#inputType = inputType;
     }
-    setValueType(valueType: ValueTypes) {
+    setValueType(valueType: ValueType) {
         this.#valueType = valueType;
     }
     getYearValueBaseOnInputType(valueObject: JBDateInputValueObject): number | null {
@@ -88,16 +88,16 @@ export class DateFactory {
     getDateFromValueDateString(valueDateString: string): Date | null {
         let resultDate: Date | null = null;
         //create min date base on input value type
-        if (this.valueType == ValueTypes.timestamp) {
+        if (this.valueType == "TIME_STAMP") {
             resultDate = DateFactory.getDateFromTimestamp(parseInt(valueDateString));
         } else {
             const dateValueObj = this.getDateObjectValueBaseOnFormat(valueDateString);
             //sometimes format set after min value restriction set by user so this object returned null in these scenario we set min after format set again
             if (dateValueObj !== null && dateValueObj !== undefined && dateValueObj.year !== null && dateValueObj.month !== null && dateValueObj.day !== null) {
-                if (this.valueType == ValueTypes.gregorian) {
+                if (this.valueType == "GREGORIAN") {
                     resultDate = DateFactory.getDateFromGregorian(dateValueObj.year, dateValueObj.month, dateValueObj.day);
                 }
-                if (this.valueType == ValueTypes.jalali) {
+                if (this.valueType == "JALALI") {
                     resultDate = DateFactory.getDateFromJalali(dateValueObj.year, dateValueObj.month, dateValueObj.day);
                 }
             }
@@ -166,7 +166,7 @@ export class DateFactory {
     getCalendarDay(valueObject: JBDateInputValueObject): number | null {
         return this.getDayValueBaseOnInputType(valueObject);
     }
-    setCalendarDefaultDateView(year: number, month: number, inputType: InputTypes = this.#inputType) {
+    setCalendarDefaultDateView(year: number, month: number, inputType: InputType = this.#inputType) {
         if (inputType == InputTypes.gregorian) {
             this.#nicheNumbers.calendarYearOnEmpty.gregorian = year;
             this.#nicheNumbers.calendarMonthOnEmpty.gregorian = month;
@@ -325,13 +325,13 @@ export class DateFactory {
         return getEmptyValueObject();
     }
     getDateValueObjectBaseOnValueType(year: number, month: number, day: number, oldYear: number | null, oldMonth: number | null): JBDateInputValueObject {
-        if (this.#valueType == ValueTypes.gregorian) {
+        if (this.#valueType == "GREGORIAN") {
             return this.#getDateValueFromGregorian(year, month, day, oldYear, oldMonth);
         }
-        if (this.#valueType == ValueTypes.jalali) {
+        if (this.#valueType == "JALALI") {
             return this.#getDateValueFromJalali(year, month, day, oldYear, oldMonth);
         }
-        if (this.#valueType == ValueTypes.timestamp) {
+        if (this.#valueType == "TIME_STAMP") {
             return this.#getDateValueFromGregorian(year, month, day, oldYear, oldMonth);
         }
         console.error("INVALID_INPUT_TYPE");
@@ -436,7 +436,7 @@ export class DateFactory {
             }
             if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
                 if (oldJalaliMonth != jalaliMonth && jalaliDay == 31) {
-                    //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
+                    //if we update to 30days month when day set to 31 we substr day to 30 instead of prevent user from updating month
                     return this.#getDateValueFromJalali(jalaliYear, jalaliMonth, jalaliDay - 1, oldJalaliYear, oldJalaliMonth);
                 }
             }
@@ -487,7 +487,7 @@ export class DateFactory {
         const res = regex.exec(value);
         return res;
     }
-    static getDate(year: number, month: number, day: number, inputType: InputTypes): Date {
+    static getDate(year: number, month: number, day: number, inputType: InputType): Date {
         if (inputType == InputTypes.jalali) {
             return DateFactory.getDateFromJalali(year, month, day);
         }
@@ -503,8 +503,8 @@ export class DateFactory {
     static getDateFromTimestamp(timestamp: number): Date {
         return new Date(timestamp);
     }
-    static checkDateRestrictions(year: number, month: number, day: number, dateInputType: InputTypes, dateRestrictions: DateRestrictions): DateRestrictionsValidResult {
-        //this function check if inputed date is valid date in min and max range
+    static checkDateRestrictions(year: number, month: number, day: number, dateInputType: InputType, dateRestrictions: DateRestrictions): DateRestrictionsValidResult {
+        //this function check if inputted date is valid date in min and max range
         const result: DateRestrictionsValidResult = {
             get isAllValid() { return (this.min.isValid && this.max.isValid); },
             min: {

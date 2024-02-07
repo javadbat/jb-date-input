@@ -9,7 +9,7 @@ import './inbox-element/inbox-element';
 import {JBDDateInputInboxElementWebComponent} from './inbox-element/inbox-element';
 //import cloneDeep from 'lodash.clonedeep';
 
-import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateValidResult, DateRestrictionsValidResult, ValidationResult } from './Types';
+import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateRestrictionsValidResult, ValidationResult, ValueType, InputType } from './Types';
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
 // import { JBCalendarValue } from 'jb-calendar/lib/Types';
@@ -54,7 +54,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     set value(value: string | Date) {
         this.#setDateValue(value);
-        this.#updateinputTextFromValue();
+        this.#updateInputTextFromValue();
     }
     #updateFormAssossicatedValue():void{
         //in html form we need to get date input value in native way this function update and set value of the input so form can get it when needed
@@ -82,9 +82,9 @@ export class JBDateInputWebComponent extends HTMLElement {
         }else{
             this.elements.input.placeholder= "";
         }
-        this.#updateinputTextFromValue();
+        this.#updateInputTextFromValue();
     }
-    //standarded input value
+    //standardized input value
     get #sInputValue():string{
         let value = this.#inputValue;
         if(this.#usePersianDigits){
@@ -114,10 +114,10 @@ export class JBDateInputWebComponent extends HTMLElement {
         }
     }
    
-    get inputType() {
+    get inputType():InputType{
         return this.#dateFactory.inputType;
     }
-    set inputType(value) {
+    set inputType(value:InputType) {
 
         if (Object.values(InputTypes).includes(value as InputTypes)) {
             this.#dateFactory.setInputType(value);
@@ -130,7 +130,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     get valueType() {
         return this.#dateFactory.valueType;
     }
-    set valueType(value: ValueTypes) {
+    set valueType(value: ValueType) {
         if (Object.values(ValueTypes).includes(value as ValueTypes)) {
             this.#dateFactory.setValueType(value);
         } else {
@@ -147,11 +147,11 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     get yearValue(): number | null {
         switch (this.valueType) {
-            case ValueTypes.jalali:
+            case "JALALI":
                 return this.#valueObject.jalali.year;
-            case ValueTypes.gregorian:
+            case "GREGORIAN":
                 return this.#valueObject.gregorian.year;
-            case ValueTypes.timestamp:
+            case "TIME_STAMP":
                 return this.#valueObject.gregorian.year;
             default:
                 return null;
@@ -159,11 +159,11 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     get monthValue(): number | null {
         switch (this.valueType) {
-            case ValueTypes.jalali:
+            case "JALALI":
                 return this.#valueObject.jalali.month;
-            case ValueTypes.gregorian:
+            case "GREGORIAN":
                 return this.#valueObject.gregorian.month;
-            case ValueTypes.timestamp:
+            case "TIME_STAMP":
                 return this.#valueObject.gregorian.month;
             default:
                 return null;
@@ -171,11 +171,11 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     get dayValue(): number | null {
         switch (this.valueType) {
-            case ValueTypes.jalali:
+            case "JALALI":
                 return this.#valueObject.jalali.day;
-            case ValueTypes.gregorian:
+            case "GREGORIAN":
                 return this.#valueObject.gregorian.day;
-            case ValueTypes.timestamp:
+            case "TIME_STAMP":
                 return this.#valueObject.gregorian.day;
             default:
                 return null;
@@ -244,7 +244,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     set usePersianDigits(value) {
         this.#usePersianDigits = value;
-        this.#updateinputTextFromValue();
+        this.#updateInputTextFromValue();
     }
     constructor() {
         super();
@@ -624,28 +624,28 @@ export class JBDateInputWebComponent extends HTMLElement {
         const currentMonth = this.monthValue || 1;
         const currentDay = this.dayValue || 1;
         this.#setDateValueFromNumbers(currentYear + interval, currentMonth, currentDay);
-        this.#updateinputTextFromValue();
+        this.#updateInputTextFromValue();
     }
     addMonth(interval: number) {
         const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
         const currentMonth = this.monthValue || 1;
         const currentDay = this.dayValue || 1;
         this.#setDateValueFromNumbers(currentYear, currentMonth + interval, currentDay);
-        this.#updateinputTextFromValue();
+        this.#updateInputTextFromValue();
     }
     addDay(interval: number) {
         const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
         const currentMonth = this.monthValue || 1;
         const currentDay = this.dayValue || 1;
         this.#setDateValueFromNumbers(currentYear, currentMonth, currentDay + interval);
-        this.#updateinputTextFromValue();
+        this.#updateInputTextFromValue();
     }
     /**
      * will convert current valueObject to expected value string
      * @param {ValueTypes} type 
      * @return {String} value base on format and date type
      */
-    getDateValue(type: ValueTypes = this.valueType): string {
+    getDateValue(type: ValueType = this.valueType): string {
         return this.#dateFactory.getDateValueStringFromValueObject(this.#valueObject, type);
     }
     /**
@@ -653,12 +653,12 @@ export class JBDateInputWebComponent extends HTMLElement {
      */
     #setDateValue(value: string | Date) {
         if(typeof value == "string"){
-            switch (this.#dateFactory.valueType) {
-                case ValueTypes.gregorian:
-                case ValueTypes.jalali:
+            switch(this.#dateFactory.valueType) {
+                case "GREGORIAN":
+                case "JALALI":
                     this.#setDateValueFromString(value);
                     break;
-                case ValueTypes.timestamp:
+                case "TIME_STAMP":
                     this.#setDateValueFromTimeStamp(value);
                     break;
             }
@@ -672,7 +672,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.#valueObject = getEmptyValueObject();
     }
     private updateCalendarView() {
-        //update jb-calendr view base on current data
+        //update jb-calendar view base on current data
         const value: JBCalendarValue = {
             year: this.#dateFactory.getCalendarYear(this.#valueObject),
             month: this.#dateFactory.getCalendarMonth(this.#valueObject),
@@ -713,7 +713,7 @@ export class JBDateInputWebComponent extends HTMLElement {
             this.#setDateValueFromNumbers(dateInObject.year, dateInObject.month, dateInObject.day);
         } else {
             if (value !== null && value !== undefined && value !== '') {
-                console.error('your inputed Date doest match defualt or your specified Format');
+                console.error('your inputed Date doest match default or your specified Format');
             } else {
                 this.setValueObjNull();
             }
@@ -746,7 +746,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.updateCalendarView();
         this.#updateFormAssossicatedValue();
     }
-    #updateinputTextFromValue() {
+    #updateInputTextFromValue() {
         const { year, month, day } = this.inputType == InputTypes.jalali ? this.#valueObject.jalali : this.#valueObject.gregorian;
         if(this.placeholder && !(year && month && day)){
             //if we have placeholder and inputed value were all null we show placeholder until user input some value
@@ -921,7 +921,7 @@ export class JBDateInputWebComponent extends HTMLElement {
      * @param  {String} dateInputType what is the date type of this number jalali or gregorian
      * @return {Object}
      */
-    checkDateRestrictions(year: number, month: number, day: number, dateInputType: InputTypes): DateRestrictionsValidResult {
+    checkDateRestrictions(year: number, month: number, day: number, dateInputType: InputType): DateRestrictionsValidResult {
         return DateFactory.checkDateRestrictions(year, month, day, dateInputType, this.dateRestrictions);
 
     }
@@ -1060,7 +1060,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         const { year, month, day } = target.value;
         if (year && month && day) {
             this.#setDateValueFromNumberBaseOnInputType(year, month, day);
-            this.#updateinputTextFromValue();
+            this.#updateInputTextFromValue();
             this.showCalendar = false;
             this.callOnDateSelect();
             this.callOnChange();
@@ -1074,7 +1074,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     }
     onInputTypeChange() {
         this.elements.calendar.inputType = this.inputType;
-        this.#updateinputTextFromValue();
+        this.#updateInputTextFromValue();
     }
     /**
      * set opend calendar date when date input value is empty

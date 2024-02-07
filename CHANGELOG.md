@@ -1,4 +1,7 @@
 #changelog
+## [3.12.0] - 2024-2-7
+### new features
+- change `inputType` and `valuetype` from enum to pure string so it easily be used in other ts files without extra dep
 ## [3.11.1] - 2023-12-13
 ### new features
 - fix `:dir(ltr)` bug of calendar
