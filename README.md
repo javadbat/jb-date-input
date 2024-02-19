@@ -258,6 +258,13 @@ you can change calendar icon base on your own need to doing so you just have to 
         </div>
     </jb-date-input>
 ```
+## Change Month List
+you may want to change the default month list for both  of Jalali and Gregorian calendars base on your country month labels. here how you can do it:
+```js
+document.querySelector('jb-date-input').setMonthList('JALALI',['حَمَل','ثَور','جَوزا','سَرَطان','اَسَد','سُنبُله','میزان','عَقرَب','قَوس','جَدْی','دَلو','حوت']);
+document.querySelector('jb-date-input').setMonthList('GREGORIAN',['1','2','3','4','5','6','7','8','9','10','11','12']);
+```
+
 ## set custom style
 
 in some cases in your project you need to change default style of web-component for example you need zero margin or different border-radius and etc.    

@@ -56,7 +56,10 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.#setDateValue(value);
         this.#updateInputTextFromValue();
     }
-    #updateFormAssossicatedValue():void{
+    setMonthList(inputType:InputType, monthName:string[]){
+        this.elements.calendar.setMonthList(inputType,monthName);
+    }
+    #updateFormAssociatedValue():void{
         //in html form we need to get date input value in native way this function update and set value of the input so form can get it when needed
         if (this.internals_ && typeof this.internals_.setFormValue == "function") {
             this.internals_.setFormValue(this.value);
@@ -665,7 +668,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         }else if(value instanceof Date){
             this.#setDateValueFromDate(value);
         }
-        this.#updateFormAssossicatedValue();
+        this.#updateFormAssociatedValue();
     }
     setValueObjNull() {
         // mean we reset calendar value and set it to null
@@ -744,7 +747,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth);
         this.#valueObject = result;
         this.updateCalendarView();
-        this.#updateFormAssossicatedValue();
+        this.#updateFormAssociatedValue();
     }
     #updateInputTextFromValue() {
         const { year, month, day } = this.inputType == InputTypes.jalali ? this.#valueObject.jalali : this.#valueObject.gregorian;

@@ -1,4 +1,7 @@
 #changelog
+## [3.13.0] - 2024-2-19
+### new features
+- add `setMonthList` method to easily customize month names.
 ## [3.12.0] - 2024-2-7
 ### new features
 - change `inputType` and `valuetype` from enum to pure string so it easily be used in other ts files without extra dep
