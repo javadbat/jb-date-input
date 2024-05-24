@@ -35,7 +35,7 @@
     "LICENSE",
     "README.md",
     "lib/",
-    "lib/Types.ts",
+    "lib/types.ts",
     "dist/"
   ],
   "exports": {

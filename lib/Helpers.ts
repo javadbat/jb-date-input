@@ -1,5 +1,5 @@
 import { JBDateInputWebComponent } from "./JBDateInput";
-import { InputTypes, JBDateInputValueObject } from "./Types";
+import { InputTypes, JBDateInputValueObject } from "./types";
 
 export function getEmptyValueObject(): JBDateInputValueObject {
     return {

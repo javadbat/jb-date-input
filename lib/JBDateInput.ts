@@ -9,7 +9,7 @@ import './inbox-element/inbox-element';
 import {JBDDateInputInboxElementWebComponent} from './inbox-element/inbox-element';
 //import cloneDeep from 'lodash.clonedeep';
 
-import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateRestrictionsValidResult, ValidationResult, ValueType, InputType } from './Types';
+import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateRestrictionsValidResult, ValidationResult, ValueType, InputType } from './types';
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
 // import { JBCalendarValue } from 'jb-calendar/lib/Types';
