@@ -160,6 +160,16 @@ export class JBDateInputWebComponent extends HTMLElement {
           return null;
       }
     }
+    get yearDisplayValue(): number | null {
+      switch (this.inputType) {
+        case "JALALI":
+          return this.#valueObject.jalali.year;
+        case "GREGORIAN":
+          return this.#valueObject.gregorian.year;
+        default:
+          return null;
+      }
+    }
     get monthValue(): number | null {
       switch (this.valueType) {
         case "JALALI":
@@ -172,6 +182,16 @@ export class JBDateInputWebComponent extends HTMLElement {
           return null;
       }
     }
+    get monthDisplayValue(): number | null {
+      switch (this.inputType) {
+        case "JALALI":
+          return this.#valueObject.jalali.month;
+        case "GREGORIAN":
+          return this.#valueObject.gregorian.month;
+        default:
+          return null;
+      }
+    }
     get dayValue(): number | null {
       switch (this.valueType) {
         case "JALALI":
@@ -179,6 +199,16 @@ export class JBDateInputWebComponent extends HTMLElement {
         case "GREGORIAN":
           return this.#valueObject.gregorian.day;
         case "TIME_STAMP":
+          return this.#valueObject.gregorian.day;
+        default:
+          return null;
+      }
+    }
+    get dayDisplayValue(): number | null {
+      switch (this.inputType) {
+        case "JALALI":
+          return this.#valueObject.jalali.day;
+        case "GREGORIAN":
           return this.#valueObject.gregorian.day;
         default:
           return null;
@@ -623,24 +653,24 @@ export class JBDateInputWebComponent extends HTMLElement {
 
     }
     addYear(interval: number) {
-      const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
-      const currentMonth = this.monthValue || 1;
-      const currentDay = this.dayValue || 1;
-      this.#setDateValueFromNumbers(currentYear + interval, currentMonth, currentDay);
+      const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
+      const currentMonth = this.monthDisplayValue || 1;
+      const currentDay = this.dayDisplayValue || 1;
+      this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay);
       this.#updateInputTextFromValue();
     }
     addMonth(interval: number) {
-      const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
-      const currentMonth = this.monthValue || 1;
-      const currentDay = this.dayValue || 1;
-      this.#setDateValueFromNumbers(currentYear, currentMonth + interval, currentDay);
+      const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
+      const currentMonth = this.monthDisplayValue || 1;
+      const currentDay = this.dayDisplayValue || 1;
+      this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay);
       this.#updateInputTextFromValue();
     }
     addDay(interval: number) {
-      const currentYear = this.yearValue ? this.yearValue : this.#dateFactory.yearOnEmptyBaseOnValueType;
-      const currentMonth = this.monthValue || 1;
-      const currentDay = this.dayValue || 1;
-      this.#setDateValueFromNumbers(currentYear, currentMonth, currentDay + interval);
+      const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
+      const currentMonth = this.monthDisplayValue || 1;
+      const currentDay = this.dayDisplayValue || 1;
+      this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth , currentDay+ interval);
       this.#updateInputTextFromValue();
     }
     /**
@@ -723,10 +753,7 @@ export class JBDateInputWebComponent extends HTMLElement {
       }
     }
     /**
-     * set value object base on currently valueType
-     * @param {number} year jalali or gregorian year 
-     * @param {number} month jalali or gregorian month
-     * @param {number} day jalali or gregorian day
+     * @description set value object base on currently valueType
      */
     #setDateValueFromNumbers(year: number, month: number, day: number) {
       const prevYear = this.yearValue;

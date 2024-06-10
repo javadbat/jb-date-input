@@ -141,9 +141,9 @@ const validationList = [
         },
         {
             validator:(inputedText, valueObject, valueText)=>{
-                //you can use raw inputed text or formatted text in expected value in argumants
+                //you can use raw inputted text or formatted text in expected value in arguments
                 //you have access to both jalali and gregorian date object here
-                // rememmber valueObject and valueText are both empty and null when date is incomplete
+                // remember valueObject and valueText are both empty and null when date is incomplete
                 return valueObject.jalali.day == 15;
             },
             message:'باید تاریخ حتما  15 ماه انتخاب شود'
@@ -168,7 +168,7 @@ const validationObj = dom.triggerInputValidation(showError)
 //when default property are defined best time for impl your config like min and max date
 document.querySelector('jb-date-input').addEventListener('init',this.onCalendarElementInitiated);
 
-//when calendar init all property and function and dom created and bind successully
+//when calendar init all property and function and dom created and bind successfully
 document.querySelector('jb-date-input').addEventListener('load',this.onCalendarElementLoaded);
 document.querySelector('jb-date-input').addEventListener('change',(e)=>{
     //value in string
@@ -285,7 +285,7 @@ body{
  
 | css variable name                             | description                                                               |
 | -------------                                 | -------------                                                             |
-| --jb-date-input-margin                        | web-component margin default is `0 0`                                  |
+| --jb-date-input-margin                        | web-component margin default is `0 0`                                     |
 | --jb-date-input-border-radius                 | web-component border-radius default is `16px`                             |
 | --jb-date-input-border-color                  | border color of select in normal mode                                     |
 | --jb-date-input-border-color-focus            | border color when user focus on input                                     |
