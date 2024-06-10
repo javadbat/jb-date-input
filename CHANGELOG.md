@@ -1,5 +1,5 @@
 #changelog
-## [3.13.1] - 2024-2-19
+## [3.13.1] - 2024-6-11
 ### fixed
 - fix value change on arrow key. move it from base on `valueType` to base on `inputType` due to month and day boundary validation
 ## [3.13.0] - 2024-2-19
