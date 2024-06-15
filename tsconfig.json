@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "baseUrl": "."
+    },
+    "include": [
+        "../global.d.ts",
+        "lib/**/*.ts",
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts",
+        "dist",
+    ],
+    "extends":"../tsconfig-web-component.json"
+}
