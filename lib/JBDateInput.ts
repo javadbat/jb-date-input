@@ -13,7 +13,7 @@ import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRe
 import { DateFactory } from './DateFactory';
 import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
 // import { JBCalendarValue } from 'jb-calendar/lib/Types';
-import { enToFaDigits, faToEnDigits } from '../../../common/js/PersianHelper';
+import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
 
 export {JBDateInputValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject,JBDDateInputInboxElementWebComponent};
 type JBCalendarValue = {
