@@ -1,4 +1,10 @@
 #changelog
+
+## [4.0.0] - 2024-7-2
+### Breaking changes:
+- refactor validation to standard jb design system validation tool
+- change component file name from `JBDateInput` to `jb-date-input`
+- disable overflow handler by default add add `overflowHandler` property so user can enable it when needed
 ## [3.13.2] - 2024-6-11
 ### fixed
 - fix umd build

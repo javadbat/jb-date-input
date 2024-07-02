@@ -141,16 +141,18 @@ const validationList = [
             message:'تاریخ باید تنها در قرن 13 شمسی باشد'
         },
         {
-            validator:(inputedText, valueObject, valueText)=>{
-                //you can use raw inputted text or formatted text in expected value in arguments
-                //you have access to both jalali and gregorian date object here
+            validator:({text, inputObject, valueObject, valueText})=>{
+                //you can use raw imputed text or formatted text in expected value in arguments
+                //you have access to both jalali and gregorian date object here in valueObject
+                //inputObject is a object contain imputed day & month & year unprocessed base on format so it have value before date imputed completely
                 // remember valueObject and valueText are both empty and null when date is incomplete
+                //if you want to validate incomplete date you can use inputText
                 return valueObject.jalali.day == 15;
             },
             message:'باید تاریخ حتما  15 ماه انتخاب شود'
         }
 ];
-document.querySelector('jb-date-input').validationList = validationList
+document.querySelector('jb-date-input').validation.list = validationList
 ```
 
 
@@ -160,7 +162,7 @@ to trigger validation and check is the element has a valid value:
 ```js
 // if show error was false, in case of error component dont show error itself and function will return if data valid or not
 const showError = true
-const validationObj = dom.triggerInputValidation(showError)
+const validationObj = dom.validation.checkValidity(showError)
 ```
 
 ## events
@@ -265,7 +267,10 @@ you may want to change the default month list for both  of Jalali and Gregorian 
 document.querySelector('jb-date-input').setMonthList('JALALI',['حَمَل','ثَور','جَوزا','سَرَطان','اَسَد','سُنبُله','میزان','عَقرَب','قَوس','جَدْی','دَلو','حوت']);
 document.querySelector('jb-date-input').setMonthList('GREGORIAN',['1','2','3','4','5','6','7','8','9','10','11','12']);
 ```
+## overflow handler
 
+sometimes you place date input inside modal or end of the pages so when user open the input picker it overflow the page and some part of picker will be invisible.  
+to fix this we add a feature called `overflowHandler` by set this to `JUMP` the picker will move, on mouse enter it's territory so user can easily pick date
 ## set custom style
 
 in some cases in your project you need to change default style of web-component for example you need zero margin or different border-radius and etc.    

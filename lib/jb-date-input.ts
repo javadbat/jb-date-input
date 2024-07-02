@@ -1,5 +1,5 @@
-import HTML from './JBDateInput.html';
-import CSS from './JBDateInput.scss';
+import HTML from './jb-date-input.html';
+import CSS from './jb-date-input.scss';
 import 'jb-calendar';
 // eslint-disable-next-line no-duplicate-imports
 import { JBCalendarWebComponent } from 'jb-calendar';
@@ -9,13 +9,16 @@ import './inbox-element/inbox-element';
 import {JBDDateInputInboxElementWebComponent} from './inbox-element/inbox-element';
 //import cloneDeep from 'lodash.clonedeep';
 
-import { InputTypes, ValueTypes, ElementsObject, ValidationResultSummary, DateRestrictions, JBDateInputValueObject, ValidationResultItem, JBDateInputValidationItem, DateRestrictionsValidResult, ValidationResult, ValueType, InputType } from './types';
+import { InputTypes, ValueTypes, ElementsObject, DateRestrictions, JBDateInputValueObject, ValueType, InputType, JBDateInputValidationValue } from './types';
 import { DateFactory } from './DateFactory';
-import { getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
+import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
 // import { JBCalendarValue } from 'jb-calendar/lib/Types';
 import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
+import { ValidationHelper } from '../../../common/scripts/validation/validation-helper';
+import { ValidationItem } from '../../../common/scripts/validation/validation-helper-types';
+import { requiredValidation } from './validations';
 
-export {JBDateInputValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject,JBDDateInputInboxElementWebComponent};
+export {ValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject,JBDDateInputInboxElementWebComponent};
 type JBCalendarValue = {
     day: number | null;
     month: number | null;
@@ -30,19 +33,23 @@ export class JBDateInputWebComponent extends HTMLElement {
     static formAssociated = true;
     internals_?: ElementInternals;
     elements!: ElementsObject;
+    #validation = new ValidationHelper<JBDateInputValidationValue>(
+      this.showValidationError.bind(this),
+      this.clearValidationError.bind(this),
+      ()=>this.#validationValue,
+      (val)=>val.text,
+      this.#getInsideValidations.bind(this))
     #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("value-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
     #showCalendar = false;
     inputFormat = 'YYYY/MM/DD';
     #inputRegex = /^(?<year>[\u06F0-\u06F90-9,\s]{4})\/(?<month>[\u06F0-\u06F90-9,\s]{2})\/(?<day>[\u06F0-\u06F90-9,\s]{2})$/g;
-    validation: ValidationResultSummary = {
-      isValid: null,
-      message: '',
-      detail: null
-    };
+    get validation(){
+      return this.#validation;
+    }
     dateRestrictions: DateRestrictions = {
       min: null,
       max: null
-    };;
+    };
     required = false;
     DefaultValidationErrorMessage = "مقدار وارد شده نا معتبر است"
     #valueObject: JBDateInputValueObject = getEmptyValueObject();
@@ -52,10 +59,19 @@ export class JBDateInputWebComponent extends HTMLElement {
       const value = this.getDateValue();
       return value;
     }
-    set value(value: string | Date) {
+    set value(value: string | Date){
       this.#setDateValue(value);
       this.#updateInputTextFromValue();
     }
+    get #validationValue():JBDateInputValidationValue{
+      return {
+        inputObject:this.#dateFactory.getDateObjectValueBaseOnFormat(this.#sInputValue, this.inputFormat),
+        text:this.#sInputValue,
+        valueText:this.value,
+        valueObject:this.#valueObject
+      };
+    }
+
     setMonthList(inputType:InputType, monthName:string[]){
       this.elements.calendar.setMonthList(inputType,monthName);
     }
@@ -139,14 +155,6 @@ export class JBDateInputWebComponent extends HTMLElement {
       } else {
         console.error(`${value} is not a valid value type`);
       }
-    }
-    #validationList: JBDateInputValidationItem[] = [];
-    get validationList() {
-      return this.#validationList;
-    }
-    set validationList(value) {
-      this.#validationList = value;
-      this.triggerInputValidation(false);
     }
     get yearValue(): number | null {
       switch (this.valueType) {
@@ -279,29 +287,30 @@ export class JBDateInputWebComponent extends HTMLElement {
       this.#usePersianDigits = value;
       this.#updateInputTextFromValue();
     }
+    overflowHandler: "NONE" | "JUMP" = "NONE";
     constructor() {
       super();
       if (typeof this.attachInternals == "function") {
         //some browser dont support attachInternals
         this.internals_ = this.attachInternals();
       }
-      this.initWebComponent();
-      this.initProp();
-      // js standard input element to more assosicate it with form element
+      this.#initWebComponent();
+      this.#initProp();
+      // js standard input element to more associate it with form element
     }
     connectedCallback() {
-      // standard web component event that called when all of dom is binded
-      this.callOnLoadEvent();
+      // standard web component event that called when all of dom is bounded
+      this.#callOnLoadEvent();
     }
-    callOnLoadEvent() {
+    #callOnLoadEvent() {
       const event = new CustomEvent('load', { bubbles: true, composed: true });
       this.dispatchEvent(event);
     }
-    callOnInitEvent() {
+    #callOnInitEvent() {
       const event = new CustomEvent('init', { bubbles: true, composed: true });
       this.dispatchEvent(event);
     }
-    initWebComponent() {
+    #initWebComponent() {
       const shadowRoot = this.attachShadow({
         mode: 'open',
         delegatesFocus: true
@@ -320,14 +329,13 @@ export class JBDateInputWebComponent extends HTMLElement {
         label: shadowRoot.querySelector('label')!,
         messageBox: shadowRoot.querySelector('.message-box')!
       };
-      this.registerEventListener();
-      this.initDeviceSpecifics();
+      this.#registerEventListener();
+      this.#initDeviceSpecifics();
     }
     /**
      * @description activate some features specially on mobile or other specific devices
-     * @private
      */
-    private initDeviceSpecifics() {
+    #initDeviceSpecifics() {
       if (/Mobi|Android/i.test(navigator.userAgent)) {
         // on mobile
         this.elements.input.setAttribute('readonly', 'true');
@@ -337,42 +345,42 @@ export class JBDateInputWebComponent extends HTMLElement {
         this.elements.input.removeAttribute('readonly');
       }
     }
-    registerEventListener() {
-      this.elements.input.addEventListener('blur', this.onInputBlur.bind(this),{passive:true});
-      this.elements.input.addEventListener('focus', this.onInputFocus.bind(this),{passive:true});
-      this.elements.input.addEventListener('keypress', this.onInputKeyPress.bind(this),{passive:true});
-      this.elements.input.addEventListener('keyup', this.onInputKeyup.bind(this),{passive:true});
-      this.elements.input.addEventListener('keydown', this.onInputKeydown.bind(this));
-      this.elements.input.addEventListener('beforeinput', this.onInputBeforeInput.bind(this));
-      this.elements.calendarTriggerButton.addEventListener('focus', this.onCalendarButtonFocused.bind(this));
-      this.elements.calendarTriggerButton.addEventListener('blur', this.onCalendarButtonBlur.bind(this));
-      this.elements.calendarTriggerButton.addEventListener('click', this.onCalendarButtonClick.bind(this));
-      this.elements.calendar.addEventListener('select', (e) => this.onCalendarSelect(e as CustomEvent));
-      this.elements.calendar.addEventListener('init', this.onCalendarElementinitiated.bind(this));
-      this.elements.calendar.addEventListener('blur', this.onCalendarBlur.bind(this),{passive:true});
-      this.elements.calendarContainer.addEventListener('click', this.onCalendarContainerClicked.bind(this),{passive:true});
+    #registerEventListener() {
+      this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this),{passive:true});
+      this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this),{passive:true});
+      this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this),{passive:true});
+      this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this),{passive:true});
+      this.elements.input.addEventListener('keydown', this.#onInputKeydown.bind(this));
+      this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
+      this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocused.bind(this));
+      this.elements.calendarTriggerButton.addEventListener('blur', this.#onCalendarButtonBlur.bind(this));
+      this.elements.calendarTriggerButton.addEventListener('click', this.#onCalendarButtonClick.bind(this));
+      this.elements.calendar.addEventListener('select', (e) => this.#onCalendarSelect(e as CustomEvent));
+      this.elements.calendar.addEventListener('init', this.#onCalendarElementInitiated.bind(this));
+      this.elements.calendar.addEventListener('blur', this.#onCalendarBlur.bind(this),{passive:true});
+      this.elements.calendarContainer.addEventListener('click', this.#onCalendarContainerClicked.bind(this),{passive:true});
       this.elements.calendarContainer.addEventListener('mouseenter',this.#fixCalendarContainerPos);
       this.elements.calendarContainer.addEventListener('mouseleave',this.#resetCalendarContainerPos);
     }
-    initProp() {
-      this.setValueObjNull();
+    #initProp() {
+      this.#setValueObjNull();
       this.#inputValue = emptyInputValueString;
       this.value = this.getAttribute('value') || '';
-      this.validation = {
-        isValid: null,
-        message: null,
-        detail: null
-      };
-      this.callOnInitEvent();
+      // this.validation = {
+      //   isValid: null,
+      //   message: null,
+      //   detail: null
+      // };
+      this.#callOnInitEvent();
     }
     static get observedAttributes() {
       return ['label', 'value-type', 'message', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'use-persian-number','placeholder'];
     }
-    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    #attributeChangedCallback(name: string, oldValue: string, newValue: string) {
       // do something when an attribute has changed
-      this.onAttributeChange(name, newValue);
+      this.#onAttributeChange(name, newValue);
     }
-    onAttributeChange(name: string, value: string) {
+    #onAttributeChange(name: string, value: string) {
       switch (name) {
         case 'label':
           this.elements.labelValue.innerHTML = value;
@@ -488,6 +496,9 @@ export class JBDateInputWebComponent extends HTMLElement {
       }
     }
     inputChar(char: string, pos: number) {
+      this.#inputChar(char,pos);
+    }
+    #inputChar(char: string, pos: number) {
       if(pos==4 || pos==7){
         char = '/';
       }
@@ -507,62 +518,63 @@ export class JBDateInputWebComponent extends HTMLElement {
       this.#inputValue = newValue;
       //}
     }
-    isValidChar(char: string) {
+    #isValidChar(char: string) {
       //allow 0-9 ۰-۹ and / char only
       return /[\u06F0-\u06F90-9/]/g.test(char);
     }
-    standardString(dateString: string) {
+    #standardString(dateString: string) {
       //TODO: convert en to persian or persian to en base on user config
       const sNumString = faToEnDigits(dateString);
       //convert dsd137/06/31rer to 1373/06/31
       const sString = sNumString.replace(/[^\u06F0-\u06F90-9/]/g, '');
       return sString;
     }
-    onInputBeforeInput(e: InputEvent) {
+    #onInputBeforeInput(e: InputEvent) {
       //TODO: handel range selection
-      const inputSelecteionStart = (e.target as HTMLInputElement).selectionStart!;
-      const baseCarretPos = inputSelecteionStart;
-      const inputedString: string | null = e.data;
-      if (inputedString) {
+      const inputSelectionStart = (e.target as HTMLInputElement).selectionStart!;
+      const baseCaretPos = inputSelectionStart;
+      const inputtedString: string | null = e.data;
+      if (inputtedString) {
         //insert mode
         //check if we are in placeholder mode we update or input text to standard mode
         if(this.placeholder && this.#inputValue === ""){
           this.#inputValue = emptyInputValueString;
         }
         // make string something like 1373/06/31 from dsd۱۳۷۳/06/31rer
-        const standardString = this.standardString(inputedString);
-        standardString.split('').forEach((inputedChar, i) => {
-          let carretPos = baseCarretPos + i;
-          if (!this.isValidChar(inputedChar)) {
+        const standardString = this.#standardString(inputtedString);
+        standardString.split('').forEach((inputtedChar:string, i:number) => {
+          let caretPos = baseCaretPos + i;
+          if (!this.#isValidChar(inputtedChar)) {
             e.preventDefault();
             return;
           }
-          if (carretPos == 4 || carretPos == 7) {
+          if (caretPos == 4 || caretPos == 7) {
             // in / pos
-            if (inputedChar == '/') {
-              (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
+            if (inputtedChar == '/') {
+              (e.target as HTMLInputElement).setSelectionRange(caretPos + 1, caretPos + 1);
             }
             //push carrot if it behind / char
-            carretPos++;
+            caretPos++;
           }
           // we want user typed char ignored in some scenario
           let isIgnoreChar = false;
-          if(inputedChar == '/'){
+          if(inputtedChar == '/'){
             return;
           }
-          const typedNumber = parseInt(inputedChar);
-          if (carretPos == 5 && typedNumber > 1) {
-            this.inputChar("0", carretPos);
-            carretPos++;
+          const typedNumber = parseInt(inputtedChar);
+          if (caretPos == 5 && typedNumber > 1) {
+            //second pos of month
+            this.#inputChar("0", caretPos);
+            caretPos++;
           }
-          const monthRes = handleMonthBeforeInput.call(this, typedNumber, carretPos);
-          carretPos = monthRes.carretPos;
-          const dayRes = handleDayBeforeInput.call(this, typedNumber, carretPos);
-          carretPos = dayRes.carretPos;
+          const monthRes = handleMonthBeforeInput.call(this, typedNumber, caretPos);
+          caretPos = monthRes.caretPos;
+          const dayRes = handleDayBeforeInput.call(this, typedNumber, caretPos);
+          caretPos = dayRes.caretPos;
           isIgnoreChar = isIgnoreChar || dayRes.isIgnoreChar || monthRes.isIgnoreChar;
           if (!isIgnoreChar) {
-            this.inputChar(inputedChar, carretPos);
-            (e.target as HTMLInputElement).setSelectionRange(carretPos + 1, carretPos + 1);
+            this.#inputChar(inputtedChar, caretPos);
+            (e.target as HTMLInputElement).setSelectionRange(caretPos + 1, caretPos + 1);
           }
 
         });
@@ -576,10 +588,10 @@ export class JBDateInputWebComponent extends HTMLElement {
           //backspace delete
           d = -1;
         }
-        for(let i=inputSelecteionStart; i<=inputSelectionEnd; i++){
-          this.inputChar(' ', i+d);
+        for(let i=inputSelectionStart; i<=inputSelectionEnd; i++){
+          this.#inputChar(' ', i+d);
         }
-        this.elements.input.setSelectionRange(inputSelecteionStart +d, inputSelecteionStart +d);
+        this.elements.input.setSelectionRange(inputSelectionStart +d, inputSelectionStart +d);
         //show placeholder if input were empty
         if(this.placeholder && this.#inputValue == emptyInputValueString){
           this.#inputValue = "";
@@ -587,7 +599,7 @@ export class JBDateInputWebComponent extends HTMLElement {
         e.preventDefault();
       }
     }
-    onInputKeyPress(e: KeyboardEvent) {
+    #onInputKeyPress(e: KeyboardEvent) {
       const eventInitDic: KeyboardEventInit = {
         bubbles: e.bubbles,
         cancelable: e.cancelable,
@@ -609,15 +621,15 @@ export class JBDateInputWebComponent extends HTMLElement {
       const keyPressEvent = new KeyboardEvent('keypress', eventInitDic);
       this.dispatchEvent(keyPressEvent);
     }
-    onInputKeyup(e: KeyboardEvent) {
+    #onInputKeyup(e: KeyboardEvent) {
       //update value if it is valid
-      const validationResult = this.triggerInputValidation(false);
+      const validationResult = this.validation.checkValidity(false);
       if (validationResult.isAllValid) {
-        this.updateValueObjFromInput(this.#sInputValue);
+        this.#updateValueObjFromInput(this.#sInputValue);
       }
-      this.callOnInputKeyup(e);
+      this.#callOnInputKeyup(e);
     }
-    callOnInputKeyup(e: KeyboardEvent) {
+    #callOnInputKeyup(e: KeyboardEvent) {
       const keyUpInitObj = {
         key: e.key,
         keyCode: e.keyCode,
@@ -631,42 +643,42 @@ export class JBDateInputWebComponent extends HTMLElement {
       const event = new KeyboardEvent('keyup', keyUpInitObj);
       this.dispatchEvent(event);
     }
-    onInputKeydown(e: KeyboardEvent) {
+    #onInputKeydown(e: KeyboardEvent) {
       const target = (e.target as HTMLInputElement);
       if (e.keyCode == 38 || e.keyCode == 40) {
         //up and down button
-        const carretPos = target.selectionStart!;
-        if (carretPos < 5) {
-          e.keyCode == 38 ? this.addYear(1) : this.addYear(-1);
+        const caretPos = target.selectionStart!;
+        if (caretPos < 5) {
+          e.keyCode == 38 ? this.#addYear(1) : this.#addYear(-1);
           target.setSelectionRange(0, 4);
         }
-        if (carretPos > 4 && carretPos < 8) {
-          e.keyCode == 38 ? this.addMonth(1) : this.addMonth(-1);
+        if (caretPos > 4 && caretPos < 8) {
+          e.keyCode == 38 ? this.#addMonth(1) : this.#addMonth(-1);
           target.setSelectionRange(5, 7);
         }
-        if (carretPos > 7) {
-          e.keyCode == 38 ? this.addDay(1) : this.addDay(-1);
+        if (caretPos > 7) {
+          e.keyCode == 38 ? this.#addDay(1) : this.#addDay(-1);
           target.setSelectionRange(8, 10);
         }
         e.preventDefault();
       }
 
     }
-    addYear(interval: number) {
+    #addYear(interval: number) {
       const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
       const currentMonth = this.monthDisplayValue || 1;
       const currentDay = this.dayDisplayValue || 1;
       this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay);
       this.#updateInputTextFromValue();
     }
-    addMonth(interval: number) {
+    #addMonth(interval: number) {
       const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
       const currentMonth = this.monthDisplayValue || 1;
       const currentDay = this.dayDisplayValue || 1;
       this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay);
       this.#updateInputTextFromValue();
     }
-    addDay(interval: number) {
+    #addDay(interval: number) {
       const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
       const currentMonth = this.monthDisplayValue || 1;
       const currentDay = this.dayDisplayValue || 1;
@@ -674,15 +686,13 @@ export class JBDateInputWebComponent extends HTMLElement {
       this.#updateInputTextFromValue();
     }
     /**
-     * will convert current valueObject to expected value string
-     * @param {ValueTypes} type 
-     * @return {String} value base on format and date type
+     * @description will convert current valueObject to expected value string
      */
     getDateValue(type: ValueType = this.valueType): string {
       return this.#dateFactory.getDateValueStringFromValueObject(this.#valueObject, type);
     }
     /**
-     * when user change value this function called and update inner value object base on user value
+     * @description when user change value this function called and update inner value object base on user value
      */
     #setDateValue(value: string | Date) {
       if(typeof value == "string"){
@@ -700,11 +710,11 @@ export class JBDateInputWebComponent extends HTMLElement {
       }
       this.#updateFormAssociatedValue();
     }
-    setValueObjNull() {
+    #setValueObjNull() {
       // mean we reset calendar value and set it to null
       this.#valueObject = getEmptyValueObject();
     }
-    private updateCalendarView() {
+    #updateCalendarView() {
       //update jb-calendar view base on current data
       const value: JBCalendarValue = {
         year: this.#dateFactory.getCalendarYear(this.#valueObject),
@@ -726,7 +736,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     #setDateValueFromDate(value:Date){
       const valueObject = this.#dateFactory.getDateObjectValueFromDateValue(value);
       this.#valueObject = valueObject;
-      this.updateCalendarView();
+      this.#updateCalendarView();
     }
     /**
      * @description set date value from timestamp base on valueType
@@ -734,7 +744,7 @@ export class JBDateInputWebComponent extends HTMLElement {
     #setDateValueFromTimeStamp(value: string) {
       const timeStamp = parseInt(value);
       this.#valueObject = this.#dateFactory.getDateValueObjectFromTimeStamp(timeStamp);
-      this.updateCalendarView();
+      this.#updateCalendarView();
     }
     /**
      * @description set date value from string base on valueType
@@ -743,12 +753,13 @@ export class JBDateInputWebComponent extends HTMLElement {
       const dateInObject = this.#dateFactory.getDateObjectValueBaseOnFormat(value);
 
       if (dateInObject.year && dateInObject.month && dateInObject.day) {
-        this.#setDateValueFromNumbers(dateInObject.year, dateInObject.month, dateInObject.day);
+
+        this.#setDateValueFromNumbers(parseInt(dateInObject.year), parseInt(dateInObject.month) , parseInt(dateInObject.day));
       } else {
         if (value !== null && value !== undefined && value !== '') {
-          console.error('your inputed Date doest match default or your specified Format');
+          console.error('your inputted Date doest match default or your specified Format');
         } else {
-          this.setValueObjNull();
+          this.#setValueObjNull();
         }
       }
     }
@@ -760,7 +771,7 @@ export class JBDateInputWebComponent extends HTMLElement {
       const prevMonth = this.monthValue;
       const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnValueType(year, month, day, prevYear, prevMonth);
       this.#valueObject = result;
-      this.updateCalendarView();
+      this.#updateCalendarView();
     }
     /**
      * set value object base on currently inputType
@@ -773,7 +784,7 @@ export class JBDateInputWebComponent extends HTMLElement {
       const prevMonth = this.monthBaseOnInputType;
       const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth);
       this.#valueObject = result;
-      this.updateCalendarView();
+      this.#updateCalendarView();
       this.#updateFormAssociatedValue();
     }
     #updateInputTextFromValue() {
@@ -820,7 +831,7 @@ export class JBDateInputWebComponent extends HTMLElement {
       str = str.replace('YYYY', yearString).replace('MM', monthString).replace('DD', dayString);
       this.#inputValue = str;
     }
-    getValueObjectFromInputText(inputText: string): JBDateInputValueObject {
+    #getValueObjectFromInputText(inputText: string): JBDateInputValueObject {
       this.#inputRegex.lastIndex = 0;
       const res = this.#inputRegex.exec(inputText);
       if (res && res.groups) {
@@ -833,31 +844,35 @@ export class JBDateInputWebComponent extends HTMLElement {
      * called when input text change and we want to update value object base on input text
      * @param {string}inputString 
      */
-    updateValueObjFromInput(inputString: string) {
+    #updateValueObjFromInput(inputString: string) {
       const res = this.#inputRegex.exec(inputString);
       if (res && res.groups) {
         this.#setDateValueFromNumberBaseOnInputType(parseInt(res.groups.year), parseInt(res.groups.month), parseInt(res.groups.day));
       }
     }
+    /**
+     * @public
+     * @description focus on date input web-component
+     */
     focus() {
       //public
       this.elements.input.focus();
       this.showCalendar = true;
     }
-    handleCarretPosOnInputFocus() {
-      const carretPos = this.elements.input.selectionStart;
-      if (carretPos) {
-        if (this.typedYear == "    " && carretPos <= 4) {
+    #handleCaretPosOnInputFocus() {
+      const caretPos = this.elements.input.selectionStart;
+      if (caretPos) {
+        if (this.typedYear == "    " && caretPos <= 4) {
           //if year was null we move cursor to first char of year
           this.elements.input.setSelectionRange(0, 0);
           return;
         }
-        if (this.typedMonth == "  " && carretPos > 4 && carretPos <= 7) {
+        if (this.typedMonth == "  " && caretPos > 4 && caretPos <= 7) {
           //if month was null we move cursor to first char of month
           this.elements.input.setSelectionRange(5, 5);
           return;
         }
-        if (this.typedDay == "  " && carretPos > 7 && carretPos <= 10) {
+        if (this.typedDay == "  " && caretPos > 7 && caretPos <= 10) {
           //if day was null we move cursor to first char of day
           this.elements.input.setSelectionRange(8, 8);
           return;
@@ -872,48 +887,47 @@ export class JBDateInputWebComponent extends HTMLElement {
      * @return { boolean }
      * @private
      */
-    private checkIfInputTextIsChangedFromLastTime(newString: string): boolean {
+    #checkIfInputTextIsChangedFromLastTime(newString: string): boolean {
       if (this.#lastInputStringValue != newString) {
         this.#lastInputStringValue = newString;
         return true;
       }
       return false;
     }
-    onInputFocus(e:FocusEvent) {
+    #onInputFocus(e:FocusEvent) {
       this.#lastInputStringValue = this.#sInputValue;
       this.focus();
-      document.addEventListener('selectionchange', this.handleCarretPosOnInputFocus.bind(this));
+      document.addEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
     }
-    onInputBlur(e: FocusEvent) {
-      document.removeEventListener('selectionchange', this.handleCarretPosOnInputFocus.bind(this));
+    #onInputBlur(e: FocusEvent) {
+      document.removeEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
       const focusedElement = e.relatedTarget;
       if (focusedElement !== this.elements.calendar && focusedElement !== this.elements.calendarTriggerButton) {
         this.showCalendar = false;
       }
       const inputText = this.#sInputValue;
       //check if there is no update from last time then if change we update
-      if (this.checkIfInputTextIsChangedFromLastTime(inputText)) {
-        this.updateValueObjFromInput(inputText);
-        this.callOnChange();
+      if (this.#checkIfInputTextIsChangedFromLastTime(inputText)) {
+        this.#updateValueObjFromInput(inputText);
+        this.#callOnChange();
       }
 
     }
-    onCalendarBlur(e: FocusEvent) {
+    #onCalendarBlur(e: FocusEvent) {
       const focusedElement = e.relatedTarget;
       if (focusedElement !== this.elements.input && focusedElement !== this.elements.calendarTriggerButton) {
         this.showCalendar = false;
       }
     }
-    onCalendarContainerClicked(e: MouseEvent) {
+    #onCalendarContainerClicked(e: MouseEvent) {
       const isCalendarWrapperClicked = e.composedPath().findIndex(x => x == this.elements.calendarWrapper);
       if (isCalendarWrapperClicked == -1) {
         this.showCalendar = false;
         this.elements.input.blur();
       }
     }
-    callOnChange() {
-      //TODO: compare value with last time value and call onChange only if value changed
-      const validationResult = this.triggerInputValidation(true);
+    #callOnChange() {
+      const validationResult = this.validation.checkValidity(true);
       const event = new CustomEvent('change', {
         detail: {
           isValid: validationResult.isAllValid,
@@ -923,127 +937,47 @@ export class JBDateInputWebComponent extends HTMLElement {
       });
       this.dispatchEvent(event);
     }
+    /**
+     * @deprecated use dom.validation.checkValidity instead
+     */
     triggerInputValidation(showError = true) {
       // this method is for use out of component  for example if user click on submit button and developer want to check if all fields are valid
-      //takeAction determine if we want to show user error in web component difualtManner or developer will handle it by himself
-      const inputText = this.#sInputValue;
-
-      const validationResult = this.checkInputValidation(inputText);
-      const firstFault = validationResult.validationList.find(x => !x.isValid);
-      if (showError == true && !validationResult.isAllValid && firstFault) {
-
-        this.showValidationError(firstFault.message ? firstFault.message : this.DefaultValidationErrorMessage);
-      } else if (validationResult.isAllValid) {
-        this.clearValidationError();
+      //takeAction determine if we want to show user error in web component default Manner or developer will handle it by himself
+      return this.#validation.checkValidity(showError);
+    }
+    #getInsideValidations(){
+      const validationList:ValidationItem<JBDateInputValidationValue>[] = [];
+      if(this.required){
+        validationList.push(requiredValidation);
       }
-      this.validation = {
-        isValid: validationResult.isAllValid,
-        message: firstFault ? firstFault.message : null,
-        detail: validationResult
-      };
-      return validationResult;
-    }
-    /**
-     * check if date is in min and max and other user specified valid date range.
-     * @param  {Number} year year of date.
-     * @param  {Number} month month of date.
-     * @param  {Number} day day of date.
-     * @param  {String} dateInputType what is the date type of this number jalali or gregorian
-     * @return {Object}
-     */
-    checkDateRestrictions(year: number, month: number, day: number, dateInputType: InputType): DateRestrictionsValidResult {
-      return DateFactory.checkDateRestrictions(year, month, day, dateInputType, this.dateRestrictions);
-
-    }
-    checkInputValidation(value: string) {
-      //check validation in date has 3 step: 1-check required 2- check restrictions like min and max 3- check user manual validation list(regex or function)
-      const dateObjValue = this.#dateFactory.getDateObjectValueBaseOnFormat(value, this.inputFormat);
-      const validationResult: ValidationResult = {
-        validationList: [],
-        isAllValid: true,
-      };
-        //check Min and max DateValidation
-      if ((dateObjValue.year == null || dateObjValue.month == null || dateObjValue.day == null) && this.required) {
-        validationResult.isAllValid = false;
-        validationResult.validationList.push({
-          isValid: false,
-          message: 'لطفا مقدار تاریخ را کامل وارد کنید',
-          validation: "REQUIRED"
+      if(this.dateRestrictions.min){
+        validationList.push({
+          validator:(value)=>{
+            return checkMinValidation(new Date(value.valueObject.timeStamp),this.dateRestrictions.min);
+          },
+          message:'تاریخ انتخابی کمتر از بازه مجاز است'
         });
       }
-      if (dateObjValue.year !== null && dateObjValue.month !== null && dateObjValue.day !== null) {
-        const restrictionResult = this.checkDateRestrictions(dateObjValue.year, dateObjValue.month, dateObjValue.day, this.inputType);
-        validationResult.isAllValid = validationResult.isAllValid && restrictionResult.isAllValid;
-        if (!restrictionResult.isAllValid) {
-          if (!restrictionResult.min.isValid) {
-            validationResult.validationList.push({
-              isValid: false,
-              message: restrictionResult.min.message,
-              validation: "MIN"
-            });
-          }
-          if (!restrictionResult.max.isValid) {
-            validationResult.validationList.push({
-              isValid: false,
-              message: restrictionResult.max.message,
-              validation: "MAX"
-            });
-          }
-        }
+      if(this.dateRestrictions.max){
+        validationList.push({
+          validator:(value)=>{
+            return checkMaxValidation(new Date(value.valueObject.timeStamp),this.dateRestrictions.max);
+          },
+          message:'تاریخ انتخابی بیشتر از بازه مجاز است'
+        });
       }
-      // check custom validation feeded by developer user
-      this.validationList.forEach((validation) => {
-        const res = this.checkValidation(value, validation);
-        validationResult.validationList.push(res);
-        if (!res.isValid) {
-          validationResult.isAllValid = false;
-        }
-      });
-      return validationResult;
-    }
-    checkValidation(text: string, validation: JBDateInputValidationItem): ValidationResultItem {
-      //if user validator is anything other that regex or function we will return false
-      let testRes = false;
-      if (validation.validator instanceof RegExp) {
-        testRes = validation.validator.test(text);
-        validation.validator.lastIndex = 0;
-      }
-
-      if (typeof validation.validator == "function") {
-        const valueObject = this.getValueObjectFromInputText(text);
-        const valueText = this.#dateFactory.getDateValueStringFromValueObject(valueObject);
-        // we cant use this.#valueObj becuase in some scenario its not updated
-        testRes = validation.validator(text, valueObject, valueText);
-      }
-
-      if (!testRes) {
-        return {
-          isValid: false,
-          message: validation.message,
-          validation: validation
-        };
-      }
-      return {
-        isValid: true,
-        message: '',
-        validation: validation
-      };
+      return validationList;
     }
     showValidationError(error: string) {
       this.elements.messageBox.innerHTML = error;
       this.elements.messageBox.classList.add('error');
     }
     clearValidationError() {
-      this.validation = {
-        isValid: true,
-        message: null,
-        detail: null
-      };
       const text = this.getAttribute('message') || '';
       this.elements.messageBox.innerHTML = text;
       this.elements.messageBox.classList.remove('error');
     }
-    onCalendarElementinitiated() {
+    #onCalendarElementInitiated() {
       this.elements.calendar.dateRestrictions.min = this.dateRestrictions.min;
       this.elements.calendar.dateRestrictions.max = this.dateRestrictions.max;
       this.elements.calendar.defaultCalendarData = {
@@ -1056,10 +990,10 @@ export class JBDateInputWebComponent extends HTMLElement {
           month: this.#dateFactory.nicheNumbers.calendarMonthOnEmpty.jalali,
         }
       };
-      this.updateCalendarView();
+      this.#updateCalendarView();
     }
     #isCalendarButtonClickEventIsAfterFocusEvent = false;
-    onCalendarButtonFocused(e:FocusEvent) {
+    #onCalendarButtonFocused(e:FocusEvent) {
       const prevFocused = e.relatedTarget;
       if(this.showCalendar && prevFocused && [this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(prevFocused)){
         //if calendar was displayed but user click on icon we hide it here
@@ -1072,12 +1006,12 @@ export class JBDateInputWebComponent extends HTMLElement {
       }
 
     }
-    onCalendarButtonBlur(e:FocusEvent) {
+    #onCalendarButtonBlur(e:FocusEvent) {
       if(![this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(e.relatedTarget!)){
         this.showCalendar = false;
       }
     }
-    onCalendarButtonClick(){
+    #onCalendarButtonClick(){
       const focusedElement = this.shadowRoot?.activeElement;
       if(focusedElement && !this.#isCalendarButtonClickEventIsAfterFocusEvent && focusedElement == this.elements.calendarTriggerButton){
         //check if this click is event exactly after focus or not if its after focus we just pass but if its not and its a second click we close menu or reopen menu if closed before
@@ -1085,19 +1019,19 @@ export class JBDateInputWebComponent extends HTMLElement {
       }
       this.#isCalendarButtonClickEventIsAfterFocusEvent = false;
     }
-    onCalendarSelect(e: CustomEvent) {
+    #onCalendarSelect(e: CustomEvent) {
       const target = e.target as JBCalendarWebComponent;
       const { year, month, day } = target.value;
       if (year && month && day) {
         this.#setDateValueFromNumberBaseOnInputType(year, month, day);
         this.#updateInputTextFromValue();
         this.showCalendar = false;
-        this.callOnDateSelect();
-        this.callOnChange();
+        this.#callOnDateSelect();
+        this.#callOnChange();
       }
 
     }
-    callOnDateSelect() {
+    #callOnDateSelect() {
       //when user pick a day in calendar modal
       const event = new CustomEvent('select');
       this.dispatchEvent(event);
@@ -1107,7 +1041,7 @@ export class JBDateInputWebComponent extends HTMLElement {
       this.#updateInputTextFromValue();
     }
     /**
-     * set opend calendar date when date input value is empty
+     * set opened calendar date when date input value is empty
      * @public
      * @param {number} year which year you want to show in empty state in calendar.
      * @param {number} month which month you want to show in empty state in calendar.
@@ -1116,18 +1050,23 @@ export class JBDateInputWebComponent extends HTMLElement {
     setCalendarDefaultDateView(year: number, month: number, dateType: InputTypes | undefined) {
       if (year && month) {
         this.#dateFactory.setCalendarDefaultDateView(year, month, dateType);
-        this.updateCalendarView();
+        this.#updateCalendarView();
       }
     }
     #fixCalendarContainerPos = ()=> {
-      const bcr = this.elements.calendarContainer.getBoundingClientRect();
-      const overflowSize = document.body.clientHeight - bcr.bottom;
-      if(overflowSize < 0){
-        this.elements.calendarContainer.style.transform = `translateY(${overflowSize}px)`;
+      if(this.overflowHandler == "JUMP"){
+        const bcr = this.elements.calendarContainer.getBoundingClientRect();
+        const overflowSize = document.body.clientHeight - bcr.bottom;
+        if(overflowSize < 0){
+          this.elements.calendarContainer.style.transform = `translateY(${overflowSize}px)`;
+        }
       }
+
     }
     #resetCalendarContainerPos = ()=>{
-      this.elements.calendarContainer.style.transform = `translateY(${0}px)`;
+      if(this.overflowHandler == "JUMP"){
+        this.elements.calendarContainer.style.transform = `translateY(${0}px)`;
+      }
     }
 }
 const myElementNotExists = !customElements.get('jb-date-input');

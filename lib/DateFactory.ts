@@ -1,8 +1,8 @@
 
-import { DateInObject, DateRestrictions, DateRestrictionsValidResult, DateValidResult, InputTypes, JBDateInputValueObject, ValueTypes, ValueType, InputType } from './types';
+import { InputTypes, JBDateInputValueObject, ValueTypes, ValueType, InputType, InputtedValueInObject, DateValidResult } from './types';
 import { getEmptyValueObject } from './Helpers';
-import { getYear, getMonth, getTime as getTimeStamp, getUnixTime as getTimeStampInSecond, isEqual, isLeapYear, getDate } from 'date-fns';
-import { newDate, isLeapYear as isJalaliLeapYear, isAfter, isBefore, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate } from 'date-fns-jalali';
+import { getYear, getMonth, getTime as getTimeStamp, isLeapYear, getDate } from 'date-fns';
+import { newDate, isLeapYear as isJalaliLeapYear, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate } from 'date-fns-jalali';
 
 
 export type DateFactoryConstructorArg = {
@@ -92,13 +92,16 @@ export class DateFactory {
         resultDate = DateFactory.getDateFromTimestamp(parseInt(valueDateString));
       } else {
         const dateValueObj = this.getDateObjectValueBaseOnFormat(valueDateString);
+        const year = parseInt(dateValueObj.year);
+        const month = parseInt(dateValueObj.month);
+        const day = parseInt(dateValueObj.day);
         //sometimes format set after min value restriction set by user so this object returned null in these scenario we set min after format set again
-        if (dateValueObj !== null && dateValueObj !== undefined && dateValueObj.year !== null && dateValueObj.month !== null && dateValueObj.day !== null) {
+        if (dateValueObj !== null && dateValueObj !== undefined && year !== null && month !== null && day !== null) {
           if (this.valueType == "GREGORIAN") {
-            resultDate = DateFactory.getDateFromGregorian(dateValueObj.year, dateValueObj.month, dateValueObj.day);
+            resultDate = DateFactory.getDateFromGregorian(year, month, day);
           }
           if (this.valueType == "JALALI") {
-            resultDate = DateFactory.getDateFromJalali(dateValueObj.year, dateValueObj.month, dateValueObj.day);
+            resultDate = DateFactory.getDateFromJalali(year, month, day);
           }
         }
       }
@@ -175,145 +178,6 @@ export class DateFactory {
         this.#nicheNumbers.calendarMonthOnEmpty.jalali = month;
       }
     }
-    static checkJalaliDateValidation(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
-      //check if jalali date is valid
-      const result: DateValidResult = {
-        isValid: true,
-        error: null
-      };
-        //this function check date itself validation not user setted validation
-      if (isNaN(jalaliYear)) {
-        result.isValid = false;
-        result.error = "INVALID_YEAR";
-      }
-      if (isNaN(jalaliMonth)) {
-        result.isValid = false;
-        result.error = "INVALID_MONTH";
-      }
-      if (isNaN(jalaliDay)) {
-        result.isValid = false;
-        result.error = "INVALID_DAY";
-      }
-      if (jalaliMonth < 1) {
-        result.isValid = false;
-        result.error = "INVALID_MIN_MONTH_NUMBER";
-      }
-      if (jalaliDay < 1) {
-        result.isValid = false;
-        result.error = "INVALID_MIN_DAY_NUMBER";
-      }
-      if (jalaliMonth > 12) {
-        result.isValid = false;
-        result.error = "INVALID_MAX_MONTH_NUMBER";
-      }
-      if (jalaliDay > 31) {
-        result.isValid = false;
-        result.error = "INVALID_MAX_DAY_NUMBER";
-      }
-      if (jalaliYear < 1000) {
-        result.isValid = false;
-        result.error = "INVALID_MIN_YEAR_NUMBER";
-      }
-      if (jalaliYear > 9999) {
-        result.isValid = false;
-        result.error = "INVALID_MAX_YEAR_NUMBER";
-      }
-      if (jalaliMonth > 6 && jalaliMonth < 12) {
-        if (jalaliDay > 30) {
-
-          result.isValid = false;
-          result.error = "INVALID_DAY_IN_MONTH";
-        }
-      }
-      if (jalaliMonth == 12) {
-        if (jalaliDay > 30) {
-          result.isValid = false;
-          result.error = "INVALID_DAY_IN_MONTH";
-        }
-      }
-      if (result.isValid && jalaliMonth == 12) {
-        //if everything was ok then we check for leap year
-        if (jalaliMonth == 12 && jalaliDay == 30) {
-          const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay);
-          if (!isJalaliLeapYear(date)) {
-            result.isValid = false;
-            result.error = "INVALID_DAY_FOR_LEAP";
-          }
-
-        }
-      }
-
-      return result;
-
-    }
-    static checkGregorianDateValidation(gregorianYear: number, gregorianMonth: number, gregorianDay: number) {
-      const result: DateValidResult = {
-        isValid: true,
-        error: null
-      };
-        //this function check date itself validation not user setted validation
-      if (isNaN(gregorianYear)) {
-        result.isValid = false;
-        result.error = "INVALID_YEAR";
-      }
-      if (isNaN(gregorianMonth)) {
-        result.isValid = false;
-        result.error = "INVALID_MONTH";
-      }
-      if (isNaN(gregorianDay)) {
-        result.isValid = false;
-        result.error = "INVALID_DAY";
-      }
-      if (gregorianMonth < 1) {
-        result.isValid = false;
-        result.error = "INVALID_MIN_MONTH_NUMBER";
-      }
-      if (gregorianDay < 1) {
-        result.isValid = false;
-        result.error = "INVALID_MIN_DAY_NUMBER";
-      }
-      if (gregorianMonth > 12) {
-        result.isValid = false;
-        result.error = "INVALID_MAX_MONTH_NUMBER";
-      }
-      if (gregorianDay > 31) {
-        result.isValid = false;
-        result.error = "INVALID_MAX_DAY_NUMBER";
-      }
-      if (gregorianYear < 1000) {
-        result.isValid = false;
-        result.error = "INVALID_MIN_YEAR_NUMBER";
-      }
-      if (gregorianYear > 9999) {
-        result.isValid = false;
-        result.error = "INVALID_MAX_YEAR_NUMBER";
-      }
-
-      if ([2, 4, 6, 9, 11].includes(gregorianDay)) {
-        //month has less than 31 day
-        if (gregorianDay > 30) {
-
-          result.isValid = false;
-          result.error = "INVALID_DAY_IN_MONTH";
-        }
-      }
-      if (gregorianMonth == 2 && gregorianDay > 28) {
-        if (gregorianDay == 29) {
-          const date = DateFactory.getDateFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
-          if (!isLeapYear(date)) {
-            result.isValid = false;
-            result.error = "INVALID_DAY_FOR_LEAP";
-          }
-        } else {
-          result.isValid = false;
-          result.error = "INVALID_DAY_IN_MONTH";
-        }
-
-      }
-
-      return result;
-
-    }
     getDateValueObjectBaseOnInputType(year: number, month: number, day: number, oldYear: number | null, oldMonth: number | null): JBDateInputValueObject {
       if (this.#inputType == InputTypes.gregorian) {
         return this.#getDateValueFromGregorian(year, month, day, oldYear, oldMonth);
@@ -359,6 +223,145 @@ export class DateFactory {
         timeStamp: getTimeStamp(inputValue),
       };
       return result;
+    }
+    static checkJalaliDateValidation(jalaliYear: number, jalaliMonth: number, jalaliDay: number) {
+      //check if jalali date is valid
+      const result: DateValidResult = {
+        isValid: true,
+        error: null
+      };
+        //this function check date itself validation not user setted validation
+      if (isNaN(jalaliYear)) {
+        result.isValid = false;
+        result.error = "INVALID_YEAR";
+      }
+      if (isNaN(jalaliMonth)) {
+        result.isValid = false;
+        result.error = "INVALID_MONTH";
+      }
+      if (isNaN(jalaliDay)) {
+        result.isValid = false;
+        result.error = "INVALID_DAY";
+      }
+      if (jalaliMonth < 1) {
+        result.isValid = false;
+        result.error = "INVALID_MIN_MONTH_NUMBER";
+      }
+      if (jalaliDay < 1) {
+        result.isValid = false;
+        result.error = "INVALID_MIN_DAY_NUMBER";
+      }
+      if (jalaliMonth > 12) {
+        result.isValid = false;
+        result.error = "INVALID_MAX_MONTH_NUMBER";
+      }
+      if (jalaliDay > 31) {
+        result.isValid = false;
+        result.error = "INVALID_MAX_DAY_NUMBER";
+      }
+      if (jalaliYear < 1000) {
+        result.isValid = false;
+        result.error = "INVALID_MIN_YEAR_NUMBER";
+      }
+      if (jalaliYear > 9999) {
+        result.isValid = false;
+        result.error = "INVALID_MAX_YEAR_NUMBER";
+      }
+      if (jalaliMonth > 6 && jalaliMonth < 12) {
+        if (jalaliDay > 30) {
+    
+          result.isValid = false;
+          result.error = "INVALID_DAY_IN_MONTH";
+        }
+      }
+      if (jalaliMonth == 12) {
+        if (jalaliDay > 30) {
+          result.isValid = false;
+          result.error = "INVALID_DAY_IN_MONTH";
+        }
+      }
+      if (result.isValid && jalaliMonth == 12) {
+        //if everything was ok then we check for leap year
+        if (jalaliMonth == 12 && jalaliDay == 30) {
+          const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay);
+          if (!isJalaliLeapYear(date)) {
+            result.isValid = false;
+            result.error = "INVALID_DAY_FOR_LEAP";
+          }
+    
+        }
+      }
+    
+      return result;
+    
+    }
+    static checkGregorianDateValidation(gregorianYear: number, gregorianMonth: number, gregorianDay: number) {
+      const result: DateValidResult = {
+        isValid: true,
+        error: null
+      };
+        //this function check date itself validation not user setted validation
+      if (isNaN(gregorianYear)) {
+        result.isValid = false;
+        result.error = "INVALID_YEAR";
+      }
+      if (isNaN(gregorianMonth)) {
+        result.isValid = false;
+        result.error = "INVALID_MONTH";
+      }
+      if (isNaN(gregorianDay)) {
+        result.isValid = false;
+        result.error = "INVALID_DAY";
+      }
+      if (gregorianMonth < 1) {
+        result.isValid = false;
+        result.error = "INVALID_MIN_MONTH_NUMBER";
+      }
+      if (gregorianDay < 1) {
+        result.isValid = false;
+        result.error = "INVALID_MIN_DAY_NUMBER";
+      }
+      if (gregorianMonth > 12) {
+        result.isValid = false;
+        result.error = "INVALID_MAX_MONTH_NUMBER";
+      }
+      if (gregorianDay > 31) {
+        result.isValid = false;
+        result.error = "INVALID_MAX_DAY_NUMBER";
+      }
+      if (gregorianYear < 1000) {
+        result.isValid = false;
+        result.error = "INVALID_MIN_YEAR_NUMBER";
+      }
+      if (gregorianYear > 9999) {
+        result.isValid = false;
+        result.error = "INVALID_MAX_YEAR_NUMBER";
+      }
+    
+      if ([2, 4, 6, 9, 11].includes(gregorianDay)) {
+        //month has less than 31 day
+        if (gregorianDay > 30) {
+    
+          result.isValid = false;
+          result.error = "INVALID_DAY_IN_MONTH";
+        }
+      }
+      if (gregorianMonth == 2 && gregorianDay > 28) {
+        if (gregorianDay == 29) {
+          const date = DateFactory.getDateFromGregorian(gregorianYear, gregorianMonth, gregorianDay);
+          if (!isLeapYear(date)) {
+            result.isValid = false;
+            result.error = "INVALID_DAY_FOR_LEAP";
+          }
+        } else {
+          result.isValid = false;
+          result.error = "INVALID_DAY_IN_MONTH";
+        }
+    
+      }
+    
+      return result;
+    
     }
     #getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number, oldGregorianYear: number | null, oldGregorianMonth: number | null): JBDateInputValueObject {
 
@@ -463,17 +466,17 @@ export class DateFactory {
       valueObject.timeStamp = getTimeStamp(date);
       return valueObject;
     }
-    getDateObjectValueBaseOnFormat(valueString: string, format: string = this.#valueFormat): DateInObject {
+    getDateObjectValueBaseOnFormat(valueString: string, format: string = this.#valueFormat): InputtedValueInObject {
       const res = DateFactory.#executeFormatAndExtractValue(valueString, format);
-      const dateInObject: DateInObject = {
+      const dateInObject: InputtedValueInObject = {
         year: null,
         month: null,
         day: null,
       };
       if (res && res.groups) {
-        dateInObject.year = parseInt(res.groups.year);
-        dateInObject.month = parseInt(res.groups.month);
-        dateInObject.day = parseInt(res.groups.day);
+        dateInObject.year = res.groups.year;
+        dateInObject.month = res.groups.month;
+        dateInObject.day = res.groups.day;
       }
       return dateInObject;
     }
@@ -502,41 +505,6 @@ export class DateFactory {
     }
     static getDateFromTimestamp(timestamp: number): Date {
       return new Date(timestamp);
-    }
-    static checkDateRestrictions(year: number, month: number, day: number, dateInputType: InputType, dateRestrictions: DateRestrictions): DateRestrictionsValidResult {
-      //this function check if inputted date is valid date in min and max range
-      const result: DateRestrictionsValidResult = {
-        get isAllValid() { return (this.min.isValid && this.max.isValid); },
-        min: {
-          isValid: true,
-          message: null
-        },
-        max: {
-          isValid: true,
-          message: null
-        }
-      };
-      const date = DateFactory.getDate(year, month, day, dateInputType);
-      if (dateRestrictions.min) {
-
-        const minValid = isAfter(date, dateRestrictions.min) || isEqual(date, dateRestrictions.min);
-        if (!minValid) {
-          result.min = {
-            isValid: false,
-            message: 'تاریخ انتخابی کمتر از بازه مجاز است'
-          };
-        }
-      }
-      if (dateRestrictions.max) {
-        const maxValid = isBefore(date, dateRestrictions.max) || isEqual(date, dateRestrictions.max);
-        if (!maxValid) {
-          result.max = {
-            isValid: false,
-            message: 'تاریخ انتخابی بیشنر از بازه مجاز است'
-          };
-        }
-      }
-      return result;
     }
     static get todayGregorianYear(): number {
       return getYear(new Date());

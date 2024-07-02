@@ -1,2 +1,2 @@
-import './dist/JBDateInput.js';
-export {JBDateInputInputTypes} from './dist/JBDateInput.js';
+import './dist/jb-date-input.js';
+export {JBDateInputInputTypes} from './dist/jb-date-input.js';
