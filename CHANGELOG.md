@@ -5,24 +5,31 @@
 - refactor validation to standard jb design system validation tool
 - change component file name from `JBDateInput` to `jb-date-input`
 - disable overflow handler by default add add `overflowHandler` property so user can enable it when needed
+
 ## [3.13.2] - 2024-6-11
 ### fixed
 - fix umd build
+
 ## [3.13.1] - 2024-6-11
 ### fixed
 - fix value change on arrow key. move it from base on `valueType` to base on `inputType` due to month and day boundary validation
+
 ## [3.13.0] - 2024-2-19
 ### new features
 - add `setMonthList` method to easily customize month names.
+
 ## [3.12.0] - 2024-2-7
 ### new features
 - change `inputType` and `valuetype` from enum to pure string so it easily be used in other ts files without extra dep
+
 ## [3.11.1] - 2023-12-13
 ### new features
 - fix `:dir(ltr)` bug of calendar
+
 ## [3.11.0] - 2023-11-12
 ### new features
 - add Date to valid type for min & max date restriction input
+
 ## [3.10.0] - 2023-11-12
 ### new features
 - add placeholder support when input is empty
