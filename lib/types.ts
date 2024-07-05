@@ -49,7 +49,12 @@ export type InputtedValueInObject = {
     month:string,
     day:string
 }
-export type JBDateInputValidationValue = {text:string, inputObject:InputtedValueInObject, valueObject:JBDateInputValueObject, valueText:string};
+export type ValidationValue = {text:string, inputObject:InputtedValueInObject, valueObject:JBDateInputValueObject, valueText:string};
+export type JBCalendarValue = {
+    day: number | null;
+    month: number | null;
+    year: number | null;
+}
 //because this._internal is not a standard we have to extend HTML ELEMENT to use it
 declare global {
     interface ElementInternals{

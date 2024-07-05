@@ -9,31 +9,26 @@ import './inbox-element/inbox-element';
 import {JBDDateInputInboxElementWebComponent} from './inbox-element/inbox-element';
 //import cloneDeep from 'lodash.clonedeep';
 
-import { InputTypes, ValueTypes, ElementsObject, DateRestrictions, JBDateInputValueObject, ValueType, InputType, JBDateInputValidationValue } from './types';
-import { DateFactory } from './DateFactory';
-import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers';
-// import { JBCalendarValue } from 'jb-calendar/lib/Types';
+import { InputTypes, ValueTypes, ElementsObject, DateRestrictions, JBDateInputValueObject, ValueType, InputType, ValidationValue, JBCalendarValue } from './types';
+import { DateFactory } from './date-factory';
+import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
 import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
 import { ValidationHelper } from '../../../common/scripts/validation/validation-helper';
-import { ValidationItem } from '../../../common/scripts/validation/validation-helper-types';
+import { ValidationItem, WithValidation } from '../../../common/scripts/validation/validation-helper-types';
 import { requiredValidation } from './validations';
 
 export {ValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject,JBDDateInputInboxElementWebComponent};
-type JBCalendarValue = {
-    day: number | null;
-    month: number | null;
-    year: number | null;
-}
+
 if(HTMLElement== undefined){
   //in case of server render or old browser
   console.error('you cant render web component on a server side');
 }
 const emptyInputValueString = '    /  /  ';
-export class JBDateInputWebComponent extends HTMLElement {
+export class JBDateInputWebComponent extends HTMLElement implements WithValidation<ValidationValue>{
     static formAssociated = true;
     internals_?: ElementInternals;
     elements!: ElementsObject;
-    #validation = new ValidationHelper<JBDateInputValidationValue>(
+    #validation = new ValidationHelper<ValidationValue>(
       this.showValidationError.bind(this),
       this.clearValidationError.bind(this),
       ()=>this.#validationValue,
@@ -63,7 +58,7 @@ export class JBDateInputWebComponent extends HTMLElement {
       this.#setDateValue(value);
       this.#updateInputTextFromValue();
     }
-    get #validationValue():JBDateInputValidationValue{
+    get #validationValue():ValidationValue{
       return {
         inputObject:this.#dateFactory.getDateObjectValueBaseOnFormat(this.#sInputValue, this.inputFormat),
         text:this.#sInputValue,
@@ -946,7 +941,7 @@ export class JBDateInputWebComponent extends HTMLElement {
       return this.#validation.checkValidity(showError);
     }
     #getInsideValidations(){
-      const validationList:ValidationItem<JBDateInputValidationValue>[] = [];
+      const validationList:ValidationItem<ValidationValue>[] = [];
       if(this.required){
         validationList.push(requiredValidation);
       }
