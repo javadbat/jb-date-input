@@ -11,7 +11,7 @@ import {JBDDateInputInboxElementWebComponent} from './inbox-element/inbox-elemen
 
 import { InputTypes, ValueTypes, ElementsObject, DateRestrictions, JBDateInputValueObject, ValueType, InputType, ValidationValue, JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
-import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './Helpers1';
+import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
 import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
 import { ValidationHelper } from '../../../common/scripts/validation/validation-helper';
 import { ValidationItem, WithValidation } from '../../../common/scripts/validation/validation-helper-types';
