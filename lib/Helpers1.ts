@@ -17,6 +17,7 @@ export function getEmptyValueObject(): JBDateInputValueObject {
     timeStamp: null
   };
 }
+
 export function handleDayBeforeInput(this: JBDateInputWebComponent, typedNumber: number, caretPos: number):{isIgnoreChar: boolean, caretPos: number}{
   let isIgnoreChar = false;
   if (caretPos == 8 && typedNumber > 3) {
