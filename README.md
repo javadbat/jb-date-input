@@ -326,17 +326,11 @@ if you want to change opened date picker style please read [jb-calendar](https:/
 ## add custom element in input box
 
 in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to place custom DOM in `jb-date-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
-for better result i suggest you use `jb-date-input-inbox-element` tag but its optional and you can use your own custom tag too.
-`jb-input-inbox-element` will add some style to make sure your icon will place in center and will not overflow nad make your job easier if you want more controll you can skip it and use your own tag.
 example:
 
 ```HTML
 <jb-date-input>
-    <jb-date-input-inbox-element slot="end-section">
-        <div>after</div>
-    </jb-date-input-inbox-element>
-    <jb-date-input-inbox-element slot="start-section">
-        <div>before</div>
-    </jb-date-input-inbox-element>
+    <div slot="end-section">after</div>
+    <div slot="start-section">before</div>
 </jb-date-input>
 ```

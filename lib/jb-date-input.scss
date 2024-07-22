@@ -95,6 +95,18 @@
                 }
             }
         }
+        ::slotted([slot="start-section"]), ::slotted([slot="end-section"]){
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 100%;
+            overflow-y: hidden;
+            background-color: transparent;
+            padding: 8px 16px;
+            width: auto;
+            box-sizing: border-box;
+        }
     }
 
     .message-box {

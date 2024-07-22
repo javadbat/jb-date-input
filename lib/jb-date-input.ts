@@ -4,9 +4,6 @@ import 'jb-calendar';
 // eslint-disable-next-line no-duplicate-imports
 import { JBCalendarWebComponent } from 'jb-calendar';
 
-import './inbox-element/inbox-element';
-// eslint-disable-next-line no-duplicate-imports
-import {JBDDateInputInboxElementWebComponent} from './inbox-element/inbox-element';
 //import cloneDeep from 'lodash.clonedeep';
 
 import { InputTypes, ValueTypes, ElementsObject, DateRestrictions, JBDateInputValueObject, ValueType, InputType, ValidationValue, JBCalendarValue } from './types';
@@ -17,7 +14,7 @@ import { ValidationHelper } from '../../../common/scripts/validation/validation-
 import { ValidationItem, WithValidation } from '../../../common/scripts/validation/validation-helper-types';
 import { requiredValidation } from './validations';
 
-export {ValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject,JBDDateInputInboxElementWebComponent};
+export {ValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject};
 
 if(HTMLElement== undefined){
   //in case of server render or old browser
