@@ -13,6 +13,7 @@ import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-help
 import { ValidationHelper } from '../../../common/scripts/validation/validation-helper';
 import { ValidationItem, WithValidation } from '../../../common/scripts/validation/validation-helper-types';
 import { requiredValidation } from './validations';
+import { isMobile } from '../../../common/scripts/device-detection';
 
 export {ValidationItem,InputTypes as JBDateInputInputTypes,ValueTypes, JBDateInputValueObject};
 
@@ -328,7 +329,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
      * @description activate some features specially on mobile or other specific devices
      */
     #initDeviceSpecifics() {
-      if (/Mobi|Android/i.test(navigator.userAgent)) {
+      if (isMobile()) {
         // on mobile
         this.elements.input.setAttribute('readonly', 'true');
         //TODO: handle back button and prevent back when calendar is open
