@@ -1,4 +1,5 @@
-import {JBCalendarWebComponent} from 'jb-calendar';
+import { type JBCalendarWebComponent} from 'jb-calendar';
+
 export type ElementsObject = {
     input: HTMLInputElement;
     calendarTriggerButton: HTMLDivElement;

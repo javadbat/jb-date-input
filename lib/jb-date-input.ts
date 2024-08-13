@@ -2,16 +2,16 @@ import HTML from './jb-date-input.html';
 import CSS from './jb-date-input.scss';
 import 'jb-calendar';
 // eslint-disable-next-line no-duplicate-imports
-import { JBCalendarWebComponent } from 'jb-calendar';
+import { type JBCalendarWebComponent } from 'jb-calendar';
 
 //import cloneDeep from 'lodash.clonedeep';
 
-import { InputTypes, ValueTypes, ElementsObject, DateRestrictions, JBDateInputValueObject, ValueType, InputType, ValidationValue, JBCalendarValue } from './types';
+import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
 import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
 import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
-import { ValidationHelper } from '../../../common/scripts/validation/validation-helper';
-import { ValidationItem, WithValidation } from '../../../common/scripts/validation/validation-helper-types';
+import { ValidationHelper } from 'jb-validation';
+import { type ValidationItem, type WithValidation } from 'jb-validation/types';
 import { requiredValidation } from './validations';
 import { isMobile } from '../../../common/scripts/device-detection';
 

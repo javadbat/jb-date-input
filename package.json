@@ -40,7 +40,12 @@
   ],
   "exports": {
     ".": {
-      "import": "./index.js"
+      "import": "./index.js",
+      "types":"./dist/web-component/jb-date-input/lib/jb-date-input.d.ts"
+    },
+    "./types":{
+      "default":"./lib/types.ts",
+      "types":"./dist/web-component/jb-date-input/lib/jb-date-input.d.ts"
     }
   },
   "main": "index.js",
