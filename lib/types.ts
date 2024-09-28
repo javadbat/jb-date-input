@@ -1,15 +1,11 @@
-import { type JBCalendarWebComponent} from 'jb-calendar';
-
+import {type JBCalendarWebComponent} from 'jb-calendar';
+import {type JBInputWebComponent} from 'jb-input';
+import {type JBPopoverWebComponent} from 'jb-popover';
 export type ElementsObject = {
-    input: HTMLInputElement;
+    input: JBInputWebComponent;
     calendarTriggerButton: HTMLDivElement;
     calendar: JBCalendarWebComponent;
-    calendarWrapper: HTMLDivElement;
-    calendarContainer: HTMLDivElement;
-    label: HTMLLabelElement;
-    labelValue: HTMLSpanElement;
-    messageBox: HTMLDivElement;
-    [key: string]: HTMLElement;
+    popover:JBPopoverWebComponent
 };
 export type DateRestrictions = {
     min:Date | null;

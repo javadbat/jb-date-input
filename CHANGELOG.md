@@ -1,5 +1,16 @@
 #changelog
 
+## [5.0.0] - 2024-7-2
+### Breaking changes:
+- refactor popover and separate it from inside popover to jb-popover web-component
+- refactor input and use jb-input instead of inner input code and handlers so all styles related to the input need to be refactored
+### new features
+- better focus and caret pos handling
+- less package size
+- add br and gzip to package build file and add default minification to reduce loaded bundle size
+- better typescript support
+- better overflow handler
+
 ## [4.0.0] - 2024-7-2
 ### Breaking changes:
 - refactor validation to standard jb design system validation tool

@@ -270,7 +270,10 @@ document.querySelector('jb-date-input').setMonthList('GREGORIAN',['1','2','3','4
 ## overflow handler
 
 sometimes you place date input inside modal or end of the pages so when user open the input picker it overflow the page and some part of picker will be invisible.  
-to fix this we add a feature called `overflowHandler` by set this to `JUMP` the picker will move, on mouse enter it's territory so user can easily pick date
+to fix this we add a feature called `overflowHandler` by set this to `SLIDE` the picker will move, on mouse enter it's territory so user can easily pick date
+```js
+document.querySelector('jb-date-input').elements.popover.overflowHandler = "SLIDE"
+```
 ## set custom style
 
 in some cases in your project you need to change default style of web-component for example you need zero margin or different border-radius and etc.    

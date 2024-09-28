@@ -1,181 +1,95 @@
 @import '../../../common/scss/Medias.scss';
-:host(:focus), :host(:focus-visible){
+
+:host(:focus),
+:host(:focus-visible) {
     outline: none;
 }
+
 .jb-date-input-web-component {
     width: 100%;
     margin: var(--jb-date-input-margin, 0 0);
     position: relative;
-    &:focus-visible{
+
+    &:focus-visible {
         outline: none;
     }
-    label {
-        width: 100%;
-        margin: var(--jb-date-input-label-margin, 4px 0px);
-        display: block;
-        font-size:  var(--jb-date-input-label-font-size, 0.8em);;
-        color:  var(--jb-date-input-label-color, #1f1735);
-        font-weight: var(--jb-date-input-label-weight, normal);
-        &.--hide {
-            display: none;
-        }
-    }
 
-    .input-box {
-        width: 100%;
-        box-sizing: border-box;
-        height: var(--jb-date-input-box-height, 40px);
-        border: solid var(--jb-date-input-border-width, 1px) var(--jb-date-input-border-color, #f7f6f6);
-        background-color: var(--jb-date-input-bgcolor, #f7f6f6);
-        border-bottom: solid var(--jb-date-input-border-bottom-width, 3px) var(--jb-date-input-border-color, #f7f6f6);
-        border-radius: var(--jb-date-input-border-radius, 16px);
-        margin: var(--jb-date-input-input-margin, 4px 0px);
-        transition: ease 0.3s all;
-        overflow: hidden;
-        display: grid;
-        grid-template-columns: auto 1fr auto auto;
-        box-shadow: var(--jb-date-input-box-shadow, none);
-        text-align: var(--jb-date-input-text-align, initial) ;
-        align-items: center;
-        &:focus-within {
-            border-color: var(--jb-date-input-border-color-focus, #1e2832);
-            box-shadow: var(--jb-date-input-box-shadow-focus, none);
-        }
-
-        input {
-            border: none;
-            width: 100%;
-            box-sizing: border-box;
-            height: 100%;
-            background-color: transparent;
-            padding: 2px 12px 0 12px;
-            display: block;
-            font-family: inherit;
-            font-size: var(--jb-date-input-value-font-size, 1.1em);
-            color: var(--jb-date-input-value-color, #1f1735);
-            margin: 0;
-            border-radius: 0;
-            direction: ltr;
-            text-align: var(--jb-date-input-text-align, right) ;
-            text-align: -webkit-match-parent;
-            text-align: -moz-match-parent;
-            text-align: match-parent;
-            &::placeholder {
-                color: var(--jb-date-input-placeholder-color, initial);
-                font-size: var(--jb-date-input-placeholder-font-size, 1.1em);
-            }
-            &:focus {
-                outline: none;
-            }
-        }
-
-        .calendar-trigger {
-            display: var(--jb-date-input-calendar-trigger-display, block);
-            width:  var(--jb-date-input-calendar-trigger-width, 28px);
-            height: var(--jb-date-input-calendar-trigger-height, 28px);
-            margin: 4px 0;
-            margin-inline-end: 8px;
-            cursor: pointer;
-
-            &.--active {
-                svg {
-                    .cls-1 {
-                        fill: #1f1735;
-                    }
-                }
-            }
-
-            svg {
-                width: 100%;
-                height: 100%;
-
-                .cls-1 {
-                    fill: #bbb;
-
-                }
-            }
-        }
-        ::slotted([slot="start-section"]), ::slotted([slot="end-section"]){
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-height: 100%;
-            overflow-y: hidden;
-            background-color: transparent;
-            padding: 8px 16px;
-            width: auto;
-            box-sizing: border-box;
-        }
-    }
-
-    .message-box {
-        font-size: var(--jb-date-input-message-box-font-size, 0.7em);
-        font-weight: var(--jb-date-input-message-box-font-weight, normal);
-        text-align: var(--jb-date-input-message-box-text-align, initial);
-        padding: var(--jb-date-input-message-box-padding, 2px 8px);
-        color: var(--jb-date-input-message-box-color, #929292);
-        display: var(--jb-date-input-message-box-display, block);
-
-        &:empty {
-            padding: 0;
-        }
-
-        &.error {
-            color: var(--jb-date-input-message-box-color-error, red);
-        }
-    }
     //TODO: remove this styles and replace it with jb-popover
-    .calendar-container {
-        position: absolute;
-        display: none;
-        inset-block-start: 64px;
-        inset-inline-start: 0;
-        z-index: var(--jb-date-input-calendar-wrapper-z-index, 10);
-        will-change: transform;
-        transition: transform 0.3s 0s ease;
-        @include mobile{
-            inset-block-start: 0;
-            inset-inline-start: 0;
-            bottom: 0;
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            display: none;
-            grid-template-rows: 1fr auto;
-            grid-template-columns: 1fr;
-            grid-template-areas: "." "calendar-wrapper";
-            overflow-x: hidden;
-        }
-        &.--show {
-            display: grid;
-        }
-        .calendar-wrapper{
-            background-color: var(--jb-date-input-calender-wrapper-bg-color,#fff);
-            border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px);
-            padding: 16px;
-            box-shadow:
-                12px 12px 16px 0 rgba(0, 0, 0, 0.25),
-                -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
-            display: grid;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-            @include mobile{
-                border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px) var(--jb-date-input-calender-wrapper-border-radius, 24px) 0 0;
-                grid-area: calendar-wrapper;
-                padding: 0;
-                padding: 32px 0;
-            }
-        }
-        jb-calendar {
-            &:focus {
-                outline: none;
+    //     .calendar-container {
+    //         position: absolute;
+    //         display: none;
+    //         inset-block-start: 64px;
+    //         inset-inline-start: 0;
+    //         z-index: var(--jb-date-input-calendar-wrapper-z-index, 10);
+    //         will-change: transform;
+    //         transition: transform 0.3s 0s ease;
+    //         @include mobile{
+    //             inset-block-start: 0;
+    //             inset-inline-start: 0;
+    //             bottom: 0;
+    //             position: fixed;
+    //             width: 100vw;
+    //             height: 100vh;
+    //             background-color: rgba(0,0,0,0.5);
+    //             backdrop-filter: blur(5px);
+    //             display: none;
+    //             grid-template-rows: 1fr auto;
+    //             grid-template-columns: 1fr;
+    //             grid-template-areas: "." "calendar-wrapper";
+    //             overflow-x: hidden;
+    //         }
+    //         &.--show {
+    //             display: grid;
+    //         }
+    //         .calendar-wrapper{
+    //             background-color: var(--jb-date-input-calender-wrapper-bg-color,#fff);
+    //             border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px);
+    //             padding: 16px;
+    //             box-shadow:
+    //                 12px 12px 16px 0 rgba(0, 0, 0, 0.25),
+    //                 -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
+    //             display: grid;
+    //             align-items: center;
+    //             justify-content: center;
+    //             box-sizing: border-box;
+    //             @include mobile{
+    //                 border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px) var(--jb-date-input-calender-wrapper-border-radius, 24px) 0 0;
+    //                 grid-area: calendar-wrapper;
+    //                 padding: 0;
+    //                 padding: 32px 0;
+    //             }
+    //         }
+    //         jb-calendar {
+    //             &:focus {
+    //                 outline: none;
+    //             }
+    //         }
+
+    //     }
+
+    // }
+    .calendar-trigger {
+        display: var(--jb-date-input-calendar-trigger-display, block);
+        width: var(--jb-date-input-calendar-trigger-width, 1.5rem);
+        height: var(--jb-date-input-calendar-trigger-height, 1.5rem);
+        cursor: pointer;
+        object-fit: contain;
+        &.--active {
+            svg {
+                .cls-1 {
+                    fill: #1f1735;
+                }
             }
         }
 
+        svg {
+            width: 100%;
+            height: 100%;
+
+            .cls-1 {
+                fill: #bbb;
+
+            }
+        }
     }
-
 }
