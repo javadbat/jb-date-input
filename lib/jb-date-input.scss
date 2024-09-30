@@ -13,61 +13,6 @@
     &:focus-visible {
         outline: none;
     }
-
-    //TODO: remove this styles and replace it with jb-popover
-    //     .calendar-container {
-    //         position: absolute;
-    //         display: none;
-    //         inset-block-start: 64px;
-    //         inset-inline-start: 0;
-    //         z-index: var(--jb-date-input-calendar-wrapper-z-index, 10);
-    //         will-change: transform;
-    //         transition: transform 0.3s 0s ease;
-    //         @include mobile{
-    //             inset-block-start: 0;
-    //             inset-inline-start: 0;
-    //             bottom: 0;
-    //             position: fixed;
-    //             width: 100vw;
-    //             height: 100vh;
-    //             background-color: rgba(0,0,0,0.5);
-    //             backdrop-filter: blur(5px);
-    //             display: none;
-    //             grid-template-rows: 1fr auto;
-    //             grid-template-columns: 1fr;
-    //             grid-template-areas: "." "calendar-wrapper";
-    //             overflow-x: hidden;
-    //         }
-    //         &.--show {
-    //             display: grid;
-    //         }
-    //         .calendar-wrapper{
-    //             background-color: var(--jb-date-input-calender-wrapper-bg-color,#fff);
-    //             border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px);
-    //             padding: 16px;
-    //             box-shadow:
-    //                 12px 12px 16px 0 rgba(0, 0, 0, 0.25),
-    //                 -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
-    //             display: grid;
-    //             align-items: center;
-    //             justify-content: center;
-    //             box-sizing: border-box;
-    //             @include mobile{
-    //                 border-radius: var(--jb-date-input-calender-wrapper-border-radius, 24px) var(--jb-date-input-calender-wrapper-border-radius, 24px) 0 0;
-    //                 grid-area: calendar-wrapper;
-    //                 padding: 0;
-    //                 padding: 32px 0;
-    //             }
-    //         }
-    //         jb-calendar {
-    //             &:focus {
-    //                 outline: none;
-    //             }
-    //         }
-
-    //     }
-
-    // }
     .calendar-trigger {
         display: var(--jb-date-input-calendar-trigger-display, block);
         width: var(--jb-date-input-calendar-trigger-width, 1.5rem);

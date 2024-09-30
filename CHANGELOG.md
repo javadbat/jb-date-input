@@ -2,8 +2,9 @@
 
 ## [5.0.0] - 2024-7-2
 ### Breaking changes:
-- refactor popover and separate it from inside popover to jb-popover web-component
-- refactor input and use jb-input instead of inner input code and handlers so all styles related to the input need to be refactored
+- refactor popover and separate it from inside popover to jb-popover web-component.
+- refactor input and use jb-input instead of inner input code and handlers so all styles related to the input need to be refactored.
+- change `use-persian-number` to `show-persian-number` to make all jb-design-system use the same names and approach. 
 ### new features
 - better focus and caret pos handling
 - less package size

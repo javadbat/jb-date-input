@@ -110,7 +110,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   //standardized input value
   get #sInputValue(): string {
     let value = this.#inputValue;
-    if (this.#usePersianDigits) {
+    if (this.#showPersianNumber) {
       value = faToEnDigits(value);
     }
     return value;
@@ -128,6 +128,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   set showCalendar(value) {
     this.#showCalendar = value;
     if (value == true) {
+      //we have to do it because js dont tell us when dir change so we have to check and set it every time we open calendar
+      this.elements.calendar.setupStyleBaseOnCssDirection();
       this.elements.popover.open();
       this.elements.calendarTriggerButton.classList.add('--active');
     } else {
@@ -282,12 +284,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   get valueFormat() {
     return this.#dateFactory.valueFormat;
   }
-  #usePersianDigits = false;
-  get usePersianDigits() {
-    return this.#usePersianDigits;
+  #showPersianNumber = false;
+  get showPersianNumber() {
+    return this.#showPersianNumber;
   }
-  set usePersianDigits(value) {
-    this.#usePersianDigits = value;
+  set showPersianNumber(value) {
+    this.#showPersianNumber = value;
     this.#updateInputTextFromValue();
   }
   constructor() {
@@ -393,7 +395,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     });
   }
   static get dateInputObservedAttributes() {
-    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'use-persian-number', 'placeholder'];
+    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'show-persian-number', 'placeholder'];
   }
   static get observedAttributes() {
     return [...JBInputWebComponent.observedAttributes, ...JBDateInputWebComponent.dateInputObservedAttributes];
@@ -440,14 +442,14 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       case 'direction':
         this.elements.calendar.setAttribute('direction', value);
         break;
-      case 'use-persian-number':
+      case 'show-persian-number':
         if (value == 'true' || value == '') {
-          this.usePersianDigits = true;
-          this.elements.calendar.usePersianNumber = true;
+          this.showPersianNumber = true;
+          this.elements.calendar.showPersianNumber = true;
         }
         if (value == 'false' || value == null) {
-          this.usePersianDigits = false;
-          this.elements.calendar.usePersianNumber = false;
+          this.showPersianNumber = false;
+          this.elements.calendar.showPersianNumber = false;
         }
         break;
       case 'placeholder':
@@ -522,7 +524,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
     this.#inputRegex.lastIndex = 0;
     const newValueArr = this.#inputValue.split('');
-    if (this.#usePersianDigits) {
+    if (this.#showPersianNumber) {
       char = enToFaDigits(char);
     }
     newValueArr[pos] = char;
@@ -838,7 +840,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       }
     }
     //convert to fa char if needed
-    if (this.#usePersianDigits) {
+    if (this.#showPersianNumber) {
       yearString = enToFaDigits(yearString);
       monthString = enToFaDigits(monthString);
       dayString = enToFaDigits(dayString);
@@ -1056,11 +1058,11 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   /**
    * set opened calendar date when date input value is empty
    * @public
-   * @param {number} year which year you want to show in empty state in calendar.
-   * @param {number} month which month you want to show in empty state in calendar.
-   * @param {InputTypes} dateType default is your configured input-type  but you can set it otherwise if you want to change other type of calendar in case of change in input-type.
+   * @param  year which year you want to show in empty state in calendar.
+   * @param  month which month you want to show in empty state in calendar.
+   * @param  dateType default is your configured input-type  but you can set it otherwise if you want to change other type of calendar in case of change in input-type.
    */
-  setCalendarDefaultDateView(year: number, month: number, dateType: InputTypes | undefined) {
+  setCalendarDefaultDateView(year: number, month: number, dateType: InputType | undefined) {
     if (year && month) {
       this.#dateFactory.setCalendarDefaultDateView(year, month, dateType);
       this.#updateCalendarView();
