@@ -14,7 +14,13 @@ export function getEmptyValueObject(): JBDateInputValueObject {
       month: null,
       day: null
     },
-    timeStamp: null
+    timeStamp: null,
+    time:{
+      hour:null,
+      minute:null,
+      second:null,
+      millisecond:null
+    }
   };
 }
 

@@ -10,5 +10,6 @@ export const requiredValidation:ValidationItem<ValidationValue> = {
       return true;
     }
   },
-  message:'لطفا مقدار تاریخ را کامل وارد کنید'
+  message:'لطفا مقدار تاریخ را کامل وارد کنید',
+  stateType:"valueMissing"
 };

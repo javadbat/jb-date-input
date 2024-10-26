@@ -20,6 +20,13 @@ export type JBDateInputValueObject = {
     gregorian:DateInObject;
     jalali:DateInObject;
     timeStamp:number | null;
+    //just keep received date value time to pass it on date value recreation 
+    time:{
+        hour:number | null,
+        minute:number | null,
+        second:number | null,
+        millisecond:number | null
+    }
 }
 export enum InputTypes {
     jalali = 'JALALI',
@@ -44,7 +51,11 @@ export type DateValidResult = {
 export type InputtedValueInObject = {
     year:string,
     month:string,
-    day:string
+    day:string,
+    hour:string,
+    minute:string,
+    second:string,
+    millisecond:string
 }
 export type ValidationValue = {text:string, inputObject:InputtedValueInObject, valueObject:JBDateInputValueObject, valueText:string};
 export type JBCalendarValue = {

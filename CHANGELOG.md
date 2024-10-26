@@ -1,4 +1,9 @@
 #changelog
+## [5.1.0] - 2024-10-26
+### new features
+- add support for form tag compatibility and jb-form feature
+- add isDirty to check if element value change since initial value set
+- add time factors to object value and `Date` value to keep given date value time.
 
 ## [5.0.0] - 2024-7-2
 ### Breaking changes:
