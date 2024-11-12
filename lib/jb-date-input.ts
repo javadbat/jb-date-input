@@ -5,7 +5,7 @@ import 'jb-input';
 import 'jb-popover';
 // eslint-disable-next-line no-duplicate-imports
 import { type JBCalendarWebComponent } from 'jb-calendar';
-import type { JBFormInputStandards } from 'jb-form/types';
+import type { JBFormInputStandards } from 'jb-form/types.js';
 
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
