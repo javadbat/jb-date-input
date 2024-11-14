@@ -1,4 +1,4 @@
-import { type ValidationItem } from "jb-validation/types";
+import { type ValidationItem } from "jb-validation";
 import { type ValidationValue } from "./types";
 
 export const requiredValidation:ValidationItem<ValidationValue> = {

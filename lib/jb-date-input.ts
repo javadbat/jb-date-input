@@ -12,7 +12,7 @@ import { DateFactory } from './date-factory';
 import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
 import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
 import { ValidationHelper } from 'jb-validation';
-import { ValidationResult, type ValidationItem, type WithValidation } from 'jb-validation/types';
+import { ValidationResult, type ValidationItem, type WithValidation } from 'jb-validation';
 import { requiredValidation } from './validations';
 import { isMobile } from '../../../common/scripts/device-detection';
 // eslint-disable-next-line no-duplicate-imports
