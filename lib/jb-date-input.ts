@@ -5,14 +5,13 @@ import 'jb-input';
 import 'jb-popover';
 // eslint-disable-next-line no-duplicate-imports
 import { type JBCalendarWebComponent } from 'jb-calendar';
-import type { JBFormInputStandards } from 'jb-form/types.js';
+import type { JBFormInputStandards } from 'jb-form';
 
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
 import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
 import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
-import { ValidationHelper } from 'jb-validation';
-import { ValidationResult, type ValidationItem, type WithValidation } from 'jb-validation';
+import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation} from 'jb-validation';
 import { requiredValidation } from './validations';
 import { isMobile } from '../../../common/scripts/device-detection';
 // eslint-disable-next-line no-duplicate-imports
