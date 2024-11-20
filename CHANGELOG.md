@@ -1,4 +1,9 @@
-#changelog
+# changelog
+
+## [5.2.0] - 2024-11-20
+### new features
+- make change event cancellable by `e.preventDefault()`.
+
 ## [5.1.0] - 2024-10-26
 ### new features
 - add support for form tag compatibility and jb-form feature

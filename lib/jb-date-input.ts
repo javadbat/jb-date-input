@@ -16,8 +16,7 @@ import { requiredValidation } from './validations';
 import { isMobile } from '../../../common/scripts/device-detection';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
-
-export { ValidationItem, InputTypes as JBDateInputInputTypes, ValueTypes, JBDateInputValueObject };
+export * from "./types.js";
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser
@@ -928,17 +927,18 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #lastInputStringValue = '    /  /  ';
   /**
-   * check if there is no update from last time then if change we update
+   * check if there is no update from last time then if change we update. remember to call returned update.
    * @param { string }newString newly typed String
-   * @return { boolean }
-   * @private
    */
-  #checkIfInputTextIsChangedFromLastTime(newString: string): boolean {
+  #checkIfInputTextIsChangedFromLastTime(newString: string) {
+    const updatePrevValue = ()=>{
+      this.#lastInputStringValue = newString;
+    };
     if (this.#lastInputStringValue != newString) {
       this.#lastInputStringValue = newString;
-      return true;
+      return {isUpdated:true,updatePrevValue};
     }
-    return false;
+    return {isUpdated:false,updatePrevValue};
   }
   #onInputFocus(e: FocusEvent) {
     this.#lastInputStringValue = this.#sInputValue;
@@ -954,9 +954,17 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
     const inputText = this.#sInputValue;
     //check if there is no update from last time then if change we update
-    if (this.#checkIfInputTextIsChangedFromLastTime(inputText)) {
+    const changeTestRes = this.#checkIfInputTextIsChangedFromLastTime(inputText)
+    if (changeTestRes.isUpdated) {
       this.#updateValueObjFromInput(inputText);
-      this.#callOnChange();
+      const dispatchedEvent = this.#dispatchOnChangeEvent();
+      this.#checkValidity(true);
+      if(dispatchedEvent.defaultPrevented){
+        e.preventDefault();
+        this.#updateValueObjFromInput(this.#lastInputStringValue);
+      }else{
+        changeTestRes.updatePrevValue();
+      }
     }
 
   }
@@ -966,16 +974,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       this.showCalendar = false;
     }
   }
-  #callOnChange() {
-    const validationResult = this.#checkValidity(true);
-    const event = new CustomEvent('change', {
-      detail: {
-        isValid: validationResult.isAllValid,
-        validationObject: validationResult,
-        valueObject: { ...this.#valueObject }
-      },
-    });
+  #dispatchOnChangeEvent() {
+    const event = new Event('change', {composed:true, bubbles:true,cancelable:true});
     this.dispatchEvent(event);
+    return event;
   }
   /**
    * @deprecated use dom.validation.checkValidity instead
@@ -1062,12 +1064,19 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const target = e.target as JBCalendarWebComponent;
     const { year, month, day } = target.value;
     if (year && month && day) {
+      const prevValueDate = structuredClone(this.valueInDate);
       const {hour,minute,millisecond,second} = this.#valueObject.time;
       this.#setDateValueFromNumberBaseOnInputType(year, month, day,hour,minute,second,millisecond);
       this.#updateInputTextFromValue();
       this.showCalendar = false;
       this.#callOnDateSelect();
-      this.#callOnChange();
+      this.#checkValidity(true);
+      const dispatchedEvent = this.#dispatchOnChangeEvent();
+      if(dispatchedEvent.defaultPrevented){
+        e.preventDefault();
+        this.#setDateValueFromDate(prevValueDate);
+        this.#updateInputTextFromValue();
+      }
     }
 
   }
