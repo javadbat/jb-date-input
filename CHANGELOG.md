@@ -1,5 +1,12 @@
 # changelog
 
+## [5.3.0] - 2024-11-30
+### Breaking changes:
+- update jb-validation to support async validations.
+### fixed:
+- prevent keyboard from opening in mobile.
+- fix click on background not close the picker.
+
 ## [5.2.0] - 2024-11-20
 ### new features
 - make change event cancellable by `e.preventDefault()`.
