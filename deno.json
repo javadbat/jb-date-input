@@ -1,9 +1,11 @@
 {
     "name": "@jb/date-input",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "exports": "./mod.ts",
     "imports": {
-      "jb-calendar": "npm:jb-calendar@4.1.1",
+      "jb-calendar": "npm:jb-calendar@4.1.5",
+      "jb-validation": "npm:jb-validation@0.2.0",
+      "jb-input": "npm:jb-validation@3.3.2",
       "date-fns": "npm:date-fns@2.28.0",
       "date-fns-jalali": "npm:date-fns-jalali@2.28.0-0"
     }

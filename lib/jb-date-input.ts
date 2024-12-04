@@ -30,8 +30,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   elements!: ElementsObject;
   #validation = new ValidationHelper<ValidationValue>({
     clearValidationError:this.clearValidationError.bind(this),
-    getInputtedValue:() => this.#validationValue,
-    getInsideValidations:this.#getInsideValidations.bind(this),
+    getValue:() => this.#validationValue,
+    getValidations:this.#getInsideValidations.bind(this),
     getValueString:(val) => val.text,
     setValidationResult:this.#setValidationResult.bind(this),
     showValidationError:this.showValidationError.bind(this)
