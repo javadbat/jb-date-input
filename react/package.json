@@ -1,0 +1,42 @@
+{
+  "name": "jb-date-input-react",
+  "description": "jalali date input react component",
+  "type": "module",
+  "author": {
+    "name": "mohammad javad bathaei",
+    "email": "javadbat@gmail.com"
+  },
+  "keywords": [
+    "jb",
+    "jb-date-input",
+    "jb-date-input-react",
+    "calendar",
+    "jalali calendar",
+    "jalali date",
+    "date picker",
+    "shamsi",
+    "jalali",
+    "react component",
+    "react"
+  ],
+  "version": "5.1.0",
+  "bugs": "https://github.com/javadbat/jb-date-input-react/issues",
+  "license": "MIT",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "lib/",
+    "dist/"
+  ],
+  "main": "index.js",
+  "module": "index.js",
+  "homepage": "https://github.com/javadbat/jb-date-input-react",
+  "types": "./dist/react-component/jb-date-input/lib/JBDateInput.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/javadbat/jb-date-input-react"
+  },
+  "dependencies": {
+    "jb-date-input": ">=5.1.0"
+  }
+}
