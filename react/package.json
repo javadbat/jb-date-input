@@ -31,7 +31,7 @@
   "main": "index.js",
   "module": "index.js",
   "homepage": "https://github.com/javadbat/jb-date-input-react",
-  "types": "./dist/react-component/jb-date-input/lib/JBDateInput.d.ts",
+  "types": "./dist/web-component/jb-date-input/react/lib/JBDateInput.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/javadbat/jb-date-input-react"

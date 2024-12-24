@@ -26,7 +26,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - it use your page font by default. 
 
-- have 3 value type so you can get inputed value in gregorian, jalali or timestamp base on your project need
+- have 3 value type so you can get inputted value in gregorian, jalali or timestamp base on your project need
 
 - customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`
 
@@ -37,7 +37,11 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 Demo & Sample:    
 
 in github pages: <https://javadbat.github.io/jb-date-input/>    
-in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>    
+in codepen: <https://codepen.io/javadbat/pen/qBRyYKY> 
+
+## using with JS frameworks
+
+to use this component in **react** see [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react);
 
 ## instructions
 
@@ -319,7 +323,7 @@ example:
 
 ## Other Related Docs:
 
-- see [jb-date-input-react](https://github.com/javadbat/jb-date-input-react) if you want to use this component in react
+- see [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react); if you want to use this component in react
 
 - see [All JB Design system Component List](https://github.com/javadbat/design-system/blob/master/docs/component-list.md) for more components
 

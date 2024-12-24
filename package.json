@@ -35,8 +35,9 @@
     "LICENSE",
     "README.md",
     "lib/",
-    "lib/types.ts",
-    "dist/"
+    "dist/",
+    "react/",
+    "react/dist"
   ],
   "exports": {
     ".": {

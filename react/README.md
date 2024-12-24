@@ -1,7 +1,7 @@
 # jb-date-input-react
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input-react/master/LICENSE)
-[![NPM Downloads](https://img.shields.io/npm/dw/jb-date-input-react)](https://www.npmjs.com/package/jb-date-input-react)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/master/LICENSE)
+[![NPM Downloads](https://img.shields.io/npm/dw/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
 
 react component date input (picker) to get date (jalali & gregorian) from user.
 this component is a simple react component that use [jb-date-input](https://github.com/javadbat/jb-date-input) inside and its just a simple wrapper for it so i suggest you to read jb-date-input document too for more updated document.    
@@ -33,7 +33,6 @@ this component is a simple react component that use [jb-date-input](https://gith
 - support `esm` import build for modern `ECMA Script` nodejs app. 
 
 Demo & Sample    
-in github: <https://javadbat.github.io/jb-date-input-react/>    
 in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>    
 in codeSandBox: [codeSandbox preview](https://3f63dj.csb.app/samples/jb-date-input) for just see the demo and [codeSandbox editor](https://codesandbox.io/p/sandbox/jb-design-system-3f63dj?file=%2Fsrc%2Fsamples%2FJBDateInput.tsx) if you want to see and play with code
 
@@ -46,13 +45,13 @@ in codeSandBox: [codeSandbox preview](https://3f63dj.csb.app/samples/jb-date-inp
 1- install package:
 
 ```command
-npm i jb-date-input-react
+npm i jb-date-input
 ```
 
 2- import package in your jsx file:
 
 ```js
-import {JBDateInput} from 'jb-date-input-react';
+import {JBDateInput} from 'jb-date-input/react';
 ```
 
 3- use it in your jsx file like any other tag:
