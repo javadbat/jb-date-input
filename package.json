@@ -39,16 +39,6 @@
     "react/",
     "react/dist"
   ],
-  "exports": {
-    ".": {
-      "import": "./index.js",
-      "types":"./dist/web-component/jb-date-input/lib/jb-date-input.d.ts"
-    },
-    "./types":{
-      "default":"./lib/types.ts",
-      "types":"./dist/web-component/jb-date-input/lib/jb-date-input.d.ts"
-    }
-  },
   "main": "index.js",
   "module": "index.js",
   "homepage": "https://github.com/javadbat/jb-date-input",
@@ -57,12 +47,6 @@
     "url": "https://github.com/javadbat/jb-date-input"
   },
   "types": "./dist/web-component/jb-date-input/lib/jb-date-input.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": ["./dist/web-component/jb-date-input/lib/jb-date-input.d.ts"],
-      "types":["./dist/web-component/jb-date-input/lib/types.d.ts"]
-    }
-  },
   "dependencies": {
     "date-fns": "^2.28.0",
     "date-fns-jalali": "^2.28.0-1",
