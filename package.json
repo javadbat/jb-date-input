@@ -56,6 +56,6 @@
     "jb-input":">=3.6.0"
   },
   "devDependencies": {
-    "jb-form":">=0.1.0"
+    "jb-form":">=0.6.10"
   }
 }
