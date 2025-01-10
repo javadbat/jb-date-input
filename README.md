@@ -1,7 +1,7 @@
 # jb-date-input
 
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/jb-date-input)
-[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/main/LICENSE)
 [![NPM Downloads](https://img.shields.io/npm/dw/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
 
 ## Pure js Jalali Date Picker Web-Component
@@ -137,7 +137,7 @@ document.querySelector('jb-date-input').placeholder = `Enter Date Here`;
 ```
 ## custom validation
 
-beside of min and max you can also set your own custom validation like any other jb web components family to achive this you must create a array of validations and assign them to component
+beside of min and max you can also set your own custom validation like any other jb web components family to achieve this you must create a array of validations and assign them to component
 
 ```js
 const validationList = [
@@ -167,7 +167,7 @@ to trigger validation and check is the element has a valid value:
 ```js
 // if show error was false, in case of error component dont show error itself and function will return if data valid or not
 const showError = true
-const validationObj = dom.validation.checkValidity(showError)
+const validationObj = dom.validation.checkValidity({showError})
 ```
 
 ## events
@@ -325,6 +325,6 @@ example:
 
 - see [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react); if you want to use this component in react
 
-- see [All JB Design system Component List](https://github.com/javadbat/design-system/blob/master/docs/component-list.md) for more components
+- see [All JB Design system Component List](https://github.com/javadbat/design-system/blob/main/docs/component-list.md) for more components
 
-- use [Contribution Guide](https://github.com/javadbat/design-system/blob/master/docs/contribution-guide.md) if you want to contribute in this component.
+- use [Contribution Guide](https://github.com/javadbat/design-system/blob/main/docs/contribution-guide.md) if you want to contribute in this component.
