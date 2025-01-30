@@ -1,7 +1,7 @@
 {
     "name": "@jb/date-input",
     "tasks": {
-      "build":"deno run --allow-run --allow-read --allow-write --allow-net --allow-env --allow-sys --allow-ffi ../../tasks/build/build.ts --path=./build-config.ts"
+      "build":"deno run --allow-run --allow-read --allow-write --allow-net --allow-env --allow-sys --allow-ffi jsr:@design-system/builder --path=./build-config.ts"
     },
     "nodeModulesDir":"manual",
 
