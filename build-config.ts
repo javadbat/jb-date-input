@@ -6,9 +6,9 @@ export const webComponentList: WebComponentBuildConfig[] = [
     path: "./lib/jb-date-input.ts",
     outputPath: "./dist/jb-date-input.js",
     umdName: "JBDateInput",
-    external: ["date-fns", "date-fns-jalali", "jb-calendar","jb-input","jb-popover","jb-validation"],
+    external: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation"],
     //because date-fns dont have any umd module export i have to do this so it doesn't exclude in umd build
-    umdIncludes: ["date-fns", "date-fns-jalali", "jb-calendar","jb-input","jb-popover","jb-validation"],
+    umdIncludes: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation"],
   },
 ];
 export const reactComponentList: ReactComponentBuildConfig[] = [
@@ -21,7 +21,9 @@ export const reactComponentList: ReactComponentBuildConfig[] = [
       react: "React",
       "prop-types": "PropTypes",
       "jb-date-input": "JBDateInput",
-      "jb-validation":"JBValidation",
+      "jb-validation": "JBValidation",
     },
+    umdName: "JBDateInputReact",
+    dir: "./react"
   },
 ];
