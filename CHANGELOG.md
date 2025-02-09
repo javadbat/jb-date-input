@@ -1,5 +1,11 @@
 # changelog
 
+## [5.4.0] - upcoming
+
+### new features:
+- add new Events like `onLoad`,`onInit`, `onInvalid`, `onInput`, `onBeforeInput`, `onKeyPress`, `onKeyDown` to react component & `beforeinput`, `input`, `keydown` to web component.
+- add `jb-core` as a dependency to make all events following the new events standard.
+
 ## [5.3.0] - 2024-11-30
 ### Breaking changes:
 - update jb-validation to support async validations.

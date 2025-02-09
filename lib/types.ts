@@ -1,6 +1,8 @@
 import {type JBCalendarWebComponent} from 'jb-calendar';
 import {type JBInputWebComponent} from 'jb-input';
 import {type JBPopoverWebComponent} from 'jb-popover';
+import type {EventTypeWithTarget} from 'jb-core';
+import { JBDateInputWebComponent } from './jb-date-input';
 export type ElementsObject = {
     input: JBInputWebComponent;
     calendarTriggerButton: HTMLDivElement;
@@ -69,3 +71,5 @@ declare global {
         setFormValue(value:string):void;
     }
 }
+
+export type JBDateInputEventType<TEvent> = EventTypeWithTarget<TEvent,JBDateInputWebComponent>;

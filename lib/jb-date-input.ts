@@ -16,6 +16,7 @@ import { requiredValidation } from './validations';
 import { isMobile } from '../../../common/scripts/device-detection';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
+import { createInputEvent, createKeyboardEvent } from 'jb-core';
 export * from "./types.js";
 
 if (HTMLElement == undefined) {
@@ -376,13 +377,16 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #registerEventListener() {
     this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this), { passive: true });
     this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this), { passive: true });
+    this.elements.input.addEventListener('input', this.#onInputInput.bind(this), { passive: true });
+    this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
     this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this), { passive: true });
     this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this), { passive: true });
     this.elements.input.addEventListener('keydown', this.#onInputKeydown.bind(this));
-    this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
+    //
     this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocused.bind(this));
     this.elements.calendarTriggerButton.addEventListener('blur', this.#onCalendarButtonBlur.bind(this));
     this.elements.calendarTriggerButton.addEventListener('click', this.#onCalendarButtonClick.bind(this));
+    //
     this.elements.calendar.addEventListener('select', (e) => this.#onCalendarSelect(e as CustomEvent));
     this.elements.calendar.addEventListener('init', this.#onCalendarElementInitiated.bind(this));
     this.elements.calendar.addEventListener('blur', this.#onCalendarBlur.bind(this), { passive: true });
@@ -578,7 +582,28 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const sString = sNumString.replace(/[^\u06F0-\u06F90-9/]/g, '');
     return sString;
   }
+  #onInputInput(e:InputEvent){
+    this.#dispatchOnInputEvent(e);
+  }
+  #dispatchOnInputEvent(e: InputEvent): void {
+    e.stopPropagation();
+    const event = createInputEvent('input', e, { cancelable: false });
+    this.dispatchEvent(event);
+  }
+  #dispatchBeforeInputEvent(e: InputEvent): boolean {
+    e.stopPropagation();
+    const event = createInputEvent('beforeinput', e, { cancelable: true });
+    this.dispatchEvent(event);
+    if (event.defaultPrevented) {
+      e.preventDefault();
+    }
+    return event.defaultPrevented;
+  }
   #onInputBeforeInput(e: InputEvent) {
+    const isPrevented = this.#dispatchBeforeInputEvent(e);
+    if(isPrevented){
+      return;
+    }
     //TODO: handel range selection
     const inputSelectionStart = (e.target as HTMLInputElement).selectionStart!;
     const baseCaretPos = inputSelectionStart;
@@ -649,25 +674,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
   }
   #onInputKeyPress(e: KeyboardEvent) {
-    const eventInitDic: KeyboardEventInit = {
-      bubbles: e.bubbles,
-      cancelable: e.cancelable,
-      composed: e.composed,
-      key: e.key,
-      code: e.code,
-      location: e.location,
-      repeat: e.repeat,
-      ctrlKey: e.ctrlKey,
-      shiftKey: e.shiftKey,
-      altKey: e.altKey,
-      metaKey: e.metaKey,
-      detail: e.detail,
-      isComposing: e.isComposing,
-      keyCode: e.keyCode,
-      charCode: e.charCode,
-      which: e.which,
-    };
-    const keyPressEvent = new KeyboardEvent('keypress', eventInitDic);
+    const keyPressEvent = createKeyboardEvent('keypress',e, {cancelable:false});
     this.dispatchEvent(keyPressEvent);
   }
   #onInputKeyup(e: KeyboardEvent) {
@@ -675,20 +682,15 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.#callOnInputKeyup(e);
   }
   #callOnInputKeyup(e: KeyboardEvent) {
-    const keyUpInitObj = {
-      key: e.key,
-      keyCode: e.keyCode,
-      code: e.code,
-      ctrlKey: e.ctrlKey,
-      shiftKey: e.shiftKey,
-      altKey: e.altKey,
-      charCode: e.charCode,
-      which: e.which,
-    };
-    const event = new KeyboardEvent('keyup', keyUpInitObj);
+    const event = createKeyboardEvent("keyup",e,{cancelable:false});
     this.dispatchEvent(event);
   }
   #onInputKeydown(e: KeyboardEvent) {
+    const notCancelled = this.#dispatchKeyDownEvent(e);
+    if(!notCancelled){
+      e.preventDefault();
+      return
+    }
     const target = (e.target as HTMLInputElement);
     if (e.keyCode == 38 || e.keyCode == 40) {
       //up and down button
@@ -708,6 +710,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       e.preventDefault();
     }
 
+  }
+  #dispatchKeyDownEvent(e:KeyboardEvent){
+    const event = createKeyboardEvent("keydown",e,{cancelable:false});
+    return this.dispatchEvent(event);
   }
   #addYear(interval: number) {
     const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
@@ -1128,8 +1134,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   checkValidity(): boolean {
     const validationResult = this.#validation.checkValiditySync({showError:false});
     if (!validationResult.isAllValid) {
-      const event = new CustomEvent('invalid');
-      this.dispatchEvent(event);
+      this.#dispatchInvalidEvent();
     }
     return validationResult.isAllValid;
   }
@@ -1140,10 +1145,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   reportValidity(): boolean {
     const validationResult = this.#validation.checkValiditySync({showError:true});
     if (!validationResult.isAllValid) {
-      const event = new CustomEvent('invalid');
-      this.dispatchEvent(event);
+      this.#dispatchInvalidEvent();
     }
     return validationResult.isAllValid;
+  }
+  #dispatchInvalidEvent(){
+    const event = new CustomEvent('invalid');
+    this.dispatchEvent(event);
   }
   /**
    * @description this method called on every checkValidity calls and update validation result of #internal

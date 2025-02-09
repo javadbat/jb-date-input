@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState, useImperativeHandle, useCallback, MutableRefObject, RefObject, ReactNode, forwardRef, DetailedHTMLProps, HTMLAttributes } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle, useCallback, MutableRefObject, RefObject, ReactNode, forwardRef, DetailedHTMLProps, HTMLAttributes, PropsWithChildren } from 'react';
 import 'jb-date-input';
 // eslint-disable-next-line no-duplicate-imports
 import { JBDateInputWebComponent,type ValidationValue, type JBDateInputValueObject, type InputType } from 'jb-date-input';
 import { type ValidationItem } from 'jb-validation';
-import { useBindEvent } from '../../../../common/hooks/use-event.js';
+import {EventProps, useEvents} from './events-hook.js';
 // re-export imported types for easier use for user
 export {type JBDateInputValueObject, type ValidationItem, type ValidationValue, InputType };
 declare global {
@@ -22,10 +22,7 @@ declare global {
     }
   }
 }
-export type JBDateInputEventType<T> = T & {
-  target: JBDateInputWebComponent
-}
-export type JBDateInputProps = {
+type JBDateInputProps = EventProps & {
   label?: string,
   style?: string,
   name?: string,
@@ -34,9 +31,6 @@ export type JBDateInputProps = {
   message?: string | null | undefined,
   format?: string,
   className?: string,
-  onKeyup?: (e: JBDateInputEventType<KeyboardEvent>) => void,
-  onChange?: (e: JBDateInputEventType<Event>) => void,
-  onSelect?: (e: JBDateInputEventType<CustomEvent>) => void,
   valueType?: 'GREGORIAN' | 'JALALI' | 'TIME_STAMP',
   inputType?: 'GREGORIAN' | 'JALALI',
   direction?: 'ltr' | 'rtl',
@@ -50,10 +44,9 @@ export type JBDateInputProps = {
   gregorianMonthList?: string[] | null | undefined,
   overflowHandler?:"NONE" | "SLIDE",
   overflowRef?:RefObject<HTMLElement> | null | MutableRefObject<HTMLElement | undefined>,
-  children?: ReactNode | ReactNode[],
 }
-
-export const JBDateInput = forwardRef((props: JBDateInputProps, ref) => {
+export type Props = PropsWithChildren<JBDateInputProps>;
+export const JBDateInput = forwardRef((props: Props, ref) => {
   const element = useRef<JBDateInputWebComponent>(null);
   const [refChangeCount, refChangeCountSetter] = useState(0);
   const onFormatChangeCallBackQueueRef = useRef<(() => void)[]>([]);
@@ -65,24 +58,8 @@ export const JBDateInput = forwardRef((props: JBDateInputProps, ref) => {
   useEffect(() => {
     refChangeCountSetter(refChangeCount + 1);
   }, [element.current]);
-  const onchange = useCallback((e: JBDateInputEventType<Event>) => {
-    if (props.onChange) {
-      props.onChange(e);
-    }
-  }, [props.onChange]);
-  const onKeyup = useCallback((e: JBDateInputEventType<KeyboardEvent>) => {
-    if (props.onKeyup) {
-      props.onKeyup(e);
-    }
-  }, [props.onKeyup]);
-  const onSelect = useCallback((e: JBDateInputEventType<CustomEvent>) => {
-    if (props.onSelect) {
-      props.onSelect(e);
-    }
-  }, [props.onSelect]);
-  useBindEvent(element, 'change', onchange, true);
-  useBindEvent(element, 'keyup', onKeyup, true);
-  useBindEvent(element, 'select', onSelect, true);
+
+
   useEffect(() => {
     if (props.format) {
       if (props.format !== element.current?.valueFormat) {
@@ -194,6 +171,8 @@ export const JBDateInput = forwardRef((props: JBDateInputProps, ref) => {
       element.current?.removeAttribute('show-persian-number');
     }
   }, [props.showPersianNumber]);
+
+  useEvents(element,props);
   return (
     <jb-date-input class={props.className ? props.className : ""} name={props.name} label={props.label} value-type={props.valueType ? props.valueType : 'GREGORIAN'} ref={element} input-type={props.inputType ? props.inputType : 'JALALI'}>
       {props.children}

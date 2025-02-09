@@ -6,9 +6,9 @@ export const webComponentList: WebComponentBuildConfig[] = [
     path: "./lib/jb-date-input.ts",
     outputPath: "./dist/jb-date-input.js",
     umdName: "JBDateInput",
-    external: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation"],
+    external: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation", "jb-core"],
     //because date-fns dont have any umd module export i have to do this so it doesn't exclude in umd build
-    umdIncludes: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation"],
+    umdIncludes: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation", "jb-core"],
   },
 ];
 export const reactComponentList: ReactComponentBuildConfig[] = [
@@ -16,12 +16,13 @@ export const reactComponentList: ReactComponentBuildConfig[] = [
     name: "jb-date-input-react",
     path: "./react/lib/JBDateInput.tsx",
     outputPath: "./react/dist/JBDateInput.js",
-    external: ["react", "prop-types", "jb-date-input", "jb-validation"],
+    external: ["react", "prop-types", "jb-date-input", "jb-validation", "jb-core"],
     globals: {
       react: "React",
       "prop-types": "PropTypes",
       "jb-date-input": "JBDateInput",
       "jb-validation": "JBValidation",
+      "jb-core/react":"JBCoreReact"
     },
     umdName: "JBDateInputReact",
     dir: "./react"
