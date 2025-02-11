@@ -16,7 +16,7 @@ import { requiredValidation } from './validations';
 import { isMobile } from '../../../common/scripts/device-detection';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
-import { createInputEvent, createKeyboardEvent } from 'jb-core';
+import { createInputEvent, createKeyboardEvent, createFocusEvent } from 'jb-core';
 export * from "./types.js";
 
 if (HTMLElement == undefined) {
@@ -377,7 +377,6 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #registerEventListener() {
     this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this), { passive: true });
     this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this), { passive: true });
-    this.elements.input.addEventListener('input', this.#onInputInput.bind(this), { passive: true });
     this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
     this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this), { passive: true });
     this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this), { passive: true });
@@ -582,11 +581,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const sString = sNumString.replace(/[^\u06F0-\u06F90-9/]/g, '');
     return sString;
   }
+  /**
+   * this event generate by ourself in before input after input done
+   */
   #onInputInput(e:InputEvent){
     this.#dispatchOnInputEvent(e);
   }
   #dispatchOnInputEvent(e: InputEvent): void {
-    e.stopPropagation();
     const event = createInputEvent('input', e, { cancelable: false });
     this.dispatchEvent(event);
   }
@@ -672,8 +673,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       }
       e.preventDefault();
     }
+    //because we preventDefault before input input will never be called so have to call it after we manually input all chars
+    //TODO: make it cancellable
+    this.#onInputInput(e);
   }
   #onInputKeyPress(e: KeyboardEvent) {
+    e.stopPropagation();
     const keyPressEvent = createKeyboardEvent('keypress',e, {cancelable:false});
     this.dispatchEvent(keyPressEvent);
   }
@@ -682,6 +687,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.#callOnInputKeyup(e);
   }
   #callOnInputKeyup(e: KeyboardEvent) {
+    e.stopPropagation();
     const event = createKeyboardEvent("keyup",e,{cancelable:false});
     this.dispatchEvent(event);
   }
@@ -689,7 +695,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const notCancelled = this.#dispatchKeyDownEvent(e);
     if(!notCancelled){
       e.preventDefault();
-      return
+      return;
     }
     const target = (e.target as HTMLInputElement);
     if (e.keyCode == 38 || e.keyCode == 40) {
@@ -712,6 +718,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
 
   }
   #dispatchKeyDownEvent(e:KeyboardEvent){
+    e.stopPropagation();
     const event = createKeyboardEvent("keydown",e,{cancelable:false});
     return this.dispatchEvent(event);
   }
@@ -956,6 +963,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.focus();
     //dont add once:true here becuse we need to detect every caret pos change during the type and then remove it from our input on blur
     document.addEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
+    this.#dispatchFocusEvent(e);
+  }
+  #dispatchFocusEvent(e:FocusEvent){
+    e.stopPropagation();
+    const event = createFocusEvent("focus",e,{cancelable:false});
+    this.dispatchEvent(event);
   }
   #onInputBlur(e: FocusEvent) {
     document.removeEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
@@ -977,7 +990,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         changeTestRes.updatePrevValue();
       }
     }
-
+    this.#dispatchBlurEvent(e);
+  }
+  #dispatchBlurEvent(e:FocusEvent){
+    e.stopPropagation();
+    const event = createFocusEvent("blur",e,{cancelable:false});
+    this.dispatchEvent(event);
   }
   #onCalendarBlur(e: FocusEvent) {
     const focusedElement = e.relatedTarget;

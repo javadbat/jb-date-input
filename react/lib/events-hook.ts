@@ -4,11 +4,11 @@ import type {JBDateInputWebComponent, JBDateInputEventType} from 'jb-date-input'
 
 export type EventProps = {
   /**
-   * when component loaded
+   * when component loaded, in most cases component is already loaded before react mount so you dont need this but if you load web-component dynamically with lazy load it will be called after react mount
    */
   onLoad?: (e: JBDateInputEventType<CustomEvent>) => void,
     /**
-   * when all property set and ready to use
+   * when all property set and ready to use, in most cases component is already loaded before react mount so you dont need this but if you load web-component dynamically with lazy load it will be called after react mount
    */
   onInit?: (e: JBDateInputEventType<CustomEvent>) => void,
   /**
@@ -28,6 +28,8 @@ export type EventProps = {
   * when user select the date in picker
   */
   onSelect?: (e: JBDateInputEventType<CustomEvent>) => void,
+  onFocus?: (e: JBDateInputEventType<FocusEvent>) => void,
+  onBlur?: (e: JBDateInputEventType<FocusEvent>) => void,
 }
 export function useEvents(element:RefObject<JBDateInputWebComponent>,props:EventProps){
   useEvent(element, 'load', props.onLoad, true);
@@ -40,4 +42,6 @@ export function useEvents(element:RefObject<JBDateInputWebComponent>,props:Event
   useEvent(element, 'keydown', props.onKeyDown, false);
   useEvent(element, 'keypress', props.onKeyPress, true);
   useEvent(element, 'select', props.onSelect, true);
+  useEvent(element, 'focus', props.onFocus, true);
+  useEvent(element, 'blur', props.onBlur, true);
 }
