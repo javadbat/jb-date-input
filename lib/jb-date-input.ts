@@ -375,12 +375,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
   }
   #registerEventListener() {
-    this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this), { passive: true });
-    this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this), { passive: true });
+    this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this), { passive: false, capture:true });
+    this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this), { passive: false, capture:true });
     this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
-    this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this), { passive: true });
-    this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this), { passive: true });
-    this.elements.input.addEventListener('keydown', this.#onInputKeydown.bind(this));
+    this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this), { capture:true });
+    this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this), { capture:true });
+    this.elements.input.addEventListener('keydown', this.#onInputKeydown.bind(this),{capture:true});
     //
     this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocused.bind(this));
     this.elements.calendarTriggerButton.addEventListener('blur', this.#onCalendarButtonBlur.bind(this));
@@ -496,7 +496,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   setFormat(newFormat: string) {
     //override new format base on user config
     this.#dateFactory.valueFormat = newFormat;
-    //if we have min and max  date setted before format set we set them again so it works
+    //if we have min and max  date settled before format set we set them again so it works
     const minDate = this.getAttribute('min');
     if (minDate) {
       this.#setMinDate(minDate);
@@ -684,9 +684,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #onInputKeyup(e: KeyboardEvent) {
     this.#updateValueFromInputString(this.#sInputValue);
-    this.#callOnInputKeyup(e);
+    this.#dispatchOnInputKeyup(e);
   }
-  #callOnInputKeyup(e: KeyboardEvent) {
+  #dispatchOnInputKeyup(e: KeyboardEvent) {
     e.stopPropagation();
     const event = createKeyboardEvent("keyup",e,{cancelable:false});
     this.dispatchEvent(event);
@@ -961,7 +961,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #onInputFocus(e: FocusEvent) {
     this.#lastInputStringValue = this.#sInputValue;
     this.focus();
-    //dont add once:true here becuse we need to detect every caret pos change during the type and then remove it from our input on blur
+    //dont add once:true here because we need to detect every caret pos change during the type and then remove it from our input on blur
     document.addEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
     this.#dispatchFocusEvent(e);
   }

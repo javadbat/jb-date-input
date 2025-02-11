@@ -28,6 +28,10 @@ export type EventProps = {
   * when user select the date in picker
   */
   onSelect?: (e: JBDateInputEventType<CustomEvent>) => void,
+  /**
+   * when user press enter button
+   */
+  onEnter?: (e: JBDateInputEventType<CustomEvent>) => void,
   onFocus?: (e: JBDateInputEventType<FocusEvent>) => void,
   onBlur?: (e: JBDateInputEventType<FocusEvent>) => void,
 }
