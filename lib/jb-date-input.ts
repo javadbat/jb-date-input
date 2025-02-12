@@ -375,12 +375,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
   }
   #registerEventListener() {
-    this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this), { passive: false, capture:true });
-    this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this), { passive: false, capture:true });
+    this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this), { passive: false, capture:false });
+    this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this), { passive: false, capture:false });
     this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
-    this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this), { capture:true });
-    this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this), { capture:true });
-    this.elements.input.addEventListener('keydown', this.#onInputKeydown.bind(this),{capture:true});
+    this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this), { capture:false });
+    this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this), { capture:false });
+    this.elements.input.addEventListener('keydown', this.#onInputKeydown.bind(this),{capture:false});
     //
     this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocused.bind(this));
     this.elements.calendarTriggerButton.addEventListener('blur', this.#onCalendarButtonBlur.bind(this));
@@ -683,6 +683,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.dispatchEvent(keyPressEvent);
   }
   #onInputKeyup(e: KeyboardEvent) {
+    debugger;
     this.#updateValueFromInputString(this.#sInputValue);
     this.#dispatchOnInputKeyup(e);
   }
