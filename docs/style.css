@@ -26,17 +26,16 @@
     direction:ltr
   }
   .custom-style{
-    --jb-date-input-border-radius:0;
-    --jb-date-input-border-color:#888;
-    --jb-date-input-border-color-focus:#000;
-    --jb-date-input-bgcolor:#fff;
-    --jb-date-input-message-box-color:blue;
-    --jb-date-input-border-bottom-width:1px;
-    --jb-date-input-label-font-size	:1.3em;
-    --jb-date-input-value-color:#434343;
-    --jb-date-input-value-font-size:1.3em;
-    --jb-date-input-calender-wrapper-bg-color:#fefefe;
-    --jb-date-input-calender-wrapper-border-radius:0;
+    --jb-input-border-radius:0;
+    --jb-input-border-color:#888;
+    --jb-input-border-color-focus:#000;
+    --jb-input-bgcolor:#fff;
+    --jb-input-message-box-color:blue;
+    --jb-input-border-bottom-width:1px;
+    --jb-input-label-font-size	:1.3em;
+    --jb-input-value-color:#434343;
+    --jb-input-value-font-size:1.3em;
+    --jb-popover-border-radius:0;
     --jb-calendar-arrow-button-border-radius:0;
   }
   .ltr-dir{
