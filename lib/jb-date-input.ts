@@ -13,10 +13,9 @@ import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayB
 import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorInput} from 'jb-validation';
 import { requiredValidation } from './validations';
-import { isMobile } from '../../../common/scripts/device-detection';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
-import { createInputEvent, createKeyboardEvent, createFocusEvent } from 'jb-core';
+import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile } from 'jb-core';
 export * from "./types.js";
 
 if (HTMLElement == undefined) {
@@ -375,12 +374,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
   }
   #registerEventListener() {
-    this.elements.input.addEventListener('blur', this.#onInputBlur.bind(this), { passive: false, capture:false });
-    this.elements.input.addEventListener('focus', this.#onInputFocus.bind(this), { passive: false, capture:false });
     this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
-    this.elements.input.addEventListener('keypress', this.#onInputKeyPress.bind(this), { capture:false });
-    this.elements.input.addEventListener('keyup', this.#onInputKeyup.bind(this), { capture:false });
-    this.elements.input.addEventListener('keydown', this.#onInputKeydown.bind(this),{capture:false});
+    listenAndSilentEvent(this.elements.input, 'focus', this.#onInputFocus.bind(this),{passive:true});
+    listenAndSilentEvent(this.elements.input, 'blur', this.#onInputBlur.bind(this),{passive:true});
+    listenAndSilentEvent(this.elements.input, 'keypress', this.#onInputKeyPress.bind(this));
+    listenAndSilentEvent(this.elements.input, 'keyup', this.#onInputKeyup.bind(this));
+    listenAndSilentEvent(this.elements.input, 'keydown', this.#onInputKeydown.bind(this));
+
     //
     this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocused.bind(this));
     this.elements.calendarTriggerButton.addEventListener('blur', this.#onCalendarButtonBlur.bind(this));
@@ -683,7 +683,6 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.dispatchEvent(keyPressEvent);
   }
   #onInputKeyup(e: KeyboardEvent) {
-    debugger;
     this.#updateValueFromInputString(this.#sInputValue);
     this.#dispatchOnInputKeyup(e);
   }

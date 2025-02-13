@@ -8,7 +8,7 @@
         "../../../common/hooks/**/*.js",
         "lib/**/*.ts",
         "lib/**/*.tsx"
-    ],
+, "../../jb-core/lib/device-detection.ts"    ],
     "exclude": [
         "node_modules",
         "**/*.spec.ts",

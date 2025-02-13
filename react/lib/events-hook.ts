@@ -21,7 +21,7 @@ export type EventProps = {
   onChange?: (e: JBDateInputEventType<Event>) => void,
   onInput?: (e: JBDateInputEventType<InputEvent>) => void,
   onBeforeInput?: (e: JBDateInputEventType<InputEvent>) => void,
-  onKeyUp1?: (e: JBDateInputEventType<KeyboardEvent>) => void,
+  onKeyUp?: (e: JBDateInputEventType<KeyboardEvent>) => void,
   onKeyPress?: (e: JBDateInputEventType<KeyboardEvent>) => void,
   onKeyDown?: (e: JBDateInputEventType<KeyboardEvent>) => void,
   /*
@@ -42,7 +42,7 @@ export function useEvents(element:RefObject<JBDateInputWebComponent>,props:Event
   useEvent(element, 'change', props.onChange, true);
   useEvent(element, 'beforeinput', props.onBeforeInput, false);
   useEvent(element, 'input', props.onInput, true);
-  useEvent(element, 'keyup', props.onKeyUp1, true);
+  useEvent(element, 'keyup', props.onKeyUp, true);
   useEvent(element, 'keydown', props.onKeyDown, false);
   useEvent(element, 'keypress', props.onKeyPress, true);
   useEvent(element, 'select', props.onSelect, true);
