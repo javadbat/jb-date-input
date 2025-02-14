@@ -400,22 +400,14 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (this.#isAllSubComponentInitiated) {
       return Promise.resolve();
     }
-    const inputPromise = new Promise<void>((resolve) => {
-      this.elements.input.addEventListener('init', () => {
-        resolve();
-      }, { once: true, passive: true });
-    });
-    const calendarPromise = new Promise<void>((resolve) => {
-      this.elements.calendar.addEventListener('init', () => {
-        resolve();
-      }, { once: true, passive: true });
-    });
-    const popoverPromise = new Promise<void>((resolve) => {
-      this.elements.popover.addEventListener('init', () => {
-        resolve();
-      }, { once: true, passive: true });
-    });
-    await Promise.all([inputPromise, calendarPromise, popoverPromise]);
+    await customElements.whenDefined("jb-input");
+    await customElements.whenDefined("jb-calendar");
+    await customElements.whenDefined("jb-popover");
+    // const calendarPromise = new Promise<void>((resolve) => {
+    //   this.elements.calendar.addEventListener('init', () => {
+    //     resolve();
+    //   }, { once: true, passive: true });
+    // });
     this.#isAllSubComponentInitiated = true;
     return Promise.resolve();
   }

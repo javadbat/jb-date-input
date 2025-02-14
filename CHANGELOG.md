@@ -1,7 +1,10 @@
 # changelog
 
-## [5.4.5] - 2025-02-13
+## [5.4.6] - 2025-02-14
+### fixed:
+- fix input type assignment in UMD modules
 
+## [5.4.5] - 2025-02-13
 ### new features:
 - add new Events like `onLoad`,`onInit`, `onInvalid`, `onInput`, `onBeforeInput`, `onKeyPress`, `onKeyDown` to react component & `beforeinput`, `input`, `keydown` to web component.
 - add `jb-core` as a dependency to make all events following the new events standard.
