@@ -10,12 +10,11 @@ import type { JBFormInputStandards } from 'jb-form';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
 import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
-import { enToFaDigits, faToEnDigits } from '../../../common/scripts/persian-helper';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorInput} from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
-import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile } from 'jb-core';
+import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits } from 'jb-core';
 export * from "./types.js";
 
 if (HTMLElement == undefined) {
