@@ -1,7 +1,7 @@
 {
     "name": "@jb/date-input",
     "tasks": {
-      "build":"deno run --allow-run --allow-read --allow-write --allow-net --allow-env --allow-sys --allow-ffi jsr:@design-system/builder@0.0.9 build --path=./build-config.ts"
+      "build":"deno run --allow-run --allow-read --allow-write --allow-net --allow-env --allow-sys --allow-ffi jsr:@design-system/builder@0.0.12 build --path=./build-config.ts"
     },
     "nodeModulesDir":"manual",
 
@@ -14,6 +14,7 @@
       "date-fns": "npm:date-fns@4.1.0",
       "jb-popover":"npm:jb-popover@1.1.0",
       "jb-core":"npm:jb-core@0.2.0",
-      "date-fns-jalali": "npm:date-fns-jalali@4.1.0-0"
+      "date-fns-jalali": "npm:date-fns-jalali@4.1.0-0",
+      "react":"npm:react@18.2.0"
     }
   }
