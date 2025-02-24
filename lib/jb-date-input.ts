@@ -10,7 +10,7 @@ import type { JBFormInputStandards } from 'jb-form';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
 import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
-import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorInput} from 'jb-validation';
+import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorInput } from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
@@ -28,12 +28,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #internals?: ElementInternals;
   elements!: ElementsObject;
   #validation = new ValidationHelper<ValidationValue>({
-    clearValidationError:this.clearValidationError.bind(this),
-    getValue:() => this.#validationValue,
-    getValidations:this.#getInsideValidations.bind(this),
-    getValueString:(val) => val.text,
-    setValidationResult:this.#setValidationResult.bind(this),
-    showValidationError:this.showValidationError.bind(this)
+    clearValidationError: this.clearValidationError.bind(this),
+    getValue: () => this.#validationValue,
+    getValidations: this.#getInsideValidations.bind(this),
+    getValueString: (val) => val.text,
+    setValidationResult: this.#setValidationResult.bind(this),
+    showValidationError: this.showValidationError.bind(this)
   }
   )
   #isAutoValidationDisabled = false;
@@ -68,6 +68,28 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       (this.#internals as any).states?.delete("disabled");
     }
   }
+  //selection input behavior
+  get selectionStart(): number {
+    return this.elements.input.selectionStart;
+  }
+  set selectionStart(value: number) {
+    this.elements.input.selectionStart = value;
+  }
+  get selectionEnd(): number {
+    return this.elements.input.selectionEnd;
+  }
+  set selectionEnd(value: number) {
+    this.elements.input.selectionEnd = value;
+  }
+  get selectionDirection(): "forward" | "backward" | "none" {
+    return this.elements.input.selectionDirection;
+  }
+  set selectionDirection(value: "forward" | "backward" | "none") {
+    this.elements.input.selectionDirection = value;
+  }
+  setSelectionRange(start: number | null, end: number | null, direction?: "forward" | "backward" | "none") {
+    this.elements.input.setSelectionRange(start, end, direction);
+  }
   #required = false;
   set required(value: boolean) {
     this.#required = value;
@@ -90,9 +112,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   //set an empty date value as a default initial value
   initialValue: string | null = null;
-  get isDirty(){
+  get isDirty() {
     //when initial value is null mean we calculate and build value string base on format, value type , etc on every check to make sure is dirty works well on empty value in every scenario
-    return this.value !== (this.initialValue??this.#dateFactory.getDateValueStringFromValueObject(getEmptyValueObject(), this.valueType));
+    return this.value !== (this.initialValue ?? this.#dateFactory.getDateValueStringFromValueObject(getEmptyValueObject(), this.valueType));
   }
   get #validationValue(): ValidationValue {
     return {
@@ -374,8 +396,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #registerEventListener() {
     this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
-    listenAndSilentEvent(this.elements.input, 'focus', this.#onInputFocus.bind(this),{passive:true});
-    listenAndSilentEvent(this.elements.input, 'blur', this.#onInputBlur.bind(this),{passive:true});
+    listenAndSilentEvent(this.elements.input, 'focus', this.#onInputFocus.bind(this), { passive: true });
+    listenAndSilentEvent(this.elements.input, 'blur', this.#onInputBlur.bind(this), { passive: true });
     listenAndSilentEvent(this.elements.input, 'keypress', this.#onInputKeyPress.bind(this));
     listenAndSilentEvent(this.elements.input, 'keyup', this.#onInputKeyup.bind(this));
     listenAndSilentEvent(this.elements.input, 'keydown', this.#onInputKeydown.bind(this));
@@ -575,7 +597,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   /**
    * this event generate by ourself in before input after input done
    */
-  #onInputInput(e:InputEvent){
+  #onInputInput(e: InputEvent) {
     this.#dispatchOnInputEvent(e);
   }
   #dispatchOnInputEvent(e: InputEvent): void {
@@ -593,7 +615,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #onInputBeforeInput(e: InputEvent) {
     const isPrevented = this.#dispatchBeforeInputEvent(e);
-    if(isPrevented){
+    if (isPrevented) {
       return;
     }
     //TODO: handel range selection
@@ -670,7 +692,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #onInputKeyPress(e: KeyboardEvent) {
     e.stopPropagation();
-    const keyPressEvent = createKeyboardEvent('keypress',e, {cancelable:false});
+    const keyPressEvent = createKeyboardEvent('keypress', e, { cancelable: false });
     this.dispatchEvent(keyPressEvent);
   }
   #onInputKeyup(e: KeyboardEvent) {
@@ -679,16 +701,16 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #dispatchOnInputKeyup(e: KeyboardEvent) {
     e.stopPropagation();
-    const event = createKeyboardEvent("keyup",e,{cancelable:false});
+    const event = createKeyboardEvent("keyup", e, { cancelable: false });
     this.dispatchEvent(event);
   }
   #onInputKeydown(e: KeyboardEvent) {
     const notCancelled = this.#dispatchKeyDownEvent(e);
-    if(!notCancelled){
+    if (!notCancelled) {
       e.preventDefault();
       return;
     }
-    const target = (e.target as HTMLInputElement);
+    const target = (e.target as JBInputWebComponent);
     if (e.keyCode == 38 || e.keyCode == 40) {
       //up and down button
       const caretPos = target.selectionStart!;
@@ -708,33 +730,33 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
 
   }
-  #dispatchKeyDownEvent(e:KeyboardEvent){
+  #dispatchKeyDownEvent(e: KeyboardEvent) {
     e.stopPropagation();
-    const event = createKeyboardEvent("keydown",e,{cancelable:false});
+    const event = createKeyboardEvent("keydown", e, { cancelable: false });
     return this.dispatchEvent(event);
   }
   #addYear(interval: number) {
     const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
-    const {hour,minute,millisecond,second} = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay,hour,minute,second,millisecond);
+    const { hour, minute, millisecond, second } = this.#valueObject.time;
+    this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay, hour, minute, second, millisecond);
     this.#updateInputTextFromValue();
   }
   #addMonth(interval: number) {
     const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
-    const {hour,minute,millisecond,second} = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay,hour,minute,second,millisecond);
+    const { hour, minute, millisecond, second } = this.#valueObject.time;
+    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour, minute, second, millisecond);
     this.#updateInputTextFromValue();
   }
   #addDay(interval: number) {
     const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
-    const {hour,minute,millisecond,second} = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth, currentDay + interval,hour,minute,second,millisecond);
+    const { hour, minute, millisecond, second } = this.#valueObject.time;
+    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth, currentDay + interval, hour, minute, second, millisecond);
     this.#updateInputTextFromValue();
   }
   /**
@@ -806,7 +828,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
 
     if (dateInObject.year && dateInObject.month && dateInObject.day) {
 
-      this.#setDateValueFromNumbers(parseInt(dateInObject.year), parseInt(dateInObject.month), parseInt(dateInObject.day),parseInt(dateInObject.hour??'00'),parseInt(dateInObject.minute??'00'),parseInt(dateInObject.second??'00'),parseInt(dateInObject.millisecond??'000'));
+      this.#setDateValueFromNumbers(parseInt(dateInObject.year), parseInt(dateInObject.month), parseInt(dateInObject.day), parseInt(dateInObject.hour ?? '00'), parseInt(dateInObject.minute ?? '00'), parseInt(dateInObject.second ?? '00'), parseInt(dateInObject.millisecond ?? '000'));
     } else {
       if (value !== null && value !== undefined && value !== '') {
         console.error('your inputted Date doest match default or your specified Format');
@@ -818,10 +840,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   /**
    * @description set value object base on currently valueType
    */
-  #setDateValueFromNumbers(year: number, month: number, day: number, hour?:number, minute?:number, second?:number, millisecond?:number) {
+  #setDateValueFromNumbers(year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number) {
     const prevYear = this.yearValue;
     const prevMonth = this.monthValue;
-    const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnValueType(year, month, day, prevYear, prevMonth,hour,minute,second,millisecond);
+    const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnValueType(year, month, day, prevYear, prevMonth, hour, minute, second, millisecond);
     this.#valueObject = result;
     this.#updateCalendarView();
   }
@@ -831,11 +853,11 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    * @param {number} month jalali or gregorian month
    * @param {number} day jalali or gregorian day
    */
-  #setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number, hour?:number, minute?:number, second?:number, millisecond?:number) {
+  #setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number) {
     //TODO: refactor this component to use date value as a core object
     const prevYear = this.yearBaseOnInputType;
     const prevMonth = this.monthBaseOnInputType;
-    const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth,hour,minute,second,millisecond);
+    const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth, hour, minute, second, millisecond);
     this.#valueObject = result;
     this.#updateCalendarView();
     this.#updateFormAssociatedValue();
@@ -892,12 +914,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const res = this.#inputRegex.exec(inputString);
     if (res && res.groups) {
       //TODO: update this when support date time and get times factor from input
-      const {hour,minute,millisecond,second} = this.#valueObject.time;
+      const { hour, minute, millisecond, second } = this.#valueObject.time;
       const year = parseInt(res.groups.year);
       const month = parseInt(res.groups.month);
       const day = parseInt(res.groups.day);
-      if(year && month && day){
-        this.#setDateValueFromNumberBaseOnInputType(year, month, day ,hour,minute,second,millisecond);
+      if (year && month && day) {
+        this.#setDateValueFromNumberBaseOnInputType(year, month, day, hour, minute, second, millisecond);
       }
     }
   }
@@ -940,14 +962,14 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    * @param { string }newString newly typed String
    */
   #checkIfInputTextIsChangedFromLastTime(newString: string) {
-    const updatePrevValue = ()=>{
+    const updatePrevValue = () => {
       this.#lastInputStringValue = newString;
     };
     if (this.#lastInputStringValue != newString) {
       this.#lastInputStringValue = newString;
-      return {isUpdated:true,updatePrevValue};
+      return { isUpdated: true, updatePrevValue };
     }
-    return {isUpdated:false,updatePrevValue};
+    return { isUpdated: false, updatePrevValue };
   }
   #onInputFocus(e: FocusEvent) {
     this.#lastInputStringValue = this.#sInputValue;
@@ -956,9 +978,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     document.addEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
     this.#dispatchFocusEvent(e);
   }
-  #dispatchFocusEvent(e:FocusEvent){
+  #dispatchFocusEvent(e: FocusEvent) {
     e.stopPropagation();
-    const event = createFocusEvent("focus",e,{cancelable:false});
+    const event = createFocusEvent("focus", e, { cancelable: false });
     this.dispatchEvent(event);
   }
   #onInputBlur(e: FocusEvent) {
@@ -974,18 +996,18 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       this.#updateValueFromInputString(inputText);
       const dispatchedEvent = this.#dispatchOnChangeEvent();
       this.#checkValidity(true);
-      if(dispatchedEvent.defaultPrevented){
+      if (dispatchedEvent.defaultPrevented) {
         e.preventDefault();
         this.#updateValueFromInputString(this.#lastInputStringValue);
-      }else{
+      } else {
         changeTestRes.updatePrevValue();
       }
     }
     this.#dispatchBlurEvent(e);
   }
-  #dispatchBlurEvent(e:FocusEvent){
+  #dispatchBlurEvent(e: FocusEvent) {
     e.stopPropagation();
-    const event = createFocusEvent("blur",e,{cancelable:false});
+    const event = createFocusEvent("blur", e, { cancelable: false });
     this.dispatchEvent(event);
   }
   #onCalendarBlur(e: FocusEvent) {
@@ -994,12 +1016,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       this.showCalendar = false;
     }
   }
-  #onPopoverClose(){
+  #onPopoverClose() {
     this.showCalendar = false;
     this.elements.input.blur();
   }
   #dispatchOnChangeEvent() {
-    const event = new Event('change', {composed:true, bubbles:true,cancelable:true});
+    const event = new Event('change', { composed: true, bubbles: true, cancelable: true });
     this.dispatchEvent(event);
     return event;
   }
@@ -1036,7 +1058,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
     return validationList;
   }
-  showValidationError(error:ShowValidationErrorInput | string) {
+  showValidationError(error: ShowValidationErrorInput | string) {
     this.elements.input.showValidationError(error);
   }
   clearValidationError() {
@@ -1089,14 +1111,14 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const { year, month, day } = target.value;
     if (year && month && day) {
       const prevValueDate = structuredClone(this.valueInDate);
-      const {hour,minute,millisecond,second} = this.#valueObject.time;
-      this.#setDateValueFromNumberBaseOnInputType(year, month, day,hour,minute,second,millisecond);
+      const { hour, minute, millisecond, second } = this.#valueObject.time;
+      this.#setDateValueFromNumberBaseOnInputType(year, month, day, hour, minute, second, millisecond);
       this.#updateInputTextFromValue();
       this.showCalendar = false;
       this.#callOnDateSelect();
       this.#checkValidity(true);
       const dispatchedEvent = this.#dispatchOnChangeEvent();
-      if(dispatchedEvent.defaultPrevented){
+      if (dispatchedEvent.defaultPrevented) {
         e.preventDefault();
         this.#setDateValueFromDate(prevValueDate);
         this.#updateInputTextFromValue();
@@ -1132,7 +1154,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #checkValidity(showError: boolean) {
     if (!this.isAutoValidationDisabled) {
-      return this.#validation.checkValidity({showError});
+      return this.#validation.checkValidity({ showError });
     }
   }
   /**
@@ -1141,7 +1163,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
  * this method used by #internal of component
  */
   checkValidity(): boolean {
-    const validationResult = this.#validation.checkValiditySync({showError:false});
+    const validationResult = this.#validation.checkValiditySync({ showError: false });
     if (!validationResult.isAllValid) {
       this.#dispatchInvalidEvent();
     }
@@ -1152,13 +1174,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
  * @description this method used to check for validity and show error to user
  */
   reportValidity(): boolean {
-    const validationResult = this.#validation.checkValiditySync({showError:true});
+    const validationResult = this.#validation.checkValiditySync({ showError: true });
     if (!validationResult.isAllValid) {
       this.#dispatchInvalidEvent();
     }
     return validationResult.isAllValid;
   }
-  #dispatchInvalidEvent(){
+  #dispatchInvalidEvent() {
     const event = new CustomEvent('invalid');
     this.dispatchEvent(event);
   }
@@ -1175,7 +1197,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         if (!res.isValid) {
           if (res.validation.stateType) {
             states[res.validation.stateType] = true;
-          }else{
+          } else {
             states["customError"] = true;
           }
           if (message == '') { message = res.message; }
@@ -1185,7 +1207,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       this.#internals.setValidity(states, message);
     }
   }
-  get validationMessage(){
+  get validationMessage() {
     return this.#internals.validationMessage;
   }
 }

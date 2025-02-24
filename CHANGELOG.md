@@ -1,5 +1,15 @@
 # changelog
 
+## [5.5.0] - 2025-02-24
+### fixed:
+- fix `calendarDefaultDateView` when assigning input-type after ward.
+- fix arrow key increase and decrease value by keyboard.
+- fix calendar overflow in mobile browser with bottom navigation.
+- fix time stamp value assignment bug
+
+### new features:
+- add `selectionStart`, `selectionEnd` and `setSelectionRange` methods and properties,
+
 ## [5.4.6] - 2025-02-14
 ### fixed:
 - fix input type assignment in UMD modules

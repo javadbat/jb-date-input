@@ -205,6 +205,10 @@ export class DateFactory {
     }
     getDateValueObjectFromTimeStamp(timestamp: number): JBDateInputValueObject {
       const date = new Date(timestamp);
+      if(!isFinite(+date)){
+        //if date was invalid
+        return getEmptyValueObject();
+      }
       return this.getDateObjectValueFromDateValue(date);
     }
     /**
