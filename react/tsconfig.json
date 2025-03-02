@@ -1,7 +1,14 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
-        "rootDir": "./lib"
+        "rootDir": "./lib",
+        "skipLibCheck":true,
+        "paths": {
+        "jb-date-input": 
+            [
+                "../"
+            ],
+        }
     },
     "include": [
         "lib/**/*.ts",

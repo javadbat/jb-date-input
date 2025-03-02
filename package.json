@@ -62,6 +62,7 @@
     "jb-form":">=0.6.10"
   },
   "peerDependencies": {
+    "tslib": "^2.8.1",
     "react":">=18.2.0"
   }
 }

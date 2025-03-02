@@ -18,7 +18,7 @@ declare global {
       name?: string,
       "value-type"?: string,
       "input-type"?: string,
-      // ref:React.RefObject<JBDateInputWebComponent>,
+      ref:React.RefObject<JBDateInputWebComponent>,
     }
   }
 }

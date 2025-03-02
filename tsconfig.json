@@ -4,7 +4,7 @@
         "rootDir": "./lib"
     },
     "include": [
-        "../global.d.ts",
+        "./global.d.ts",
         "lib/**/*.ts",
     ],
     "exclude": [
