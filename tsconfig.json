@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
-        "baseUrl": "."
+        "baseUrl": ".",
+        "rootDir": "./lib"
     },
     "include": [
         "../global.d.ts",
@@ -11,5 +12,5 @@
         "**/*.spec.ts",
         "dist",
     ],
-    "extends":"../tsconfig-web-component.json"
+    "extends":"jb-core/configs/tsconfig-web-component.json"
 }

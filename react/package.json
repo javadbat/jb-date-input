@@ -31,12 +31,13 @@
   "main": "index.js",
   "module": "index.js",
   "homepage": "https://github.com/javadbat/jb-date-input-react",
-  "types": "./dist/web-component/jb-date-input/react/lib/JBDateInput.d.ts",
+  "types": "./dist/JBDateInput.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/javadbat/jb-date-input-react"
   },
   "dependencies": {
-    "jb-date-input": ">=5.1.0"
+    "jb-date-input": ">=5.1.0",
+    "jb-core":">=0.0.3"
   }
 }

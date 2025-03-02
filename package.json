@@ -48,7 +48,7 @@
     "type": "git",
     "url": "https://github.com/javadbat/jb-date-input"
   },
-  "types": "./dist/web-component/jb-date-input/lib/jb-date-input.d.ts",
+  "types": "./dist/jb-date-input.d.ts",
   "dependencies": {
     "date-fns": "^4.1.0",
     "date-fns-jalali": "^4.1.0-0",
