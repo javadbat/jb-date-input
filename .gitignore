@@ -1,3 +1,4 @@
 node_modules/
 dist/
 react/dist
+package-lock.json
