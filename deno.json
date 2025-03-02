@@ -13,7 +13,7 @@
       "jb-input": "npm:jb-input@3.6.0",
       "date-fns": "npm:date-fns@4.1.0",
       "jb-popover":"npm:jb-popover@1.1.0",
-      "jb-core":"npm:jb-core@0.2.0",
+      "jb-core":"npm:jb-core@0.4.0",
       "date-fns-jalali": "npm:date-fns-jalali@4.1.0-0",
       "react":"npm:react@18.2.0"
     }
