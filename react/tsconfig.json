@@ -3,16 +3,11 @@
         "baseUrl": ".",
         "rootDir": "./lib",
         "skipLibCheck":true,
-        "paths": {
-        "jb-date-input": 
-            [
-                "../"
-            ],
-        }
+        "allowJs": false
     },
     "include": [
         "lib/**/*.ts",
-        "lib/**/*.tsx"
+        "lib/**/*.tsx",
     ],
     "exclude": [
         "node_modules",

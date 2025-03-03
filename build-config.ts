@@ -22,6 +22,7 @@ export const reactComponentList: ReactComponentBuildConfig[] = [
       "prop-types": "PropTypes",
       "jb-date-input": "JBDateInput",
       "jb-validation": "JBValidation",
+      "jb-core":"JBCore",
       "jb-core/react":"JBCoreReact"
     },
     umdName: "JBDateInputReact",

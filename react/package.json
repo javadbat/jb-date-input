@@ -28,8 +28,8 @@
     "lib/",
     "dist/"
   ],
-  "main": "index.js",
-  "module": "index.js",
+  "main": "main.js",
+  "module": "main.js",
   "homepage": "https://github.com/javadbat/jb-date-input-react",
   "types": "./dist/JBDateInput.d.ts",
   "repository": {
