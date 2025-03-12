@@ -1,0 +1,26 @@
+.parent-full-width{
+    width: 100%;
+}
+.parent-percent-width{
+    width: 50%;
+}
+.parent-pixel-width{
+    width: 300px;
+}
+.self-full-width{
+    width: 100%;
+}
+.self-percent-width{
+    width: 50%;
+}
+
+.self-pixel-width{
+    width: 300px;
+}
+.self-pixel-height{
+    --jb-input-height:70px;
+}
+.parent-pixel-height{
+    --jb-input-height:70px;
+}
+
