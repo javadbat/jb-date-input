@@ -1,4 +1,7 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import React, { useRef } from "react";
+
 import { JBDateInput, Props } from "jb-date-input/react";
 import JBDateInputGregorianTest from "./samples/JBDateInputGregorianTestPage";
 import JBDateInputJalaliTest from "./samples/JBDateInputJalaliTestPage";
@@ -6,7 +9,6 @@ import JBDateInputTimeStampTest from "./samples/JBDateInputTimeStampTestPage";
 import DarkModeTest from "./samples/DarkmodeTest";
 import JBDateInputSizeTest from "./samples/JBDateInputSizeTest";
 import InFormData from "./samples/InFormData";
-import type { Meta, StoryObj } from '@storybook/react';
 
 
 const meta: Meta<Props> = {
@@ -32,6 +34,13 @@ export const CustomFormat: Story = {
     inputType: "JALALI",
     format: "YYYY/MM/DD",
     direction: "ltr",
+  },
+  play:({canvasElement})=>{
+    const canvas = within(canvasElement);
+    const dateInput = canvasElement.querySelector('jb-date-input')!;
+    expect(dateInput).toBeInTheDocument();
+    userEvent.click(dateInput);
+    userEvent.type(dateInput,"14000631");
   }
 };
 
