@@ -3,6 +3,7 @@ import {type JBInputWebComponent} from 'jb-input';
 import {type JBPopoverWebComponent} from 'jb-popover';
 import type {EventTypeWithTarget} from 'jb-core';
 import { JBDateInputWebComponent } from './jb-date-input';
+
 export type ElementsObject = {
     input: JBInputWebComponent;
     calendarTriggerButton: HTMLDivElement;
