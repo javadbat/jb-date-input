@@ -1,5 +1,5 @@
 <div class="jb-date-input-web-component">
-    <jb-input disable-auto-validation>
+    <jb-input disable-auto-validation part="input">
         <div class="date-input-end-section" slot="end-section">
             <div class="calendar-trigger" tabindex="0" >
                 <slot name="calendar-trigger-icon">
@@ -17,7 +17,7 @@
         </div>
         <!-- <slot name="end-section"></slot> -->
     </jb-input>
-    <jb-popover>
-        <jb-calendar tabindex="0"></jb-calendar>
+    <jb-popover part="popover">
+        <jb-calendar tabindex="0" part="calendar"></jb-calendar>
     </jb-popover>
 </div>
