@@ -124,6 +124,14 @@ export const DarkMode: Story = {
   render: () => <DarkModeTest />
 };
 
+export const withError: Story = {
+  args: {
+    label: "with default error",
+    error:'error message',
+    message:'default message'
+  }
+};
+
 export const sizeTest: Story = {
   render: () => <JBDateInputSizeTest></JBDateInputSizeTest>
 };

@@ -14,7 +14,7 @@ this component is a simple react component that use [jb-date-input](https://gith
 
 - can set min and max date value
 
-- web component so it can be used in every framework and even purejs project
+- web component so it can be used in every framework and even pure-js project
 
 - responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard)
 
@@ -32,7 +32,7 @@ this component is a simple react component that use [jb-date-input](https://gith
 
 - support `esm` import build for modern `ECMA Script` nodejs app. 
 
-Demo & Sample    
+Demo & Sample:
 in codepen: <https://codepen.io/javadbat/pen/qBRyYKY>    
 in codeSandBox: [codeSandbox preview](https://3f63dj.csb.app/samples/jb-date-input) for just see the demo and [codeSandbox editor](https://codesandbox.io/p/sandbox/jb-design-system-3f63dj?file=%2Fsrc%2Fsamples%2FJBDateInput.tsx) if you want to see and play with code
 
@@ -100,7 +100,7 @@ you can set placeholder to show it to user when input is empty. to doing so just
 ```
 ## custom validation
 
-beside of min and max you can also set your own custom validation like any other jb react components family to achive this you must create a array of validations and pass it to validationList props.
+beside of min and max you can also set your own custom validation like any other jb react components family to achieve this, you must create a array of validations and pass it to validationList props.
 
 ```js
 const validationList = [
@@ -125,6 +125,11 @@ const validationList = [
 ```jsx
     <JBDateInput validationList={validationList}></JBDateInput>
 ```
+you can also pass your own error message to show as an error under the input field:
+
+```jsx
+    <JBDateInput error="your error message"></JBDateInput>
+```
 
 
 remember your min and max date must be in the same format and valueType of your value.
@@ -139,8 +144,8 @@ const MyForm = (props) => {
     return(
         <div>
             <JBDateInput ref={dateElementRef}></JBDateInput>
-            <button onClick={()=>{setValidationResult(dateElementRef.current.triggerInputValidation(true))}}>check and show validation error</button>
-            <button onClick={()=>{setValidationResult(dateElementRef.current.triggerInputValidation(false))}}>check validation</button>
+            <button onClick={()=>{setValidationResult(dateElementRef.current.reportValidity())}}>check and show validation error</button>
+            <button onClick={()=>{setValidationResult(dateElementRef.current.checkValidity(false))}}>check validation</button>
         </div>
         )
     };
@@ -164,8 +169,8 @@ const MyForm = (props) => {
 
 ## date input type
 
-jb-calendar support both jalali and gregorian(miladi) calendar input type. like value-type that let you determine how you want to provide/expect data to/from JBDateInput you can specify how user must fill the date input.
-to achive this you have to set `inputType` props or set `inputType` object to component  directly using your elements ref.
+jb-calendar support both jalali and gregorian(milady) calendar input type. like value-type that let you determine how you want to provide/expect data to/from JBDateInput you can specify how user must fill the date input.
+to achieve this you have to set `inputType` props or set `inputType` object to component  directly using your elements ref.
 to set it as props you can set value like this:
 
 ```jsx
@@ -250,46 +255,15 @@ if you want to set a custom style to this react-component all you need is to set
 ```css
 body{
 /* if you need more margin */
-  --jb-date-input-margin: 16px 32px
-/* if you dont waant rounded corner */
-  --jb-date-input-border-radius:0px;
+  --jb-date-input-margin: 16px 32px;
+/* if you dont want rounded corner */
+  --jb-input-border-radius:0px;
 /* if you want different text color*/
-  --jb-date-input-value-color:red;
+  --jb-input-value-color:red;
 }
 ```
 #### variable list
-this list may be outdated so i suggest you to read [jb-date-input](https://github.com/javadbat/jb-date-input) doc for more updated list of styles
-
-| css variable name                             | description                                                               |
-| -------------                                 | -------------                                                             |
-| --jb-date-input-margin                        | web-component margin default is `0 12px`                                  |
-| --jb-date-input-border-radius                 | web-component border-radius default is `16px`                             |
-| --jb-date-input-border-color                  | border color of select in normal mode                                     |
-| --jb-date-input-border-color-focus            | border color when user focus on input                                     |
-| --jb-date-input-bgcolor                       | background color of input                                                 |
-| --jb-date-input-message-box-display           | default is block but if you set it to none message box will be hidden     |
-| --jb-date-input-message-box-color             | change color of message under box                                         | 
-| --jb-date-input-message-box-color-error       | change color of message under box                                         |
-| --jb-date-input-message-box-font-size         | font-size of message box under the input box                              |
-| --jb-date-input-message-box-font-weight       | font-weight of message box under the input box                            |
-| --jb-date-input-message-box-padding           | font-size of message box under the input box                              | 
-| --jb-date-input-text-align                    | text align of input                                                       |
-| --jb-date-input-box-height                    | height of input box                                                       |
-| --jb-date-input-border-width                  | general border width default is `1px`                                     |
-| --jb-date-input-border-bottom-width           | border bottom width default is `3px`                                      |
-| --jb-date-input-label-font-size               | font size of date input label default is `0.8em`                          |
-| --jb-date-input-label-margin                  | change label margin default is `0 4px`                                    |
-| --jb-date-input-label-weight                  | label font-weight default is normal                                       |
-| --jb-date-input-placeholder-color             | input placeholder color default is `initial`                              |
-| --jb-date-input-placeholder-font-size         | place holder font size default is `1.1em`                                 |
-| --jb-date-input-value-color                   | date input value color default is `#1f1735`                               |
-| --jb-date-input-value-font-size               | date input value font-size                                                |
-| --jb-date-input-calender-wrapper-bg-color     | calender background color default color is `#fff`                         |
-| --jb-date-input-calendar-wrapper-z-index      | opend calendar `z-index` is `10` but you can change it to number you want |
-| --jb-date-input-calender-wrapper-border-radius| calendar border radius default is `24px`                                  |
-| --jb-date-input-input-margin                  | input margin default is `4px 0`                                           |
-| --jb-date-input-box-shadow                    | input box-shadow default is none                                          |
-| --jb-date-input-box-shadow-focus              | input box-shadow when input is focused default is none                    |
+if you want the full variable list read [jb-date-input](https://github.com/javadbat/jb-date-input) doc for more updated list of styles and css variables.
 
 
 ## add custom element in input box

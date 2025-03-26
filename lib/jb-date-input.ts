@@ -10,7 +10,7 @@ import type { JBFormInputStandards } from 'jb-form';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
 import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
-import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorInput } from 'jb-validation';
+import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
@@ -440,7 +440,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     });
   }
   static get dateInputObservedAttributes() {
-    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'show-persian-number', 'placeholder', 'disabled'];
+    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'show-persian-number', 'placeholder', 'disabled','error'];
   }
   static get observedAttributes() {
     return [...JBInputWebComponent.observedAttributes, ...JBDateInputWebComponent.dateInputObservedAttributes];
@@ -502,6 +502,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         break;
       case 'disabled':
         this.disabled = value === "" || value == "true";
+        break;
+      case 'error':
+        this.reportValidity();
         break;
     }
 
@@ -1035,6 +1038,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #getInsideValidations() {
     const validationList: ValidationItem<ValidationValue>[] = [];
+    if(this.getAttribute("error") !== null && this.getAttribute("error").trim().length > 0){
+      validationList.push({
+        validator: undefined,
+        message: this.getAttribute("error"),
+        stateType: "customError"
+      });
+    }
     if (this.required) {
       validationList.push(requiredValidation);
     }
@@ -1056,13 +1066,17 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         stateType: "rangeOverflow"
       });
     }
+
     return validationList;
   }
-  showValidationError(error: ShowValidationErrorInput | string) {
+  showValidationError(error: ShowValidationErrorParameters) {
     this.elements.input.showValidationError(error);
+    (this.#internals as any).states?.add("invalid");
   }
   clearValidationError() {
     this.elements.input.clearValidationError();
+    (this.#internals as any).states?.delete("invalid");
+   
   }
   #onCalendarElementInitiated() {
     this.elements.calendar.dateRestrictions.min = this.dateRestrictions.min;
