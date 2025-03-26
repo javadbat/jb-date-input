@@ -9,8 +9,8 @@
     "exports": "./mod.ts",
     "imports": {
       "jb-calendar": "npm:jb-calendar@4.1.5",
-      "jb-validation": "npm:jb-validation@0.2.0",
-      "jb-input": "npm:jb-input@3.6.0",
+      "jb-validation": "npm:jb-validation@0.4.0",
+      "jb-input": "npm:jb-input@3.8.0",
       "date-fns": "npm:date-fns@4.1.0",
       "jb-popover":"npm:jb-popover@1.1.0",
       "jb-core":"npm:jb-core@0.4.0",
