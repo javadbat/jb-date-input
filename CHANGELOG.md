@@ -1,5 +1,10 @@
 # changelog
 
+## [5.6.0] - 2025-03-26
+### new features:
+- add `error` prop/attribute to show custom error message.
+- add part name `input`,`calendar`,`popover` for date input parts for easier access for styling
+
 ## [5.5.0] - 2025-02-24
 ### fixed:
 - fix `calendarDefaultDateView` when assigning input-type after ward.
