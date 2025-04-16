@@ -1,5 +1,9 @@
 # changelog
 
+## [5.7.0] - 2025-04-16
+### Breaking changes:
+- use jb-design-system color palette colors instead of internal color codes
+
 ## [5.6.0] - 2025-03-26
 ### new features:
 - add `error` prop/attribute to show custom error message.

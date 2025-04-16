@@ -1,0 +1,4 @@
+:host{
+  --calendar-icon-color: var(--jb-date-input-calendar-icon-color, var(--jb-neutral-6));
+  --calendar-icon-color-active: var(--jb-date-input-calendar-icon-color-active, var(--jb-neutral));
+}

@@ -15,6 +15,7 @@ import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
 import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits } from 'jb-core';
+import {defineColors} from 'jb-core/theme';
 export * from "./types.js";
 
 if (HTMLElement == undefined) {
@@ -368,6 +369,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       mode: 'open',
       delegatesFocus: true
     });
+    defineColors();
     const html = `<style>${CSS}</style>` + '\n' + HTML;
     const element = document.createElement('template');
     element.innerHTML = html;

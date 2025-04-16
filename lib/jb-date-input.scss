@@ -1,3 +1,5 @@
+@use './variables.css';
+
 :host(:focus),
 :host(:focus-visible) {
     outline: none;
@@ -20,7 +22,7 @@
         &.--active {
             svg {
                 .cls-1 {
-                    fill: #1f1735;
+                    fill: var(--calendar-icon-color-active);
                 }
             }
         }
@@ -30,7 +32,7 @@
             height: 100%;
 
             .cls-1 {
-                fill: #bbb;
+                fill: var(--calendar-icon-color);
 
             }
         }

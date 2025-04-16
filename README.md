@@ -308,6 +308,8 @@ more than above here is the css variable that we use in jb-date-input itself:
 | --jb-date-input-calendar-trigger-display      | set it no none to hide calendar icon                                      |
 | --jb-date-input-calendar-trigger-width        | set calendar icon width                                                   |
 | --jb-date-input-calendar-trigger-height       | set calendar icon height                                                  |
+| --jb-date-input-calendar-icon-color           | calendar icon color                                                       |
+| --jb-date-input-calendar-icon-color-active    | calendar icon color when calendar is open                                 |
 
 ## add custom element in input box
 
