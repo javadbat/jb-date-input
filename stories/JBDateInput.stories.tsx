@@ -11,7 +11,7 @@ import InFormData from "./samples/InFormData";
 
 
 const meta: Meta<Props> = {
-  title: "Example/form elements/Inputs/JBDateInput",
+  title: "Components/form elements/Inputs/JBDateInput",
   component: JBDateInput,
 };
 export default meta;

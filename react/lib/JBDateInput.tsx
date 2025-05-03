@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef, DetailedHTMLProps, HTMLAttributes, PropsWithChildren } from 'react';
 import 'jb-date-input';
 // eslint-disable-next-line no-duplicate-imports

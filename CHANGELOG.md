@@ -1,5 +1,9 @@
 # Changelog  
 
+## [5.8.0] - 2025-05-03
+### new features:
+- use jb-design-system  radius values 
+
 ## [5.7.0] - 2025-04-16
 ### Breaking changes:
 - use jb-design-system color palette colors instead of internal color codes
