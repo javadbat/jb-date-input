@@ -1,0 +1,15 @@
+import {Meta, Title, Story, Controls, Stories} from '@storybook/blocks';
+import * as DateInputStories from './JBDateInput.stories';
+
+<Meta of={DateInputStories} parameters={{
+    docs: {
+      iframeHeight: '100px', // Controls all child stories
+    },
+  }}/>
+
+<Title>JB Date Input</Title>
+
+jalali & gregorian date input component.
+
+<Story of={DateInputStories.Normal} height='30rem'/>
+<Controls />
