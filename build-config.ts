@@ -16,10 +16,9 @@ export const reactComponentList: ReactComponentBuildConfig[] = [
     name: "jb-date-input-react",
     path: "./react/lib/JBDateInput.tsx",
     outputPath: "./react/dist/JBDateInput.js",
-    external: ["react", "prop-types", "jb-date-input", "jb-validation", "jb-core"],
+    external: ["react", "jb-date-input", "jb-validation", "jb-core"],
     globals: {
       react: "React",
-      "prop-types": "PropTypes",
       "jb-date-input": "JBDateInput",
       "jb-validation": "JBValidation",
       "jb-core":"JBCore",
