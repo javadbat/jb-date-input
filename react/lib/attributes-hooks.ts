@@ -7,6 +7,7 @@ export type JBDateInputAttributes = {
   min?: string | null | undefined | Date,
   max?: string | null | undefined | Date,
   message?: string,
+  name?: string,
   format?: string,
   direction?: 'ltr' | 'rtl',
   value?: string | Date | null | undefined,
@@ -51,7 +52,13 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
     }
 
   }, [props.max]);
-  
+    useEffect(() => {
+    if(props.name){
+        element?.current?.setAttribute('name', props.name || '');
+      }else{
+        element?.current?.removeAttribute('name');
+      }
+  }, [props.name]);
   useEffect(() => {
     if (props.min) {
       if (props.format && props.format !== element.current?.valueFormat) {

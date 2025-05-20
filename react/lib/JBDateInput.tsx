@@ -28,7 +28,6 @@ declare global {
 type JBDateInputProps = EventProps & JBDateInputAttributes & {
   className?: string,
   label?: string,
-  name?: string,
   valueType?: 'GREGORIAN' | 'JALALI' | 'TIME_STAMP',
   inputType?: 'GREGORIAN' | 'JALALI',
 }
@@ -43,7 +42,7 @@ export const JBDateInput = forwardRef((props: Props, ref) => {
   useJBDateInputAttribute(element,props);
   useEvents(element,props);
   return (
-    <jb-date-input class={props.className ? props.className : ""} name={props.name} label={props.label} value-type={props.valueType ? props.valueType : 'GREGORIAN'} ref={element} input-type={props.inputType ? props.inputType : 'JALALI'}>
+    <jb-date-input class={props.className ? props.className : ""} label={props.label} value-type={props.valueType ? props.valueType : 'GREGORIAN'} ref={element} input-type={props.inputType ? props.inputType : 'JALALI'}>
       {props.children}
     </jb-date-input>
   );

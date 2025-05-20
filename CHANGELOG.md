@@ -1,5 +1,9 @@
 # Changelog  
 
+## [5.8.1] - 2025-05-21
+### fixed:
+- fix name assignment on react 19
+
 ## [5.8.0] - 2025-05-03
 ### new features:
 - use jb-design-system  radius values 
