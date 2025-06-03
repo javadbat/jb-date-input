@@ -36,8 +36,9 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 Demo & Sample:    
 
-in github pages: <https://javadbat.github.io/jb-date-input/>    
-in codepen: <https://codepen.io/javadbat/pen/qBRyYKY> 
+[github pages](https://javadbat.github.io/jb-date-input/)
+[codepen](https://codepen.io/javadbat/pen/qBRyYKY)
+[storybook](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput)
 
 ## using with JS frameworks
 
