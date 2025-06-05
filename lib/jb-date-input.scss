@@ -7,16 +7,16 @@
 
 .jb-date-input-web-component {
     width: 100%;
-    margin: var(--jb-date-input-margin, 0 0);
+    margin: var(--margin);
     position: relative;
 
     &:focus-visible {
         outline: none;
     }
     .calendar-trigger {
-        display: var(--jb-date-input-calendar-trigger-display, block);
-        width: var(--jb-date-input-calendar-trigger-width, 1.5rem);
-        height: var(--jb-date-input-calendar-trigger-height, 1.5rem);
+        display: var(--calendar-trigger-display, block);
+        width: var(--calendar-trigger-width, 1.5rem);
+        height: var(--calendar-trigger-height, 1.5rem);
         cursor: pointer;
         object-fit: contain;
         &.--active {

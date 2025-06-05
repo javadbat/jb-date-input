@@ -1,5 +1,14 @@
 # Changelog  
 
+## [5.9.0] - 2025-06-05
+
+### new features:
+- add jsdoc to some public attribute and properties for more clarity.
+### refactor:
+- extract the validations and typing logic from component to stateless functions for next release plan of headless date input.
+- refactor `beforeinput` events and move logic to the `utils`.
+- remove `this` dependency from utils functions and make them stateless.
+
 ## [5.8.1] - 2025-05-21
 ### fixed:
 - fix name assignment on react 19

@@ -1,5 +1,6 @@
 import { type ValidationItem } from "jb-validation";
 import { type ValidationValue } from "./types";
+import { dictionary } from "./constants";
 
 export const requiredValidation:ValidationItem<ValidationValue> = {
   validator:(value:ValidationValue)=>{
@@ -10,6 +11,6 @@ export const requiredValidation:ValidationItem<ValidationValue> = {
       return true;
     }
   },
-  message:'لطفا مقدار تاریخ را کامل وارد کنید',
+  message:dictionary.errors.required,
   stateType:"valueMissing"
 };

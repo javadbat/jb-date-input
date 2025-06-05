@@ -6,23 +6,22 @@ import 'jb-popover';
 // eslint-disable-next-line no-duplicate-imports
 import { type JBCalendarWebComponent } from 'jb-calendar';
 import type { JBFormInputStandards } from 'jb-form';
-
+import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
-import { checkMaxValidation, checkMinValidation, getEmptyValueObject, handleDayBeforeInput, handleMonthBeforeInput } from './helpers';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, onInputBeforeInput } from './utils';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
 import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits } from 'jb-core';
-import {registerDefaultVariables} from 'jb-core/theme';
+import { registerDefaultVariables } from 'jb-core/theme';
 export * from "./types.js";
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser
   console.error('you cant render web component on a server side. try to load this component as a client side component');
 }
-const emptyInputValueString = '    /  /  ';
 //TODO: refactor date-input to use Date value as a core value so date object could be filled even with incomplete value
 export class JBDateInputWebComponent extends HTMLElement implements WithValidation<ValidationValue>, JBFormInputStandards<string> {
   static formAssociated = true;
@@ -38,19 +37,29 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   )
   #isAutoValidationDisabled = false;
+  /**
+   * component internal validation system will be disabled so you can control validation by yourself
+   */
   get isAutoValidationDisabled(): boolean {
     return this.#isAutoValidationDisabled;
   }
+  /**
+   * component internal validation system will be disabled so you can control validation by yourself
+  */
   set isAutoValidationDisabled(value: boolean) {
     this.#isAutoValidationDisabled = value;
   }
   #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("input-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
   #showCalendar = false;
-  inputFormat = 'YYYY/MM/DD';
-  #inputRegex = /^(?<year>[\u06F0-\u06F90-9,\s]{4})\/(?<month>[\u06F0-\u06F90-9,\s]{2})\/(?<day>[\u06F0-\u06F90-9,\s]{2})$/g;
+  /**
+   * jb date input internal validation mechanism works with 
+   */
   get validation() {
     return this.#validation;
   }
+  /**
+   * create a restriction for Dates user can input or select
+   */
   dateRestrictions: DateRestrictions = {
     min: null,
     max: null
@@ -69,29 +78,55 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       (this.#internals as any).states?.delete("disabled");
     }
   }
-  //selection input behavior
+  /**
+   * return start position of the selected text
+  */
   get selectionStart(): number {
     return this.elements.input.selectionStart;
   }
+  /**
+  * set start position of the selected text
+  */
   set selectionStart(value: number) {
     this.elements.input.selectionStart = value;
   }
+  /**
+  * return end position of the selected text
+  */
   get selectionEnd(): number {
     return this.elements.input.selectionEnd;
   }
+  /**
+  * set end position of the selected text
+  */
   set selectionEnd(value: number) {
     this.elements.input.selectionEnd = value;
   }
+  /**
+  * return the user selection direction
+  */
   get selectionDirection(): "forward" | "backward" | "none" {
     return this.elements.input.selectionDirection;
   }
+  /**
+  * set the user selection direction
+  */
   set selectionDirection(value: "forward" | "backward" | "none") {
     this.elements.input.selectionDirection = value;
   }
+  /**
+   * set input selection
+   * @param start start of the selection
+   * @param end end of the selection
+   * @param direction direction of the selection
+   */
   setSelectionRange(start: number | null, end: number | null, direction?: "forward" | "backward" | "none") {
     this.elements.input.setSelectionRange(start, end, direction);
   }
   #required = false;
+  /**
+   * if set true validation failed when user dont fill date completely
+   */
   set required(value: boolean) {
     this.#required = value;
     this.#checkValidity(false);
@@ -99,7 +134,6 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   get required() {
     return this.#required;
   }
-  DefaultValidationErrorMessage = "مقدار وارد شده نا معتبر است"
   #valueObject: JBDateInputValueObject = getEmptyValueObject();
   get name() { return this.getAttribute('name') || ''; }
   get form() { return this.#internals!.form; }
@@ -119,7 +153,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   get #validationValue(): ValidationValue {
     return {
-      inputObject: this.#dateFactory.getDateObjectValueBaseOnFormat(this.#sInputValue, this.inputFormat),
+      inputObject: this.#dateFactory.getDateObjectValueBaseOnFormat(this.#sInputValue, inputFormat),
       text: this.#sInputValue,
       valueText: this.value,
       valueObject: this.#valueObject
@@ -308,28 +342,22 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
   }
   get typedYear(): string {
-    const typedYear = this.inputValue.substring(0, 4);
-    return typedYear;
+    return getYear( this.inputValue)
   }
   get typedMonth(): string {
-    const typedMonth = this.inputValue.substring(5, 7);
-    return typedMonth;
+    return getMonth(this.inputValue);
   }
   get typedDay(): string {
-    const typedDay = this.inputValue.substring(8, 10);
-    return typedDay;
+    return getDay(this.inputValue);
   }
   get sTypedYear(): string {
-    const typedYear = this.#sInputValue.substring(0, 4);
-    return typedYear;
+    return getYear(this.#sInputValue);
   }
   get sTypedMonth(): string {
-    const typedMonth = this.#sInputValue.substring(5, 7);
-    return typedMonth;
+    return getMonth(this.#sInputValue);
   }
   get sTypedDay(): string {
-    const typedDay = this.#sInputValue.substring(8, 10);
-    return typedDay;
+    return getDay(this.#sInputValue);
   }
   get valueFormat() {
     return this.#dateFactory.valueFormat;
@@ -426,11 +454,6 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     await customElements.whenDefined("jb-input");
     await customElements.whenDefined("jb-calendar");
     await customElements.whenDefined("jb-popover");
-    // const calendarPromise = new Promise<void>((resolve) => {
-    //   this.elements.calendar.addEventListener('init', () => {
-    //     resolve();
-    //   }, { once: true, passive: true });
-    // });
     this.#isAllSubComponentInitiated = true;
     return Promise.resolve();
   }
@@ -442,7 +465,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     });
   }
   static get dateInputObservedAttributes() {
-    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'show-persian-number', 'placeholder', 'disabled','error'];
+    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'show-persian-number', 'placeholder', 'disabled', 'error'];
   }
   static get observedAttributes() {
     return [...JBInputWebComponent.observedAttributes, ...JBDateInputWebComponent.dateInputObservedAttributes];
@@ -511,6 +534,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
 
   }
+  /**
+   * set the date value string format for parsing and converting.
+   * @param newFormat 
+   */
   setFormat(newFormat: string) {
     //override new format base on user config
     this.#dateFactory.valueFormat = newFormat;
@@ -565,42 +592,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       console.error(`max date ${dateInput} is not valid and it will be ignored`, '\n', 'please provide max date in format : ' + this.#dateFactory.valueFormat);
     }
   }
-  inputChar(char: string, pos: number) {
-    this.#inputChar(char, pos);
-  }
   #inputChar(char: string, pos: number) {
-    if (pos == 4 || pos == 7) {
-      char = '/';
-    }
-    if (pos > 9 || pos < 0) {
-      return;
-    }
-    this.#inputRegex.lastIndex = 0;
-    const newValueArr = this.#inputValue.split('');
-    if (this.#showPersianNumber) {
-      char = enToFaDigits(char);
-    }
-    newValueArr[pos] = char;
-    const newValue = newValueArr.join('');
-    //due ro performance issue i remove validation check on every char input
-    // const isValid = this.#inputRegex.test(newValue);
-    // if (isValid) {
+    const currentValue = this.#inputValue
+    const newValue = replaceChar(char, pos, currentValue, this.#showPersianNumber);
     this.#inputValue = newValue;
-    //}
-  }
-  #isValidChar(char: string) {
-    //allow 0-9 ۰-۹ and / char only
-    return /[\u06F0-\u06F90-9/]/g.test(char);
-  }
-  #standardString(dateString: string) {
-    //TODO: convert en to persian or persian to en base on user config
-    const sNumString = faToEnDigits(dateString);
-    //convert dsd137/06/31rer to 1373/06/31
-    const sString = sNumString.replace(/[^\u06F0-\u06F90-9/]/g, '');
-    return sString;
   }
   /**
-   * this event generate by ourself in before input after input done
+   * this event generate by ourself in "onInputBeforeInput" after input done
    */
   #onInputInput(e: InputEvent) {
     this.#dispatchOnInputEvent(e);
@@ -623,73 +621,35 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (isPrevented) {
       return;
     }
-    //TODO: handel range selection
-    const inputSelectionStart = (e.target as HTMLInputElement).selectionStart!;
-    const baseCaretPos = inputSelectionStart;
-    const inputtedString: string | null = e.data;
-    if (inputtedString) {
-      //insert mode
-      //check if we are in placeholder mode we update or input text to standard mode
-      if (this.placeholder && this.#inputValue === "") {
+
+    const target = e.target as JBInputWebComponent;
+    //check if we are in placeholder mode we update or input text to standard mode
+    if (e.data) {
+      if (this.placeholder && target.value === "") {
         this.#inputValue = emptyInputValueString;
       }
-      // make string something like 1373/06/31 from dsd۱۳۷۳/06/31rer
-      const standardString = this.#standardString(inputtedString);
-      standardString.split('').forEach((inputtedChar: string, i: number) => {
-        let caretPos = baseCaretPos + i;
-        if (!this.#isValidChar(inputtedChar)) {
-          e.preventDefault();
-          return;
-        }
-        if (caretPos == 4 || caretPos == 7) {
-          // in / pos
-          if (inputtedChar == '/') {
-            (e.target as HTMLInputElement).setSelectionRange(caretPos + 1, caretPos + 1);
-          }
-          //push carrot if it behind / char
-          caretPos++;
-        }
-        // we want user typed char ignored in some scenario
-        let isIgnoreChar = false;
-        if (inputtedChar == '/') {
-          return;
-        }
-        const typedNumber = parseInt(inputtedChar);
-        if (caretPos == 5 && typedNumber > 1) {
-          //second pos of month
-          this.#inputChar("0", caretPos);
-          caretPos++;
-        }
-        const monthRes = handleMonthBeforeInput.call(this, typedNumber, caretPos);
-        caretPos = monthRes.caretPos;
-        const dayRes = handleDayBeforeInput.call(this, typedNumber, caretPos);
-        caretPos = dayRes.caretPos;
-        isIgnoreChar = isIgnoreChar || dayRes.isIgnoreChar || monthRes.isIgnoreChar;
-        if (!isIgnoreChar) {
-          this.#inputChar(inputtedChar, caretPos);
-          (e.target as HTMLInputElement).setSelectionRange(caretPos + 1, caretPos + 1);
-        }
-
-      });
-      e.preventDefault();
     }
-    if (e.inputType == 'deleteContentBackward' || e.inputType == 'deleteContentForward' || e.inputType == 'delete' || e.inputType == 'deleteByCut' || e.inputType == 'deleteByDrag') {
-      //delete mode
-      const inputSelectionEnd = (e.target as HTMLInputElement).selectionEnd!;
-      let d = 0;
-      if (e.inputType == 'deleteContentBackward') {
-        //backspace delete
-        d = -1;
-      }
-      for (let i = inputSelectionStart; i <= inputSelectionEnd; i++) {
-        this.#inputChar(' ', i + d);
-      }
-      this.elements.input.setSelectionRange(inputSelectionStart + d, inputSelectionStart + d);
-      //show placeholder if input were empty
-      if (this.placeholder && this.#inputValue == emptyInputValueString) {
-        this.#inputValue = "";
-      }
-      e.preventDefault();
+
+    onInputBeforeInput({
+      inputType: this.#dateFactory.inputType,
+      showPersianNumber:this.showPersianNumber,
+      event: {
+        data: e.data,
+        inputEventType: e.inputType,
+        preventDefault: e.preventDefault.bind(e),
+        target: {
+          selectionEnd: target.selectionEnd,
+          selectionStart: target.selectionStart,
+          setSelectionRange: target.setSelectionRange.bind(target),
+          getValue: () => this.#inputValue,
+          setValue: (value: string) => { this.#inputValue = value },
+        }
+      },
+    },);
+
+    //show placeholder if input were empty
+    if (this.placeholder && target.value == emptyInputValueString) {
+      this.#inputValue = "";
     }
     //because we preventDefault before input input will never be called so have to call it after we manually input all chars
     //TODO: make it cancellable
@@ -821,7 +781,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    * @description set date value from timestamp base on valueType
    */
   #setDateValueFromTimeStamp(value: string) {
-    const timeStamp = parseInt(value);
+    const timeStamp = Number(value);
     this.#valueObject = this.#dateFactory.getDateValueObjectFromTimeStamp(timeStamp);
     this.#updateCalendarView();
   }
@@ -833,7 +793,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
 
     if (dateInObject.year && dateInObject.month && dateInObject.day) {
 
-      this.#setDateValueFromNumbers(parseInt(dateInObject.year), parseInt(dateInObject.month), parseInt(dateInObject.day), parseInt(dateInObject.hour ?? '00'), parseInt(dateInObject.minute ?? '00'), parseInt(dateInObject.second ?? '00'), parseInt(dateInObject.millisecond ?? '000'));
+      this.#setDateValueFromNumbers(Number(dateInObject.year), Number(dateInObject.month), Number(dateInObject.day), Number(dateInObject.hour ?? '00'), Number(dateInObject.minute ?? '00'), Number(dateInObject.second ?? '00'), Number(dateInObject.millisecond ?? '000'));
     } else {
       if (value !== null && value !== undefined && value !== '') {
         console.error('your inputted Date doest match default or your specified Format');
@@ -875,7 +835,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       return;
     }
     //
-    let str = this.inputFormat;
+    let str = inputFormat;
     let yearString = '    ', monthString = '  ', dayString = '  ';
     if (year != null && !Number.isNaN(year)) {
       if (year < 10) {
@@ -916,13 +876,14 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    * @param {string}inputString 
    */
   #updateValueFromInputString(inputString: string) {
-    const res = this.#inputRegex.exec(inputString);
+    inputRegex.lastIndex = 0;
+    const res = inputRegex.exec(inputString);
     if (res && res.groups) {
       //TODO: update this when support date time and get times factor from input
       const { hour, minute, millisecond, second } = this.#valueObject.time;
-      const year = parseInt(res.groups.year);
-      const month = parseInt(res.groups.month);
-      const day = parseInt(res.groups.day);
+      const year = Number(res.groups.year);
+      const month = Number(res.groups.month);
+      const day = Number(res.groups.day);
       if (year && month && day) {
         this.#setDateValueFromNumberBaseOnInputType(year, month, day, hour, minute, second, millisecond);
       }
@@ -1040,7 +1001,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #getInsideValidations() {
     const validationList: ValidationItem<ValidationValue>[] = [];
-    if(this.getAttribute("error") !== null && this.getAttribute("error").trim().length > 0){
+    if (this.getAttribute("error") !== null && this.getAttribute("error").trim().length > 0) {
       validationList.push({
         validator: undefined,
         message: this.getAttribute("error"),
@@ -1055,7 +1016,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         validator: (value) => {
           return checkMinValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.min);
         },
-        message: 'تاریخ انتخابی کمتر از بازه مجاز است',
+        message: dictionary.errors.minRangeViolation,
         stateType: "rangeUnderflow"
       });
     }
@@ -1064,7 +1025,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         validator: (value) => {
           return checkMaxValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.max);
         },
-        message: 'تاریخ انتخابی بیشتر از بازه مجاز است',
+        message: dictionary.errors.maxRangeViolation,
         stateType: "rangeOverflow"
       });
     }
@@ -1078,7 +1039,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   clearValidationError() {
     this.elements.input.clearValidationError();
     (this.#internals as any).states?.delete("invalid");
-   
+
   }
   #onCalendarElementInitiated() {
     this.elements.calendar.dateRestrictions.min = this.dateRestrictions.min;

@@ -5,7 +5,7 @@
     },
     "nodeModulesDir":"manual",
 
-    "version": "0.0.4",
+    "version": "0.0.5",
     "exports": "./mod.ts",
     "imports": {
       "jb-calendar": "npm:jb-calendar@4.1.5",
