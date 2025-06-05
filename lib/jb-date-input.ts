@@ -1,4 +1,3 @@
-import HTML from './jb-date-input.html';
 import CSS from './jb-date-input.scss';
 import 'jb-calendar';
 import 'jb-input';
@@ -16,6 +15,7 @@ import { requiredValidation } from './validations';
 import { JBInputWebComponent } from 'jb-input';
 import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits } from 'jb-core';
 import { registerDefaultVariables } from 'jb-core/theme';
+import { renderHTML } from './render';
 export * from "./types.js";
 
 if (HTMLElement == undefined) {
@@ -398,7 +398,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       delegatesFocus: true
     });
     registerDefaultVariables();
-    const html = `<style>${CSS}</style>` + '\n' + HTML;
+    const html = `<style>${CSS}</style>` + '\n' + renderHTML();
     const element = document.createElement('template');
     element.innerHTML = html;
     shadowRoot.appendChild(element.content.cloneNode(true));
