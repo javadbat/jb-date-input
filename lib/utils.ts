@@ -24,16 +24,16 @@ export function getEmptyValueObject(): JBDateInputValueObject {
     }
   };
 }
-export function getMonth(value:string){
+export function getMonth(value: string) {
   return value.substring(5, 7)
 }
-export function getYear(value:string){
+export function getYear(value: string) {
   return value.substring(0, 4)
 }
-export function getDay(value:string){
+export function getDay(value: string) {
   return value.substring(8, 10)
 }
-export function handleDayBeforeInput(inputType:InputType, typedNumber: number, caretPos: number, inputChar: (char: string, pos: number) => void, getInputValue:()=>string): { isIgnoreChar: boolean, caretPos: number } {
+export function handleDayBeforeInput(inputType: InputType, typedNumber: number, caretPos: number, inputChar: (char: string, pos: number) => void, getInputValue: () => string): { isIgnoreChar: boolean, caretPos: number } {
   let isIgnoreChar = false;
   if (caretPos == 8 && typedNumber > 3) {
     inputChar("0", caretPos);
@@ -101,7 +101,6 @@ export function isValidChar(char: string) {
   return /[\u06F0-\u06F90-9/]/g.test(char);
 }
 export function standardString(dateString: string) {
-  //TODO: convert en to persian or persian to en base on user config
   const sNumString = faToEnDigits(dateString);
   //convert dsd137/06/31rer to 1373/06/31
   const sString = sNumString.replace(/[^\u06F0-\u06F90-9/]/g, '');
@@ -115,7 +114,7 @@ export function replaceChar(char: string, pos: number, currentValue: string, sho
     char = '/';
   }
   if (pos > 9 || pos < 0) {
-    return;
+    return currentValue;
   }
   const newValueArr = currentValue.split('');
   if (showPersianNumber) {
@@ -126,15 +125,15 @@ export function replaceChar(char: string, pos: number, currentValue: string, sho
   return newValue;
 }
 type BeforeInputParameters = {
-  inputType:InputType
-  showPersianNumber?:boolean,
-  event:{
+  inputType: InputType
+  showPersianNumber?: boolean,
+  event: {
     inputEventType: string,
-    data:string|null,
+    data: string | null,
     preventDefault: VoidFunction,
-    target:{
-      selectionStart:number,
-      selectionEnd:number,
+    target: {
+      selectionStart: number,
+      selectionEnd: number,
       setSelectionRange: (start: number, end: number) => void,
       setValue: (value: string) => void,
       //we need live value here
@@ -143,10 +142,16 @@ type BeforeInputParameters = {
   }
 }
 export function onInputBeforeInput(params: BeforeInputParameters) {
-  const {showPersianNumber,inputType,event:{data,inputEventType,preventDefault,target}} = params
+  const { showPersianNumber, inputType, event: { data, inputEventType, preventDefault, target } } = params
   const baseCaretPos = target.selectionStart;
-  function inputChar(char:string,pos:number){
-    target.setValue(replaceChar(char, pos,target.getValue(),showPersianNumber))
+  //where we put caret pos after all input operation done
+  let finalCaretPos = baseCaretPos;
+  let finalValue = target.getValue();
+  function inputChar(char: string, pos: number) {
+    finalValue = replaceChar(char, pos, finalValue, showPersianNumber);
+  }
+  function setSelectionRange(caretPosition: number) {
+    finalCaretPos = caretPosition;
   }
   if (data) {
     //insert mode
@@ -161,7 +166,7 @@ export function onInputBeforeInput(params: BeforeInputParameters) {
       if (caretPos == 4 || caretPos == 7) {
         // in / pos
         if (inputtedChar == '/') {
-          target.setSelectionRange(caretPos + 1, caretPos + 1);
+          setSelectionRange(caretPos + 1);
         }
         //push carrot if it behind / char
         caretPos++;
@@ -174,17 +179,18 @@ export function onInputBeforeInput(params: BeforeInputParameters) {
       const typedNumber = parseInt(inputtedChar);
       if (caretPos == 5 && typedNumber > 1) {
         //second pos of month
-        inputChar("0", caretPos) ;
+        inputChar("0", caretPos);
         caretPos++;
       }
       const monthRes = handleMonthBeforeInput(target.getValue(), typedNumber, caretPos);
       caretPos = monthRes.caretPos;
-      const dayRes = handleDayBeforeInput(inputType,typedNumber,caretPos,inputChar,target.getValue);
+      const dayRes = handleDayBeforeInput(inputType, typedNumber, caretPos, inputChar, target.getValue);
       caretPos = dayRes.caretPos;
       isIgnoreChar = isIgnoreChar || dayRes.isIgnoreChar || monthRes.isIgnoreChar;
       if (!isIgnoreChar) {
+        // here is when real input happen
         inputChar(inputtedChar, caretPos);
-        target.setSelectionRange(caretPos + 1, caretPos + 1);
+        setSelectionRange(caretPos + 1);
       }
     });
     preventDefault();
@@ -194,13 +200,15 @@ export function onInputBeforeInput(params: BeforeInputParameters) {
     let d = 0;
     if (inputEventType == 'deleteContentBackward') {
       //backspace delete
-      d = -1;
+      //if user want to delete a range we dont del pre char of selection and just delete the range
+      d = target.selectionStart !== target.selectionEnd ? 0 : -1;
     }
     for (let i = target.selectionStart; i <= target.selectionEnd; i++) {
       inputChar(' ', i + d);
     }
-    target.setSelectionRange(target.selectionStart + d, target.selectionStart + d);
+    setSelectionRange(target.selectionStart + d);
     preventDefault();
   }
-
+  target.setValue(finalValue);
+  target.setSelectionRange(finalCaretPos, finalCaretPos);
 }

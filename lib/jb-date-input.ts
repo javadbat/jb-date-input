@@ -22,7 +22,7 @@ if (HTMLElement == undefined) {
   //in case of server render or old browser
   console.error('you cant render web component on a server side. try to load this component as a client side component');
 }
-//TODO: refactor date-input to use Date value as a core value so date object could be filled even with incomplete value
+//TODO: refactor date-input to use Temporal value as a core value so date object could be filled even with incomplete value
 export class JBDateInputWebComponent extends HTMLElement implements WithValidation<ValidationValue>, JBFormInputStandards<string> {
   static formAssociated = true;
   #internals?: ElementInternals;
@@ -72,10 +72,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.#disabled = value;
     this.elements.input.disabled = value;
     if (value) {
-      //TODO: remove as any when typescript support
-      (this.#internals as any).states?.add("disabled");
+      this.#internals.states?.add("disabled");
     } else {
-      (this.#internals as any).states?.delete("disabled");
+      this.#internals.states?.delete("disabled");
     }
   }
   /**
@@ -819,7 +818,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    * @param {number} day jalali or gregorian day
    */
   #setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number) {
-    //TODO: refactor this component to use date value as a core object
+    //TODO: refactor this component to use Temporal value as a core object
     const prevYear = this.yearBaseOnInputType;
     const prevMonth = this.monthBaseOnInputType;
     const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth, hour, minute, second, millisecond);
@@ -879,7 +878,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     inputRegex.lastIndex = 0;
     const res = inputRegex.exec(inputString);
     if (res && res.groups) {
-      //TODO: update this when support date time and get times factor from input
+      //TODO: update this when support Temporal time and get times factor from input
       const { hour, minute, millisecond, second } = this.#valueObject.time;
       const year = Number(res.groups.year);
       const month = Number(res.groups.month);
