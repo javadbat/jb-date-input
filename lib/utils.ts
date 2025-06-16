@@ -3,6 +3,12 @@ import { type InputType } from "./jb-date-input";
 import { JBDateInputValueObject } from "./types";
 import { enToFaDigits, faToEnDigits } from "jb-core";
 
+function isLeapYearJalali(year: number) {
+  const matches = [1, 5, 9, 13, 17, 22, 26, 30];
+  const modulus = year % 33;
+  return matches.includes(modulus)
+}
+
 export function getEmptyValueObject(): JBDateInputValueObject {
   return {
     gregorian: {
@@ -33,37 +39,54 @@ export function getYear(value: string) {
 export function getDay(value: string) {
   return value.substring(8, 10)
 }
-export function handleDayBeforeInput(inputType: InputType, typedNumber: number, caretPos: number, inputChar: (char: string, pos: number) => void, getInputValue: () => string): { isIgnoreChar: boolean, caretPos: number } {
+export function handleDayBeforeInput(inputType: InputType, typedNumber: number, caretPos: number, value: string, inputChar: (char: string, pos: number) => void): { isIgnoreChar: boolean, caretPos: number } {
   let isIgnoreChar = false;
   if (caretPos == 8 && typedNumber > 3) {
     inputChar("0", caretPos);
     caretPos++;
   }
-  if (caretPos == 9 && typedNumber > 1 && getInputValue()[8] == "3") {
+  if (caretPos == 9 && typedNumber > 1 && value[8] == "3") {
     //prevent day input bigger than 31 for example 38 or 34
     isIgnoreChar = true;
   }
-  if (caretPos == 9 && typedNumber == 0 && getInputValue()[8] == "0") {
+  if (caretPos == 9 && typedNumber == 0 && value[8] == "0") {
     //prevent 00 for day
     isIgnoreChar = true;
   }
-  if (caretPos == 8 && typedNumber == 0 && getInputValue()[9] == "0") {
+  if (caretPos == 8 && typedNumber == 0 && value[9] == "0") {
     //prevent 00 for day
     isIgnoreChar = true;
   }
-  if (caretPos == 8 && typedNumber == 3 && getInputValue()[9] > "0") {
-    if (inputType == "JALALI") {
-      // when day is 09 and user type 3 it prevent 39 as a day 1400/08/|19 => type 1400/08/39 X we dont let it happen
-      if (getMonth(getInputValue()).length == 2 && parseInt(getInputValue()) > 6) {
-        //second six month of year in jalali have 30 day
-        inputChar("0", 9);
+
+  if (inputType == "JALALI" && !isIgnoreChar) {
+    const month = getMonth(value);
+    const monthNumber = Number(month);
+    if (caretPos == 9 && value[8] == "3" && typedNumber > 0 && monthNumber>6) {
+      //for the second half of the year month are 30 and 31 is not valid
+      isIgnoreChar = true;
+    }
+    if (caretPos == 8 && typedNumber == 3) {
+
+      if (monthNumber == 12) {
+        //if month was 12 we ignore 30,31 in date
+        const yearNumber = Number(getYear(value));
+        const isLeapYear = Number.isNaN(yearNumber) ? false : isLeapYearJalali(yearNumber);
+        if (!isLeapYear) {
+          isIgnoreChar = true;
+        }
       }
-      if (getMonth(getInputValue()).length == 2 && parseInt(getMonth(getInputValue())) < 7 && getInputValue()[9] > "1") {
-        //first six month of year in jalali have 31 day
-        inputChar("1", 9);
+      if (value[9] > "0") {
+        // when day is 09 and user type 3 it prevent 39 as a day 1400/08/|19 => type 1400/08/39 X we dont let it happen
+        if (month.length == 2 && parseInt(value) > 6) {
+          //second six month of year in jalali have 30 day
+          inputChar("0", 9);
+        }
+        if (month.length == 2 && monthNumber < 7 && value[9] > "1") {
+          //first six month of year in jalali have 31 day
+          inputChar("1", 9);
+        }
       }
     }
-
   }
   return { isIgnoreChar: isIgnoreChar, caretPos: caretPos };
 }
@@ -141,20 +164,33 @@ type BeforeInputParameters = {
     }
   }
 }
+type InputCharCB = (char: string, pos: number) => void
+type SetSelectionRangeCB = (pos: number) => void
 export function onInputBeforeInput(params: BeforeInputParameters) {
   const { showPersianNumber, inputType, event: { data, inputEventType, preventDefault, target } } = params
   const baseCaretPos = target.selectionStart;
   //where we put caret pos after all input operation done
   let finalCaretPos = baseCaretPos;
   let finalValue = target.getValue();
+  if (data) {
+    //insert mode
+    handleInsert();
+  }
+  if (inputEventType == 'deleteContentBackward' || inputEventType == 'deleteContentForward' || inputEventType == 'delete' || inputEventType == 'deleteByCut' || inputEventType == 'deleteByDrag') {
+    //delete mode
+    handleDelete(inputEventType, target.selectionStart, target.selectionEnd, inputChar, setSelectionRange, preventDefault);
+  }
+  target.setValue(finalValue);
+  target.setSelectionRange(finalCaretPos, finalCaretPos);
+
+  //internal functions
   function inputChar(char: string, pos: number) {
     finalValue = replaceChar(char, pos, finalValue, showPersianNumber);
   }
   function setSelectionRange(caretPosition: number) {
     finalCaretPos = caretPosition;
   }
-  if (data) {
-    //insert mode
+  function handleInsert() {
     // make string something like 1373/06/31 from dsd۱۳۷۳/06/31rer
     const StdString = standardString(params.event.data);
     StdString.split('').forEach((inputtedChar: string, i: number) => {
@@ -176,15 +212,15 @@ export function onInputBeforeInput(params: BeforeInputParameters) {
       if (inputtedChar == '/') {
         return;
       }
-      const typedNumber = parseInt(inputtedChar);
+      const typedNumber = Number(inputtedChar);
       if (caretPos == 5 && typedNumber > 1) {
         //second pos of month
         inputChar("0", caretPos);
         caretPos++;
       }
-      const monthRes = handleMonthBeforeInput(target.getValue(), typedNumber, caretPos);
+      const monthRes = handleMonthBeforeInput(finalValue, typedNumber, caretPos);
       caretPos = monthRes.caretPos;
-      const dayRes = handleDayBeforeInput(inputType, typedNumber, caretPos, inputChar, target.getValue);
+      const dayRes = handleDayBeforeInput(inputType, typedNumber, caretPos, finalValue, inputChar);
       caretPos = dayRes.caretPos;
       isIgnoreChar = isIgnoreChar || dayRes.isIgnoreChar || monthRes.isIgnoreChar;
       if (!isIgnoreChar) {
@@ -195,20 +231,21 @@ export function onInputBeforeInput(params: BeforeInputParameters) {
     });
     preventDefault();
   }
-  if (inputEventType == 'deleteContentBackward' || inputEventType == 'deleteContentForward' || inputEventType == 'delete' || inputEventType == 'deleteByCut' || inputEventType == 'deleteByDrag') {
-    //delete mode
-    let d = 0;
-    if (inputEventType == 'deleteContentBackward') {
-      //backspace delete
-      //if user want to delete a range we dont del pre char of selection and just delete the range
-      d = target.selectionStart !== target.selectionEnd ? 0 : -1;
-    }
-    for (let i = target.selectionStart; i <= target.selectionEnd; i++) {
-      inputChar(' ', i + d);
-    }
-    setSelectionRange(target.selectionStart + d);
-    preventDefault();
+
+
+}
+
+//used in before input handler to handel delete function
+function handleDelete(inputEventType: string, selectionStart: number, selectionEnd: number, inputChar: InputCharCB, setSelectionRange: SetSelectionRangeCB, preventDefault: VoidFunction) {
+  let d = 0;
+  if (inputEventType == 'deleteContentBackward') {
+    //backspace delete
+    //if user want to delete a range we dont del pre char of selection and just delete the range
+    d = selectionStart !== selectionEnd ? 0 : -1;
   }
-  target.setValue(finalValue);
-  target.setSelectionRange(finalCaretPos, finalCaretPos);
+  for (let i = selectionStart; i <= selectionEnd; i++) {
+    inputChar(' ', i + d);
+  }
+  setSelectionRange(selectionStart + d);
+  preventDefault();
 }

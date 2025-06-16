@@ -712,6 +712,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
+    if(currentMonth == 12 && currentDay>30){
+      return;
+    }
     this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour, minute, second, millisecond);
     this.#updateInputTextFromValue();
   }
