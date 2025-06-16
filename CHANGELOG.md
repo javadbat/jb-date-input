@@ -1,5 +1,9 @@
 # Changelog  
 
+## [5.9.1] - 2025-06-16
+### fixed:
+- fix 30 day "esfand" type by checking leap lear in both type and set month
+
 ## [5.9.0] - 2025-06-05
 
 ### new features:

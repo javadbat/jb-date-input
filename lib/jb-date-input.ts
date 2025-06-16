@@ -8,7 +8,7 @@ import type { JBFormInputStandards } from 'jb-form';
 import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, onInputBeforeInput } from './utils';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, onInputBeforeInput, isLeapYearJalali } from './utils';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
@@ -710,11 +710,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #addMonth(interval: number) {
     const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
     const currentMonth = this.monthDisplayValue || 1;
-    const currentDay = this.dayDisplayValue || 1;
+    let currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    if(currentMonth == 12 && currentDay>30){
-      return;
-    }
     this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour, minute, second, millisecond);
     this.#updateInputTextFromValue();
   }

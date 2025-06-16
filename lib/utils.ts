@@ -3,7 +3,7 @@ import { type InputType } from "./jb-date-input";
 import { JBDateInputValueObject } from "./types";
 import { enToFaDigits, faToEnDigits } from "jb-core";
 
-function isLeapYearJalali(year: number) {
+export function isLeapYearJalali(year: number) {
   const matches = [1, 5, 9, 13, 17, 22, 26, 30];
   const modulus = year % 33;
   return matches.includes(modulus)
