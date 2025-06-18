@@ -66,6 +66,11 @@ export type JBCalendarValue = {
     month: number | null;
     year: number | null;
 }
+export type BeforeInputHandlerResponse = {
+    value:string,
+    selectionStart:number,
+    selectionEnd:number
+}
 //because this._internal is not a standard we have to extend HTML ELEMENT to use it
 declare global {
     interface ElementInternals{

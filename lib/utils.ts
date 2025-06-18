@@ -1,6 +1,6 @@
 import { isAfter, isBefore, isEqual } from "date-fns";
 import { type InputType } from "./jb-date-input";
-import { JBDateInputValueObject } from "./types";
+import type { JBDateInputValueObject, BeforeInputHandlerResponse } from "./types";
 import { enToFaDigits, faToEnDigits } from "jb-core";
 
 export function isLeapYearJalali(year: number) {
@@ -61,7 +61,7 @@ export function handleDayBeforeInput(inputType: InputType, typedNumber: number, 
   if (inputType == "JALALI" && !isIgnoreChar) {
     const month = getMonth(value);
     const monthNumber = Number(month);
-    if (caretPos == 9 && value[8] == "3" && typedNumber > 0 && monthNumber>6) {
+    if (caretPos == 9 && value[8] == "3" && typedNumber > 0 && monthNumber > 6) {
       //for the second half of the year month are 30 and 31 is not valid
       isIgnoreChar = true;
     }
@@ -150,39 +150,34 @@ export function replaceChar(char: string, pos: number, currentValue: string, sho
 type BeforeInputParameters = {
   inputType: InputType
   showPersianNumber?: boolean,
+  value: string
+  selection: {
+    selectionStart: number,
+    selectionEnd: number,
+  }
   event: {
     inputEventType: string,
     data: string | null,
-    preventDefault: VoidFunction,
-    target: {
-      selectionStart: number,
-      selectionEnd: number,
-      setSelectionRange: (start: number, end: number) => void,
-      setValue: (value: string) => void,
-      //we need live value here
-      getValue: () => string
-    }
   }
 }
 type InputCharCB = (char: string, pos: number) => void
 type SetSelectionRangeCB = (pos: number) => void
-export function onInputBeforeInput(params: BeforeInputParameters) {
-  const { showPersianNumber, inputType, event: { data, inputEventType, preventDefault, target } } = params
-  const baseCaretPos = target.selectionStart;
+export function handleBeforeInput(params: BeforeInputParameters): BeforeInputHandlerResponse {
+  const { showPersianNumber, inputType, selection, event: { data, inputEventType } } = params
+  const baseCaretPos = selection.selectionStart;
   //where we put caret pos after all input operation done
   let finalCaretPos = baseCaretPos;
-  let finalValue = target.getValue();
+  let finalValue = params.value;
   if (data) {
     //insert mode
     handleInsert();
   }
   if (inputEventType == 'deleteContentBackward' || inputEventType == 'deleteContentForward' || inputEventType == 'delete' || inputEventType == 'deleteByCut' || inputEventType == 'deleteByDrag') {
     //delete mode
-    handleDelete(inputEventType, target.selectionStart, target.selectionEnd, inputChar, setSelectionRange, preventDefault);
+    handleDelete(inputEventType, selection.selectionStart, selection.selectionEnd, inputChar, setSelectionRange);
   }
-  target.setValue(finalValue);
-  target.setSelectionRange(finalCaretPos, finalCaretPos);
-
+  //return the result of before input handler
+  return { value: finalValue, selectionStart: finalCaretPos, selectionEnd: finalCaretPos }
   //internal functions
   function inputChar(char: string, pos: number) {
     finalValue = replaceChar(char, pos, finalValue, showPersianNumber);
@@ -196,7 +191,6 @@ export function onInputBeforeInput(params: BeforeInputParameters) {
     StdString.split('').forEach((inputtedChar: string, i: number) => {
       let caretPos = baseCaretPos + i;
       if (!isValidChar(inputtedChar)) {
-        preventDefault();
         return;
       }
       if (caretPos == 4 || caretPos == 7) {
@@ -229,14 +223,11 @@ export function onInputBeforeInput(params: BeforeInputParameters) {
         setSelectionRange(caretPos + 1);
       }
     });
-    preventDefault();
   }
-
-
 }
 
 //used in before input handler to handel delete function
-function handleDelete(inputEventType: string, selectionStart: number, selectionEnd: number, inputChar: InputCharCB, setSelectionRange: SetSelectionRangeCB, preventDefault: VoidFunction) {
+function handleDelete(inputEventType: string, selectionStart: number, selectionEnd: number, inputChar: InputCharCB, setSelectionRange: SetSelectionRangeCB) {
   let d = 0;
   if (inputEventType == 'deleteContentBackward') {
     //backspace delete
@@ -247,5 +238,4 @@ function handleDelete(inputEventType: string, selectionStart: number, selectionE
     inputChar(' ', i + d);
   }
   setSelectionRange(selectionStart + d);
-  preventDefault();
 }

@@ -323,6 +323,36 @@ example:
     <div slot="start-section">before</div>
 </jb-date-input>
 ```
+## Headless usage:(Experimental-)
+you can use `jb-design-system` headless functions to bring `jb-date-input` features to your own component.
+for doing so you just have to import some utils function and bind your input events and use them:
+```js
+import {handleBeforeInput,emptyInputValueString} from 'jb-date-input';
+
+const input = document.querySelector('input');
+// first make sure you input default value is emptyInputValueString value.
+input.value = emptyInputValueString
+// this will help you to control what user can type in input field
+input.addEventListener('beforeinput',(e)=>{
+    const beforeInputRes = handleBeforeInput({
+      inputType: 'JALALI',
+      showPersianNumber: false,
+      //current value before new input happen
+      value: e.target.value,
+      selection: {
+        selectionStart: e.target.selectionStart,
+        selectionEnd: e.target.selectionEnd,
+      },
+      event: {
+        data: e.data,
+        inputEventType: e.inputType,
+      },
+    });
+    e.preventDefault();
+    input.value = beforeInputRes.value;
+    input.setSelectionRange(beforeInputRes.selectionStart,beforeInputRes.selectionEnd);
+});
+```
 
 ## Other Related Docs:
 

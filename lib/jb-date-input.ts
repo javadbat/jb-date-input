@@ -8,7 +8,7 @@ import type { JBFormInputStandards } from 'jb-form';
 import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, onInputBeforeInput, isLeapYearJalali } from './utils';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, handleBeforeInput, isLeapYearJalali } from './utils';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
@@ -17,6 +17,8 @@ import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilen
 import { registerDefaultVariables } from 'jb-core/theme';
 import { renderHTML } from './render';
 export * from "./types.js";
+//headless usage exports
+export {handleBeforeInput, emptyInputValueString}
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser
@@ -341,7 +343,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
   }
   get typedYear(): string {
-    return getYear( this.inputValue)
+    return getYear(this.inputValue)
   }
   get typedMonth(): string {
     return getMonth(this.inputValue);
@@ -629,23 +631,22 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       }
     }
 
-    onInputBeforeInput({
+    const beforeInputRes = handleBeforeInput({
       inputType: this.#dateFactory.inputType,
-      showPersianNumber:this.showPersianNumber,
+      showPersianNumber: this.showPersianNumber,
+      value: this.#inputValue,
+      selection: {
+        selectionStart: target.selectionStart,
+        selectionEnd: target.selectionEnd,
+      },
       event: {
         data: e.data,
         inputEventType: e.inputType,
-        preventDefault: e.preventDefault.bind(e),
-        target: {
-          selectionEnd: target.selectionEnd,
-          selectionStart: target.selectionStart,
-          setSelectionRange: target.setSelectionRange.bind(target),
-          getValue: () => this.#inputValue,
-          setValue: (value: string) => { this.#inputValue = value },
-        }
       },
     },);
-
+    e.preventDefault();
+    this.#inputValue = beforeInputRes.value;
+    target.setSelectionRange(beforeInputRes.selectionStart,beforeInputRes.selectionEnd);
     //show placeholder if input were empty
     if (this.placeholder && target.value == emptyInputValueString) {
       this.#inputValue = "";
