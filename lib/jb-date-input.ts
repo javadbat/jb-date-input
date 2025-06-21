@@ -593,11 +593,6 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       console.error(`max date ${dateInput} is not valid and it will be ignored`, '\n', 'please provide max date in format : ' + this.#dateFactory.valueFormat);
     }
   }
-  #inputChar(char: string, pos: number) {
-    const currentValue = this.#inputValue
-    const newValue = replaceChar(char, pos, currentValue, this.#showPersianNumber);
-    this.#inputValue = newValue;
-  }
   /**
    * this event generate by ourself in "onInputBeforeInput" after input done
    */
@@ -632,7 +627,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
 
     const beforeInputRes = handleBeforeInput({
-      inputType: this.#dateFactory.inputType,
+      dateInputType: this.#dateFactory.inputType,
       showPersianNumber: this.showPersianNumber,
       value: this.#inputValue,
       selection: {
@@ -641,7 +636,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       },
       event: {
         data: e.data,
-        inputEventType: e.inputType,
+        inputType: e.inputType,
       },
     },);
     e.preventDefault();

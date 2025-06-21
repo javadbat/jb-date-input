@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useRef } from "react";
-import { JBDateInput, Props } from "jb-date-input/react";
+import { JBDateInput, Props, useJBDateInput } from "jb-date-input/react";
 import JBDateInputGregorianTest from "./samples/JBDateInputGregorianTestPage";
 import JBDateInputJalaliTest from "./samples/JBDateInputJalaliTestPage";
 import JBDateInputTimeStampTest from "./samples/JBDateInputTimeStampTestPage";
@@ -233,6 +233,19 @@ export const RightToLeftTest: Story = {
     style: "direction:rtl;"
   }
 }
+
+export const Headless: Story = {
+  render: (args) => {
+    const ref = useRef<HTMLInputElement>(null);
+    const {onBeforeInput,value, onChange} = useJBDateInput({dateInputType:"JALALI",ref,showPersianNumber:false})
+    return(
+      <input ref={ref} value={value} onBeforeInput={onBeforeInput} onChange={onChange}/>
+    )
+  },
+  args: {
+    
+  }
+};
 export const WithCustomIcon: Story = {
   render: (args) => (
     <JBDateInput {...args}>

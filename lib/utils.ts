@@ -148,7 +148,7 @@ export function replaceChar(char: string, pos: number, currentValue: string, sho
   return newValue;
 }
 type BeforeInputParameters = {
-  inputType: InputType
+  dateInputType: InputType
   showPersianNumber?: boolean,
   value: string
   selection: {
@@ -156,14 +156,14 @@ type BeforeInputParameters = {
     selectionEnd: number,
   }
   event: {
-    inputEventType: string,
+    inputType: string,
     data: string | null,
   }
 }
 type InputCharCB = (char: string, pos: number) => void
 type SetSelectionRangeCB = (pos: number) => void
 export function handleBeforeInput(params: BeforeInputParameters): BeforeInputHandlerResponse {
-  const { showPersianNumber, inputType, selection, event: { data, inputEventType } } = params
+  const { showPersianNumber, dateInputType, selection, event: { data, inputType } } = params
   const baseCaretPos = selection.selectionStart;
   //where we put caret pos after all input operation done
   let finalCaretPos = baseCaretPos;
@@ -172,9 +172,9 @@ export function handleBeforeInput(params: BeforeInputParameters): BeforeInputHan
     //insert mode
     handleInsert();
   }
-  if (inputEventType == 'deleteContentBackward' || inputEventType == 'deleteContentForward' || inputEventType == 'delete' || inputEventType == 'deleteByCut' || inputEventType == 'deleteByDrag') {
+  if (inputType == 'deleteContentBackward' || inputType == 'deleteContentForward' || inputType == 'delete' || inputType == 'deleteByCut' || inputType == 'deleteByDrag') {
     //delete mode
-    handleDelete(inputEventType, selection.selectionStart, selection.selectionEnd, inputChar, setSelectionRange);
+    handleDelete(inputType, selection.selectionStart, selection.selectionEnd, inputChar, setSelectionRange);
   }
   //return the result of before input handler
   return { value: finalValue, selectionStart: finalCaretPos, selectionEnd: finalCaretPos }
@@ -214,7 +214,7 @@ export function handleBeforeInput(params: BeforeInputParameters): BeforeInputHan
       }
       const monthRes = handleMonthBeforeInput(finalValue, typedNumber, caretPos);
       caretPos = monthRes.caretPos;
-      const dayRes = handleDayBeforeInput(inputType, typedNumber, caretPos, finalValue, inputChar);
+      const dayRes = handleDayBeforeInput(dateInputType, typedNumber, caretPos, finalValue, inputChar);
       caretPos = dayRes.caretPos;
       isIgnoreChar = isIgnoreChar || dayRes.isIgnoreChar || monthRes.isIgnoreChar;
       if (!isIgnoreChar) {

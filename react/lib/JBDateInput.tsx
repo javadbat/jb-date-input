@@ -9,6 +9,7 @@ import {EventProps, useEvents} from './events-hook.js';
 import { JBDateInputAttributes, useJBDateInputAttribute } from './attributes-hooks.js';
 // re-export imported types for easier use for user
 export {type JBDateInputValueObject, type ValidationItem, type ValidationValue, InputType };
+export {useJBDateInput} from './utils.js';
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {

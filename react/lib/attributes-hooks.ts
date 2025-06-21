@@ -3,7 +3,7 @@ import { type ValidationItem } from "jb-validation";
 import { CSSProperties, MutableRefObject, RefObject, useEffect, useRef } from "react";
 
 export type JBDateInputAttributes = {
-  style?: CSSProperties,
+  style?: CSSProperties | string,
   min?: string | null | undefined | Date,
   max?: string | null | undefined | Date,
   message?: string,
