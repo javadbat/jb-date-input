@@ -1,6 +1,5 @@
 'use client';
-
-import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef, DetailedHTMLProps, HTMLAttributes, PropsWithChildren } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, DetailedHTMLProps, HTMLAttributes, PropsWithChildren } from 'react';
 import 'jb-date-input';
 // eslint-disable-next-line no-duplicate-imports
 import { JBDateInputWebComponent,type ValidationValue, type JBDateInputValueObject, type InputType } from 'jb-date-input';
@@ -10,13 +9,13 @@ import { JBDateInputAttributes, useJBDateInputAttribute } from './attributes-hoo
 // re-export imported types for easier use for user
 export {type JBDateInputValueObject, type ValidationItem, type ValidationValue, InputType };
 export {useJBDateInput} from './utils.js';
-declare global {
+declare module "react" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
       'jb-date-input': JBDateInputType;
     }
-    interface JBDateInputType extends DetailedHTMLProps<HTMLAttributes<JBDateInputWebComponent>, JBDateInputWebComponent> {
+    interface JBDateInputType extends React.DetailedHTMLProps<React.HTMLAttributes<JBDateInputWebComponent>, JBDateInputWebComponent> {
       class?: string,
       label?: string,
       name?: string,
@@ -26,13 +25,16 @@ declare global {
     }
   }
 }
+
 type JBDateInputProps = EventProps & JBDateInputAttributes & {
   className?: string,
   label?: string,
   valueType?: 'GREGORIAN' | 'JALALI' | 'TIME_STAMP',
   inputType?: 'GREGORIAN' | 'JALALI',
 }
+
 export type Props = PropsWithChildren<JBDateInputProps>;
+
 export const JBDateInput = forwardRef((props: Props, ref) => {
   const element = useRef<JBDateInputWebComponent>(null);
   useImperativeHandle(

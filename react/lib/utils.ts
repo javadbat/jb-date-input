@@ -13,7 +13,7 @@ type Params = {
 }
 export function useJBDateInput(params: Params) {
   const [value, setValue] = useState(emptyInputValueString);
-  const resRef = useRef<BeforeInputHandlerResponse>()
+  const resRef = useRef<BeforeInputHandlerResponse>(null)
   useEffect(() => {
     if (resRef.current) {
       setTimeout(() => {
