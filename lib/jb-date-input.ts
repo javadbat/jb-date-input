@@ -631,8 +631,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       showPersianNumber: this.showPersianNumber,
       value: this.#inputValue,
       selection: {
-        selectionStart: target.selectionStart,
-        selectionEnd: target.selectionEnd,
+        start: target.selectionStart,
+        end: target.selectionEnd,
       },
       event: {
         data: e.data,

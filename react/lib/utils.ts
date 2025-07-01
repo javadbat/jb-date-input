@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type MutableRefObject, type InputEvent, type RefObject } from "react"
+import { useEffect, useRef, useState, type MutableRefObject, type RefObject } from "react"
 import { handleBeforeInput, type InputType, emptyInputValueString, type BeforeInputHandlerResponse } from 'jb-date-input';
+import {useEvent} from 'jb-core/react'
 type RefDom = {
   selectionStart: number | null,
   selectionEnd: number | null,
@@ -22,23 +23,27 @@ export function useJBDateInput(params: Params) {
       }, 0)
     }
   }, [value,resRef.current]);
-  function onBeforeInput(e: InputEvent<HTMLInputElement>) {
+  function onBeforeInput(e: InputEvent) {
     resRef.current = handleBeforeInput({
       dateInputType: params.dateInputType,
       selection: {
-        selectionStart: params.ref.current.selectionStart,
-        selectionEnd: params.ref.current.selectionEnd,
+        start: params.ref.current.selectionStart,
+        end: params.ref.current.selectionEnd,
       },
       value: value,
       showPersianNumber: params.showPersianNumber,
       event: {
-        inputType: e.type,
+        inputType: e.inputType,
         data: e.data
       }
     });
     e.preventDefault();
     setValue(resRef.current.value);
+    //we set it twice because in some scenario value dont change but selection range should be set
+    params.ref.current.setSelectionRange(resRef.current.selectionStart, resRef.current.selectionEnd);
+    // set the selection range after the value is set
+
   }
-  
-  return { onBeforeInput, value, setValue, onChange:()=>{} }
+  useEvent(params.ref, 'beforeinput', onBeforeInput);
+  return {value, setValue, onChange:()=>{} }
 }

@@ -237,9 +237,9 @@ export const RightToLeftTest: Story = {
 export const Headless: Story = {
   render: (args) => {
     const ref = useRef<HTMLInputElement>(null);
-    const {onBeforeInput,value, onChange} = useJBDateInput({dateInputType:"JALALI",ref,showPersianNumber:false})
+    const {value, onChange} = useJBDateInput({dateInputType:"JALALI",ref,showPersianNumber:false})
     return(
-      <input ref={ref} value={value} onBeforeInput={onBeforeInput} onChange={onChange}/>
+      <input ref={ref} value={value} onChange={onChange}/>
     )
   },
   args: {

@@ -152,8 +152,8 @@ type BeforeInputParameters = {
   showPersianNumber?: boolean,
   value: string
   selection: {
-    selectionStart: number,
-    selectionEnd: number,
+    start: number,
+    end: number,
   }
   event: {
     inputType: string,
@@ -164,7 +164,7 @@ type InputCharCB = (char: string, pos: number) => void
 type SetSelectionRangeCB = (pos: number) => void
 export function handleBeforeInput(params: BeforeInputParameters): BeforeInputHandlerResponse {
   const { showPersianNumber, dateInputType, selection, event: { data, inputType } } = params
-  const baseCaretPos = selection.selectionStart;
+  const baseCaretPos = selection.start;
   //where we put caret pos after all input operation done
   let finalCaretPos = baseCaretPos;
   let finalValue = params.value;
@@ -174,7 +174,7 @@ export function handleBeforeInput(params: BeforeInputParameters): BeforeInputHan
   }
   if (inputType == 'deleteContentBackward' || inputType == 'deleteContentForward' || inputType == 'delete' || inputType == 'deleteByCut' || inputType == 'deleteByDrag') {
     //delete mode
-    handleDelete(inputType, selection.selectionStart, selection.selectionEnd, inputChar, setSelectionRange);
+    handleDelete(inputType, selection.start, selection.end, inputChar, setSelectionRange);
   }
   //return the result of before input handler
   return { value: finalValue, selectionStart: finalCaretPos, selectionEnd: finalCaretPos }
