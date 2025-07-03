@@ -8,7 +8,7 @@ import type { JBFormInputStandards } from 'jb-form';
 import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, handleBeforeInput, isLeapYearJalali } from './utils';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, handleBeforeInput, isLeapYearJalali, getFixedCaretPos } from './utils';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
@@ -18,7 +18,7 @@ import { registerDefaultVariables } from 'jb-core/theme';
 import { renderHTML } from './render';
 export * from "./types.js";
 //headless usage exports
-export {handleBeforeInput, emptyInputValueString}
+export {handleBeforeInput, emptyInputValueString, getFixedCaretPos}
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser
@@ -894,28 +894,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.showCalendar = true;
   }
   #handleCaretPosOnInputFocus() {
-    const caretPos = this.elements.input.selectionStart;
-    if (caretPos) {
-      const trimmedYearLength = this.typedYear.trim().length;
-      if (trimmedYearLength < caretPos && caretPos <= 4) {
-        //if year was null we move cursor to first char of year
-        this.elements.input.setSelectionRange(trimmedYearLength, trimmedYearLength);
-        return;
-      }
-      const trimmedMonthLength = this.typedMonth.trim().length;
-      if (trimmedMonthLength + 5 < caretPos && caretPos > 4 && caretPos <= 7) {
-        //if month was null we move cursor to first char of month
-        this.elements.input.setSelectionRange(trimmedMonthLength + 5, trimmedMonthLength + 5);
-        return;
-      }
-      const trimmedDayLength = this.typedDay.trim().length;
-      if (trimmedDayLength + 8 < caretPos && caretPos > 7 && caretPos <= 10) {
-        //if day was null we move cursor to first char of day
-        this.elements.input.setSelectionRange(trimmedDayLength + 8, trimmedDayLength + 8);
-        return;
-      }
+    const newCaretPos = getFixedCaretPos({inputValue:this.inputValue,selectionStart:this.elements.input.selectionStart})
+    if (newCaretPos !== null) {
+      this.elements.input.setSelectionRange(newCaretPos, newCaretPos);
     }
-
   }
   #lastInputStringValue = '    /  /  ';
   /**
@@ -935,7 +917,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #onInputFocus(e: FocusEvent) {
     this.#lastInputStringValue = this.#sInputValue;
     this.focus();
-    //dont add once:true here because we need to detect every caret pos change during the type and then remove it from our input on blur
+    //dont add once:true here because we need to detect every caret pos change during the type and then r r input on blur
     document.addEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
     this.#dispatchFocusEvent(e);
   }

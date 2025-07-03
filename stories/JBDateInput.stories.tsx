@@ -105,7 +105,7 @@ export const WithOverflowHandler: Story = {
 export const OverflowWithinParent: Story = {
   render:
     (args) => {
-      const ref = useRef(null);
+      const ref = useRef<HTMLDivElement>(null);
       return (
         <div ref={ref} style={{ height: "10rem", border: "solid 1px #666", overflow: "hidden" }}>
           {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
@@ -237,9 +237,9 @@ export const RightToLeftTest: Story = {
 export const Headless: Story = {
   render: (args) => {
     const ref = useRef<HTMLInputElement>(null);
-    const {value, onChange} = useJBDateInput({dateInputType:"JALALI",ref,showPersianNumber:false})
+    const {value, onChange, onClick, onFocus} = useJBDateInput({dateInputType:"JALALI",ref,showPersianNumber:false})
     return(
-      <input ref={ref} value={value} onChange={onChange}/>
+      <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus}/>
     )
   },
   args: {

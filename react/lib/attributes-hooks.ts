@@ -19,7 +19,7 @@ export type JBDateInputAttributes = {
   jalaliMonthList?: string[] | null | undefined,
   gregorianMonthList?: string[] | null | undefined,
   overflowHandler?: "NONE" | "SLIDE",
-  overflowRef?: RefObject<HTMLElement> | null | MutableRefObject<HTMLElement | undefined>,
+  overflowRef?: RefObject<HTMLElement|null> | null,
   //
   disabled?: boolean,
   error?: string,

@@ -239,3 +239,32 @@ function handleDelete(inputEventType: string, selectionStart: number, selectionE
   }
   setSelectionRange(selectionStart + d);
 }
+
+type HandleFocusParams = {
+  selectionStart:number|null,
+  inputValue:string
+}
+/**
+* return best caret pos base on current input caret pos (move caret pos to last empty char of each section) 
+*/
+export function getFixedCaretPos(params:HandleFocusParams):number|null{
+    const caretPos = params.selectionStart;
+    if (caretPos) {
+      const trimmedYearLength =  getYear(params.inputValue).trim().length;
+      if (trimmedYearLength < caretPos && caretPos <= 4) {
+        //if year was null we move cursor to first char of year
+        return trimmedYearLength;
+      }
+      const trimmedMonthLength = getMonth(params.inputValue).trim().length;
+      if (trimmedMonthLength + 5 < caretPos && caretPos > 4 && caretPos <= 7) {
+        //if month was null we move cursor to first char of month
+        return trimmedMonthLength+ 5
+      }
+      const trimmedDayLength = getDay(params.inputValue).trim().length;
+      if (trimmedDayLength + 8 < caretPos && caretPos > 7 && caretPos <= 10) {
+        //if day was null we move cursor to first char of day
+        return trimmedDayLength + 8;
+      }
+    }
+    return null;
+  }
