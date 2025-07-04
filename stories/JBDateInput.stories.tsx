@@ -38,7 +38,7 @@ export const CustomFormat: Story = {
 export const Placeholder: Story = {
   args: {
     label: "date",
-    placeholder: "date را وارد کنید",
+    placeholder: "please enter your date",
     valueType: "GREGORIAN",
     inputType: "JALALI",
     direction: "ltr",

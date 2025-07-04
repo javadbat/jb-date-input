@@ -272,15 +272,32 @@ if you want the full variable list read [jb-date-input](https://github.com/javad
 in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to place custom element in `JBDateInput` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
 ```jsx
 <JBDateInput>
-    <div slot="end-section">after</div>
-    <div slot="start-section">before</div>
+  <div slot="end-section">after</div>
+  <div slot="start-section">before</div>
 </JBDateInput>
 ```
+## using headless
+you can use `jb-date-input/react` headless functions to bring `jb-date-input` features to your own input.
+for doing so you just have to import `useJBDateInput` and bind your input events and use them:
+
+```jsx
+  import { useJBDateInput } from "jb-date-input/react";
+
+
+  const ref = useRef<HTMLInputElement>(null);
+  const {value, onChange, onClick, onFocus, setValue} = useJBDateInput({dateInputType:"JALALI",ref,showPersianNumber:false})
+  return(
+    <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus}/>
+  )
+```
+
+if you want more control over your component you can use native headless utils function of `jb-date-input` build your own custom hook.
+
 
 ## Other Related Docs:
 
 - see [jb-date-input](https://github.com/javadbat/jb-date-input) if you want to use this component as a web-component
 
-- see [All JB Design system Component List](https://github.com/javadbat/design-system/blob/main/docs/component-list.md) for more components
+- see [All JB Design system Component List](https://javadbat.github.io/design-system/) for more components
 
 - use [Contribution Guide](https://github.com/javadbat/design-system/blob/main/docs/contribution-guide.md) if you want to contribute in this component.

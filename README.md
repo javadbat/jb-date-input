@@ -323,8 +323,8 @@ example:
     <div slot="start-section">before</div>
 </jb-date-input>
 ```
-## Headless usage:(Experimental)
-you can use `jb-design-system` headless functions to bring `jb-date-input` features to your own component.
+## Headless usage:
+you can use `jb-date-input` headless functions to bring `jb-date-input` features to your own component.
 for doing so you just have to import some utils function and bind your input events and use them:
 ```js
 import {handleBeforeInput,emptyInputValueString} from 'jb-date-input';
@@ -336,12 +336,13 @@ input.value = emptyInputValueString
 input.addEventListener('beforeinput',(e)=>{
     const beforeInputRes = handleBeforeInput({
       dateInputType: 'JALALI',
+      //make it true if you want to see persian number char
       showPersianNumber: false,
       //current value before new input happen
       value: e.target.value,
       selection: {
-        selectionStart: e.target.selectionStart,
-        selectionEnd: e.target.selectionEnd,
+        start: e.target.selectionStart,
+        end: e.target.selectionEnd,
       },
       event: {
         data: e.data,
@@ -352,12 +353,18 @@ input.addEventListener('beforeinput',(e)=>{
     input.value = beforeInputRes.value;
     input.setSelectionRange(beforeInputRes.selectionStart,beforeInputRes.selectionEnd);
 });
+// manage caret pos for when user click and focus on the input. it will stick the caret to the last typed char and skip empty value
+// use this function in `click`. `focus` , `selectionchange`,... event base on your needs.
+const newCaretPos = getFixedCaretPos({inputValue:input.value,selectionStart:input.selectionStart});
+if (newCaretPos !== null) {
+    input.setSelectionRange(newCaretPos, newCaretPos);
+}
 ```
 
 ## Other Related Docs:
 
 - see [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react); if you want to use this component in react
 
-- see [All JB Design system Component List](https://github.com/javadbat/design-system/blob/main/docs/component-list.md) for more components
+- see [All JB Design system Component List](https://javadbat.github.io/design-system/) for more components
 
 - use [Contribution Guide](https://github.com/javadbat/design-system/blob/main/docs/contribution-guide.md) if you want to contribute in this component.

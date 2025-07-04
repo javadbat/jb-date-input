@@ -8,7 +8,7 @@ import type { JBFormInputStandards } from 'jb-form';
 import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants';
 import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
 import { DateFactory } from './date-factory';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, replaceChar, handleBeforeInput, isLeapYearJalali, getFixedCaretPos } from './utils';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos } from './utils';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { requiredValidation } from './validations';
 // eslint-disable-next-line no-duplicate-imports
@@ -623,6 +623,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (e.data) {
       if (this.placeholder && target.value === "") {
         this.#inputValue = emptyInputValueString;
+        target.setSelectionRange(0,0);
       }
     }
 

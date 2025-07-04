@@ -1,5 +1,10 @@
 # Changelog  
 
+## [5.10.0] - 2025-07-04
+### new features:
+- add headless function utils for controlling keyboard and focus.
+- add `useJBDateInput` for using headless date input in react. 
+
 ## [5.9.1] - 2025-06-16
 ### fixed:
 - fix 30 day "esfand" type by checking leap lear in both type and set month
