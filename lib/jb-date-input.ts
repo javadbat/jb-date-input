@@ -5,17 +5,16 @@ import 'jb-popover';
 // eslint-disable-next-line no-duplicate-imports
 import { type JBCalendarWebComponent } from 'jb-calendar';
 import type { JBFormInputStandards } from 'jb-form';
-import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants';
-import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types';
-import { DateFactory } from './date-factory';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos } from './utils';
-import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
-import { requiredValidation } from './validations';
-// eslint-disable-next-line no-duplicate-imports
 import { JBInputWebComponent } from 'jb-input';
+import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits } from 'jb-core';
 import { registerDefaultVariables } from 'jb-core/theme';
-import { renderHTML } from './render';
+import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants.js';
+import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types.js';
+import { DateFactory } from './date-factory.js';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos } from './utils.js';
+import { requiredValidation } from './validations.js';
+import { renderHTML } from './render.js';
 export * from "./types.js";
 //headless usage exports
 export {handleBeforeInput, emptyInputValueString, getFixedCaretPos}
@@ -1166,6 +1165,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return this.#internals.validationMessage;
   }
 }
+//register component in document custom element registry
 const myElementNotExists = !customElements.get('jb-date-input');
 if (myElementNotExists) {
   window.customElements.define('jb-date-input', JBDateInputWebComponent);
