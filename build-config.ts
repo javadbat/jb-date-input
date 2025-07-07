@@ -1,6 +1,17 @@
 import type { ReactComponentBuildConfig, WebComponentBuildConfig } from "../../tasks/build/builder/src/types.ts";
 
 export const webComponentList: WebComponentBuildConfig[] = [
+    {
+    name: "jb-date-input-module",
+    path: "./module/lib/index.ts",
+    outputPath: "./module/dist/index.js",
+    umdName: "JBDateInputModule",
+    external: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core"],
+    //because date-fns dont have any umd module export i have to do this so it doesn't exclude in umd build
+    umdIncludes: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core"],
+    dir:"./module",
+    
+  },
   {
     name: "jb-date-input",
     path: "./lib/jb-date-input.ts",

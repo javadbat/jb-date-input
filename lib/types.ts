@@ -3,7 +3,7 @@ import {type JBInputWebComponent} from 'jb-input';
 import {type JBPopoverWebComponent} from 'jb-popover';
 import type {EventTypeWithTarget} from 'jb-core';
 import { JBDateInputWebComponent } from './jb-date-input';
-
+import type { JBDateInputValueObject } from 'jb-date-input/module';
 export type ElementsObject = {
     input: JBInputWebComponent;
     calendarTriggerButton: HTMLDivElement;
@@ -14,28 +14,7 @@ export type DateRestrictions = {
     min:Date | null;
     max:Date | null;
 }
-export type DateInObject = {
-    year:number | null;
-    month:number | null;
-    day:number | null;
-}
-export type JBDateInputValueObject = {
-    gregorian:DateInObject;
-    jalali:DateInObject;
-    timeStamp:number | null;
-    //just keep received date value time to pass it on date value recreation 
-    time:{
-        hour:number | null,
-        minute:number | null,
-        second:number | null,
-        millisecond:number | null
-    }
-}
-export enum InputTypes {
-    jalali = 'JALALI',
-    gregorian = 'GREGORIAN'
-}
-export type InputType = 'JALALI' | 'GREGORIAN';
+
 export type ValueType = 'JALALI' | 'GREGORIAN' | 'TIME_STAMP';
 export enum ValueTypes {
     jalali='JALALI' ,
@@ -48,6 +27,17 @@ export type DateValidResult = {
     isValid:boolean;
     error:DateValidationResultErrors | null;
 }
+export type NicheNumbers = {
+    //when year is invalid or empty and we want to show the calendar we need to show the current year or any other base on user config
+    calendarYearOnEmpty: {
+      jalali: number,
+      gregorian: number
+    },
+    calendarMonthOnEmpty: {
+      jalali: number,
+      gregorian: number
+    }
+  }
 /**
  * @description when user type some value in input we just dived and separate string in 3 section (there is no date calculation behind it) and it mostly used in
  */
@@ -66,11 +56,7 @@ export type JBCalendarValue = {
     month: number | null;
     year: number | null;
 }
-export type BeforeInputHandlerResponse = {
-    value:string,
-    selectionStart:number,
-    selectionEnd:number
-}
+
 //because this._internal is not a standard we have to extend HTML ELEMENT to use it
 declare global {
     interface ElementInternals{

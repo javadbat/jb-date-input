@@ -1,8 +1,8 @@
 import { isAfter, isBefore, isEqual } from "date-fns";
-import { type InputType } from "./jb-date-input";
-import type { JBDateInputValueObject, BeforeInputHandlerResponse } from "./types";
 import { enToFaDigits, faToEnDigits } from "jb-core";
-
+import type { BeforeInputHandlerResponse, InputType, JBDateInputValueObject } from "./types.js";
+export * from './constants.js';
+export * from "./types.js";
 export function isLeapYearJalali(year: number) {
   const matches = [1, 5, 9, 13, 17, 22, 26, 30];
   const modulus = year % 33;
@@ -187,7 +187,7 @@ export function handleBeforeInput(params: BeforeInputParameters): BeforeInputHan
   }
   function handleInsert() {
     // make string something like 1373/06/31 from dsd۱۳۷۳/06/31rer
-    const StdString = standardString(params.event.data);
+    const StdString = standardString(params.event.data||"");
     StdString.split('').forEach((inputtedChar: string, i: number) => {
       let caretPos = baseCaretPos + i;
       if (!isValidChar(inputtedChar)) {

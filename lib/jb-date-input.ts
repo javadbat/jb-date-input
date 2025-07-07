@@ -3,18 +3,18 @@ import 'jb-calendar';
 import 'jb-input';
 import 'jb-popover';
 // eslint-disable-next-line no-duplicate-imports
-import { type JBCalendarWebComponent } from 'jb-calendar';
+import { type InputType, type JBCalendarWebComponent } from 'jb-calendar';
 import type { JBFormInputStandards } from 'jb-form';
 import { JBInputWebComponent } from 'jb-input';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
 import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits } from 'jb-core';
 import { registerDefaultVariables } from 'jb-core/theme';
-import { dictionary, emptyInputValueString, inputFormat, inputRegex } from './constants.js';
-import { InputTypes, ValueTypes, type ElementsObject, type DateRestrictions, type JBDateInputValueObject, type ValueType, InputType, type ValidationValue, type JBCalendarValue } from './types.js';
+import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from './types.js';
 import { DateFactory } from './date-factory.js';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos } from './utils.js';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, dictionary, emptyInputValueString, inputFormat, inputRegex  } from 'jb-date-input/module';
 import { requiredValidation } from './validations.js';
 import { renderHTML } from './render.js';
+import { InputTypes, JBDateInputValueObject } from 'jb-date-input/module';
 export * from "./types.js";
 //headless usage exports
 export {handleBeforeInput, emptyInputValueString, getFixedCaretPos}

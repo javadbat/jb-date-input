@@ -1,6 +1,6 @@
 import { type ValidationItem } from "jb-validation";
 import { type ValidationValue } from "./types";
-import { dictionary } from "./constants";
+import { dictionary } from "jb-date-input/module";
 
 export const requiredValidation:ValidationItem<ValidationValue> = {
   validator:(value:ValidationValue)=>{

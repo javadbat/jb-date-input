@@ -1,8 +1,9 @@
 
-import { InputTypes, JBDateInputValueObject, ValueTypes, ValueType, InputType, InputtedValueInObject, DateValidResult } from './types';
-import { getEmptyValueObject, isLeapYearJalali } from './utils';
+import {  ValueTypes, ValueType, InputtedValueInObject, DateValidResult, type NicheNumbers } from './types';
+import { getEmptyValueObject, isLeapYearJalali } from 'jb-date-input/module';
 import { getYear, getMonth, getTime as getTimeStamp, isLeapYear, getDate } from 'date-fns';
-import { newDate, isLeapYear as isJalaliLeapYear, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate, getHours, getMinutes, getSeconds, getMilliseconds } from 'date-fns-jalali';
+import { newDate, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate, getHours, getMinutes, getSeconds, getMilliseconds } from 'date-fns-jalali';
+import { InputType, InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
 
 
 export type DateFactoryConstructorArg = {
@@ -13,7 +14,7 @@ export class DateFactory {
   #valueType: ValueType = "GREGORIAN";
   #inputType: InputType = InputTypes.jalali;
   //here we keep numbers that replace the year,month,day in niche situations
-  #nicheNumbers = {
+  #nicheNumbers:NicheNumbers = {
     //when year is invalid or empty and we want to show the calendar we need to show the current year or any other base on user config
     calendarYearOnEmpty: {
       jalali: DateFactory.todayJalaliYear,
@@ -24,15 +25,15 @@ export class DateFactory {
       gregorian: DateFactory.todayGregorianMonth
     }
   }
-  #valueFormat = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
-  get valueFormat() {
+  #valueFormat = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
+  get valueFormat():string{
     return this.#valueFormat;
   }
   set valueFormat(valueFormat: string) {
     this.#valueFormat = valueFormat;
   }
-  get nicheNumbers() {
-    return this.#nicheNumbers;
+  get nicheNumbers():NicheNumbers{
+    return  this.#nicheNumbers;
   }
   get yearOnEmptyBaseOnInputType() {
     if (this.#inputType == "JALALI") {

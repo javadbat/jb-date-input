@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from "react"
-import { handleBeforeInput, type InputType, emptyInputValueString, type BeforeInputHandlerResponse, getFixedCaretPos } from 'jb-date-input';
+import { type InputType, type BeforeInputHandlerResponse, handleBeforeInput, emptyInputValueString, getFixedCaretPos} from 'jb-date-input/module';
 import { useEvent } from 'jb-core/react'
 type RefDom = {
   selectionStart: number | null,
