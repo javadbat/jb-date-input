@@ -14,7 +14,7 @@ import { DateFactory } from './date-factory.js';
 import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, dictionary, emptyInputValueString, inputFormat, inputRegex  } from 'jb-date-input/module';
 import { requiredValidation } from './validations.js';
 import { renderHTML } from './render.js';
-import { InputTypes, JBDateInputValueObject } from 'jb-date-input/module';
+import { InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
 
 export * from "./types.js";
 //headless usage exports
