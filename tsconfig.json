@@ -5,7 +5,7 @@
         "declarationDir": "./dist",
     },
     "include": [
-        "lib/**/*.ts", "module/lib/constants.ts",
+        "lib/**/*.ts"
     ],
     "exclude": [
         "node_modules",

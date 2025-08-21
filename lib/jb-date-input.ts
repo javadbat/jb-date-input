@@ -15,9 +15,10 @@ import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, ge
 import { requiredValidation } from './validations.js';
 import { renderHTML } from './render.js';
 import { InputTypes, JBDateInputValueObject } from 'jb-date-input/module';
+
 export * from "./types.js";
 //headless usage exports
-export {handleBeforeInput, emptyInputValueString, getFixedCaretPos}
+export {handleBeforeInput, emptyInputValueString, getFixedCaretPos,InputTypes, JBDateInputValueObject, InputType}
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser

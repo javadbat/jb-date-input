@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useImperativeHandle, forwardRef, DetailedHTMLProps, HTMLAttributes, PropsWithChildren } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, type CSSProperties , PropsWithChildren } from 'react';
 import 'jb-date-input';
 // eslint-disable-next-line no-duplicate-imports
 import { JBDateInputWebComponent,type ValidationValue, type JBDateInputValueObject, type InputType } from 'jb-date-input';
@@ -29,6 +29,7 @@ declare module "react" {
 type JBDateInputProps = EventProps & JBDateInputAttributes & {
   className?: string,
   label?: string,
+  style?: CSSProperties,
   valueType?: 'GREGORIAN' | 'JALALI' | 'TIME_STAMP',
   inputType?: 'GREGORIAN' | 'JALALI',
 }
@@ -45,7 +46,7 @@ export const JBDateInput = forwardRef((props: Props, ref) => {
   useJBDateInputAttribute(element,props);
   useEvents(element,props);
   return (
-    <jb-date-input class={props.className ? props.className : ""} label={props.label} value-type={props.valueType ? props.valueType : 'GREGORIAN'} ref={element} input-type={props.inputType ? props.inputType : 'JALALI'}>
+    <jb-date-input style={props.style} class={props.className ? props.className : ""} label={props.label} value-type={props.valueType ? props.valueType : 'GREGORIAN'} ref={element} input-type={props.inputType ? props.inputType : 'JALALI'}>
       {props.children}
     </jb-date-input>
   );

@@ -1,5 +1,9 @@
 @use './variables.css';
 
+:host {
+    display: block;
+}
+
 :host(:focus),
 :host(:focus-visible) {
     outline: none;
@@ -13,12 +17,14 @@
     &:focus-visible {
         outline: none;
     }
+
     .calendar-trigger {
         display: var(--calendar-trigger-display, block);
         width: var(--calendar-trigger-width, 1.5rem);
         height: var(--calendar-trigger-height, 1.5rem);
         cursor: pointer;
         object-fit: contain;
+
         &.--active {
             svg {
                 .cls-1 {

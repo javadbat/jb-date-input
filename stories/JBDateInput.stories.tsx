@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useRef } from "react";
 import { JBDateInput, Props, useJBDateInput } from "jb-date-input/react";
-import JBDateInputGregorianTest from "./samples/JBDateInputGregorianTestPage";
-import JBDateInputJalaliTest from "./samples/JBDateInputJalaliTestPage";
-import JBDateInputTimeStampTest from "./samples/JBDateInputTimeStampTestPage";
-import DarkModeTest from "./samples/DarkmodeTest";
-import JBDateInputSizeTest from "./samples/JBDateInputSizeTest";
-import InFormData from "./samples/InFormData";
 
+import './styles/themes.css';
+import { useState } from 'react';
+import type { CSSProperties } from 'react';
+import { useMemo } from 'react';
+import { useCallback } from 'react';
+import { useEffect } from 'react';
 
 const meta: Meta<Props> = {
   title: "Components/form elements/Inputs/JBDateInput",
@@ -120,25 +120,86 @@ export const OverflowWithinParent: Story = {
 };
 
 export const DarkMode: Story = {
-  render: () => <DarkModeTest />
+  render: () => {
+    return (
+      <div className="dark-theme">
+        <h1>dark mode test</h1>
+        <JBDateInput></JBDateInput>
+      </div>
+    );
+  }
 };
 
 export const withError: Story = {
   args: {
     label: "with default error",
-    error:'error message',
-    message:'default message'
+    error: 'error message',
+    message: 'default message'
   }
 };
 
 export const sizeTest: Story = {
-  render: () => <JBDateInputSizeTest></JBDateInputSizeTest>
+  render: () => {
+    return (
+      <>
+        <div style={{ width: '100%' }}>
+          <h3>parent full width</h3>
+          <JBDateInput></JBDateInput>
+        </div>
+        <div style={{ width: '50%' }}>
+          <h3>parent percent width</h3>
+          <JBDateInput></JBDateInput>
+        </div>
+        <div style={{ width: '300px' }}>
+          <h3>parent pixel width</h3>
+          <JBDateInput></JBDateInput>
+        </div>
+
+        <h3>self full width</h3>
+        <JBDateInput style={{ width: '100%' }}></JBDateInput>
+
+        <h3>self percent width</h3>
+        <JBDateInput style={{ width: '50%' }}></JBDateInput>
+
+        <h3>self pixel width</h3>
+        <JBDateInput style={{ width: '300px' }}></JBDateInput>
+
+        <h3>self pixel height</h3>
+        <JBDateInput style={({ "--jb-input-height": "70px" } as any)}></JBDateInput>
+      </>
+    );
+  }
 };
 
 export const GregorianTest: Story = {
-  render: (args) => (
-    <JBDateInputGregorianTest {...args}></JBDateInputGregorianTest>
-  ),
+  render: (args) => {
+    const [setValue, setValueSetter] = useState("");
+    return (
+      <div>
+        <JBDateInput
+          {...args}
+          onChange={(e) => {
+            setValueSetter(e.target.value);
+          }}
+        >
+        </JBDateInput>
+        <br />
+        <JBDateInput label="gregorian date" input-type="GREGORIAN" {...args} />
+        <div>
+          <br />
+          <br />valueType is {args.valueType}
+          <br />
+          <br />inputType is {args.inputType}
+          <br />
+          <br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
+          <br />
+          <br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
+          <br />
+          <br />Your chosen date is: {setValue}
+        </div>
+      </div>
+    );
+  },
   args: {
     label: "date",
     valueType: "GREGORIAN",
@@ -160,11 +221,43 @@ export const GregorianMinMaxTest: Story = {
 };
 
 export const JalaliTest: Story = {
-  render: (args) => (
-    <div style={{ direction: "rtl" }}>
-      <JBDateInputJalaliTest {...args}></JBDateInputJalaliTest>
-    </div>
-  ),
+  render: (args) => {
+    const [value, valueSetter] = useState("");
+    const [dateValue, setDateValue] = useState(new Date());
+    const validationList = [
+      {
+        validator: /^13.*$/g,
+        message: 'تاریخ باید قبل از تنها در قرن 13 شمسی باشد'
+      },
+      {
+        validator: ({ text, inputObject, valueObject, valueText }) => {
+          return valueObject.jalali.day >= 15;
+        },
+        message: 'باید تاریخ بعد از  15 ماه انتخاب شود'
+      }
+    ];
+    return (
+      <div>
+        <JBDateInput name="first-date-input" value={value} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
+        <JBDateInput name="first-date-input" showPersianNumber={true} value={value} label={args.label + ' با اعداد فارسی '} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
+        <div>
+          <br /><br />valueType is {args.valueType}
+          <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
+          <br /><br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
+          <br /><br />Your chosen date is: {value}
+          <br /><button onClick={() => { valueSetter("1400-06-18T00:00:00.000Z"); }}>set value to 1400-06-18T00:00:00.000Z</button>
+        </div>
+        <h3>Center Aligned</h3>
+        <div style={({ '--jb-date-input-text-align': 'center' } as any)}>
+          <JBDateInput></JBDateInput>
+        </div>
+        <h3>test custom validation</h3>
+        <JBDateInput validationList={validationList} value={value} onChange={e => { valueSetter(e.target.value); }} onSelect={e => { valueSetter(e.target.value); }} {...args}></JBDateInput>
+        <h3>test via JS Date type value</h3>
+        <JBDateInput value={dateValue} onChange={(e) => setDateValue(e.target.valueInDate as Date)}></JBDateInput>
+      </div>
+    );
+  },
   args: {
     label: "date",
     valueType: "JALALI",
@@ -195,15 +288,32 @@ export const JalaliMinMaxTestWithCustomFormat: Story = {
 };
 
 export const TimeStampTest: Story = {
-  render: (args) => (
-    <JBDateInputTimeStampTest
-      label={args.label}
-      min={args.min}
-      max={args.max}
-      valueType={args.valueType}
-    >
-    </JBDateInputTimeStampTest>
-  ),
+  render: (args) => {
+    const [setValue, setValueSetter] = useState<string | null>(null);
+    const valueInDate = useMemo(() => {
+      if (setValue) {
+        return new Date(parseInt(setValue)).toString();
+      } else {
+        return null;
+      }
+    }, [setValue]);
+    const onChange = useCallback((e) => {
+      setValueSetter(e.target.value);
+    }, []);
+
+    return (
+      <div>
+        <JBDateInput value={setValue} valueType="TIME_STAMP" onChange={onChange} {...args} />
+        <div>
+          <br /><br />valueType is {args.valueType}
+          <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
+          <br /><br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
+          <br /><br />Your chosen date is: {setValue}
+          <br /><br />Your chosen date in greg is: {valueInDate}
+        </div>
+      </div>
+    );
+  },
   args: {
     label: "date",
     valueType: "TIME_STAMP",
@@ -230,20 +340,20 @@ export const GregorianInputTest: Story = {
 export const RightToLeftTest: Story = {
   args: {
     label: "rtl",
-    style: "direction:rtl;"
+    style: { direction: "rtl" }
   }
 }
 
 export const Headless: Story = {
   render: (args) => {
     const ref = useRef<HTMLInputElement>(null);
-    const {value, onChange, onClick, onFocus} = useJBDateInput({dateInputType:"JALALI",ref,showPersianNumber:false})
-    return(
-      <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus}/>
+    const { value, onChange, onClick, onFocus } = useJBDateInput({ dateInputType: "JALALI", ref, showPersianNumber: false })
+    return (
+      <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus} />
     )
   },
   args: {
-    
+
   }
 };
 export const WithCustomIcon: Story = {
@@ -288,7 +398,7 @@ export const WithoutIcon: Story = {
     valueType: "GREGORIAN",
     inputType: "JALALI",
     direction: "ltr",
-    style: "--jb-date-input-calendar-trigger-display:none",
+    style: { "--jb-date-input-calendar-trigger-display": "none" } as CSSProperties,
   }
 };
 
@@ -316,7 +426,34 @@ export const WithStartSection: Story = {
 };
 
 export const InFormTest: Story = {
-  render: (args) => <InFormData {...args}></InFormData>,
+  render: (args) => {
+    const formRef = useRef<HTMLFormElement>(null);
+    useEffect(() => {
+      // formRef.current.addEventListener('formdata', ({ formData }) => {
+      //     console.log(formData);
+      //     debugger;
+      // });
+      function handleForm(event) {
+        var formData = new FormData(event.target);
+        const data = Object.fromEntries(formData);
+        console.log(data);
+        event.preventDefault();
+      }
+      formRef.current?.addEventListener("submit", handleForm);
+    }, [formRef]);
+    return (
+      <div>
+        <h3>Form Submit Test</h3>
+        <p>change inputs value and click on submit to submit the form, then see the browser console to see the submitted value</p>
+        <form ref={formRef}>
+          <input name="test-input" value="test value"></input>
+          <JBDateInput label="date in form" name="birthdate"></JBDateInput>
+          <div>see console after submit clicked</div>
+          <button type="submit">submit</button>
+        </form>
+      </div>
+    );
+  },
 }
 
 export const EventTest: Story = {

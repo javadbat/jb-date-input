@@ -1,4 +1,4 @@
-.darkmode-test-wrapper{
+.dark-theme{
   --jb-popover-bg-color: rgb(53, 46, 46);
   --jb-input-border-radius:6px;
   --jb-input-bgcolor:#0E1418;
@@ -7,7 +7,4 @@
   --jb-calendar-color:#C4C2D6;
   --jb-calendar-arrow-fill-color:#FF9900;
   --jb-calendar-arrow-button-bgcolor:rgb(53, 46, 46);
-}
-.rtl{
-  
 }

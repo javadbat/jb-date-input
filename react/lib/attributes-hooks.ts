@@ -1,9 +1,8 @@
 import { JBDateInputWebComponent, type ValidationValue, type InputType } from "jb-date-input";
 import { type ValidationItem } from "jb-validation";
-import { CSSProperties, MutableRefObject, RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 
 export type JBDateInputAttributes = {
-  style?: CSSProperties | string,
   min?: string | null | undefined | Date,
   max?: string | null | undefined | Date,
   message?: string,
@@ -105,13 +104,6 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
       element.current.elements.popover.overflowDom = props.overflowRef.current;
     }
   }, [props.overflowRef]);
-  useEffect(() => {
-    if (element.current) {
-      if (typeof props.style == "string") {
-        element.current.setAttribute("style", props.style);
-      }
-    }
-  }, [props.style]);
   useEffect(() => {
     if (element.current && Array.isArray(props.validationList)) {
       element.current.validation.list = props.validationList;

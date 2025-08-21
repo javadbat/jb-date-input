@@ -1,5 +1,9 @@
 # Changelog  
 
+## [5.10.1] - 2025-08-22
+### fixed:
+- fix style properties assign problem in react.
+
 ## [5.10.0] - 2025-07-04
 ### new features:
 - add headless function utils for controlling keyboard and focus.
