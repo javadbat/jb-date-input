@@ -52,7 +52,7 @@ to use this component in **react** see [`jb-date-input/react`](https://github.co
 
 1- install package:
 
-```command
+```sh
 npm i jb-date-input
 ```
 

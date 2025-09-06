@@ -43,7 +43,7 @@ Demo:
 
 1- install package:
 
-```bash
+```sh
 npm i jb-date-input
 ```
 
