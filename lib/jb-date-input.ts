@@ -75,8 +75,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.elements.input.disabled = value;
     if (value) {
       this.#internals.states?.add("disabled");
+      this.#internals.ariaDisabled = "true";
     } else {
       this.#internals.states?.delete("disabled");
+      this.#internals.ariaDisabled = "false";
     }
   }
   /**
@@ -130,6 +132,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    */
   set required(value: boolean) {
     this.#required = value;
+    this.#internals.ariaRequired = value?"true":"false";
     this.#checkValidity(false);
   }
   get required() {
@@ -185,6 +188,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   set placeholder(value: string | null) {
     this.#placeholder = value;
+    this.#internals.ariaPlaceholder = value;
     if (value !== null) {
       this.elements.input.elements.input.placeholder = value;
     } else {
