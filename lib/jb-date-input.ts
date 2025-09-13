@@ -1,4 +1,4 @@
-import CSS from './jb-date-input.scss';
+import CSS from './jb-date-input.css';
 import 'jb-calendar';
 import 'jb-input';
 import 'jb-popover';

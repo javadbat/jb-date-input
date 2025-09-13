@@ -1,7 +1,7 @@
 type FileStringModules = {
     readonly default: string;
 }
-declare module '*.scss' {
+declare module '*.css' {
     const value: FileStringModules;
     export default value;
 }
