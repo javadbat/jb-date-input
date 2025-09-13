@@ -1,4 +1,5 @@
 import CSS from './jb-date-input.css';
+import VariablesCSS from './variables.css';
 import 'jb-calendar';
 import 'jb-input';
 import 'jb-popover';
@@ -403,7 +404,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       delegatesFocus: true
     });
     registerDefaultVariables();
-    const html = `<style>${CSS}</style>` + '\n' + renderHTML();
+    const html = `<style>${CSS} ${VariablesCSS}</style>` + '\n' + renderHTML();
     const element = document.createElement('template');
     element.innerHTML = html;
     shadowRoot.appendChild(element.content.cloneNode(true));
