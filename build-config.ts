@@ -6,9 +6,9 @@ export const webComponentList: WebComponentBuildConfig[] = [
     path: "./module/lib/index.ts",
     outputPath: "./module/dist/index.js",
     umdName: "JBDateInputModule",
-    external: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core"],
+    external: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core", "jb-core/theme"],
     //because date-fns dont have any umd module export i have to do this so it doesn't exclude in umd build
-    umdIncludes: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core"],
+    umdIncludes: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core", "jb-core/theme"],
     dir:"./module",
     
   },
