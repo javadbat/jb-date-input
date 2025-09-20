@@ -57,7 +57,7 @@ export const WithDefaultCalendarDate: Story = {
 };
 export const PersianNumber: Story = {
   args: {
-    label: "با اعداد فارسی",
+    label: "with persian number",
     valueType: "GREGORIAN",
     inputType: "JALALI",
     format: "YYYY/MM/DD",
