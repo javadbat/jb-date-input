@@ -1,5 +1,13 @@
 # Changelog  
 
+## [5.11.0] - 2025-09-20
+### new features:
+- add smooth animation for calendar open
+- add some a11y features like states aria and attributes announcement.
+- smaller bundler.
+### refactor:
+- migrate from scss to post css
+
 ## [5.10.1] - 2025-08-22
 ### fixed:
 - fix style properties assign problem in react.
