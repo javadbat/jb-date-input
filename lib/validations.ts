@@ -1,6 +1,7 @@
 import { type ValidationItem } from "jb-validation";
 import { type ValidationValue } from "./types";
-import { dictionary } from "jb-date-input/module";
+import { dictionary } from "./i18n";
+import { i18n } from "jb-core/i18n";
 
 export const requiredValidation:ValidationItem<ValidationValue> = {
   validator:(value:ValidationValue)=>{
@@ -11,6 +12,6 @@ export const requiredValidation:ValidationItem<ValidationValue> = {
       return true;
     }
   },
-  message:dictionary.errors.required,
+  message:dictionary.get(i18n,"required"),
   stateType:"valueMissing"
 };

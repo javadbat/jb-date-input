@@ -85,9 +85,9 @@ you can set minimum date and maximum date range for your app in string or Date t
 
 ```jsx
  const today = new Date();
- <JBDateInput label="تاریخ شروع "  max={today} />
+ <JBDateInput label="start date"  max={today} />
  //or using string
- <JBDateInput label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z" />
+ <JBDateInput label="start day" value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z" />
 ```
 ## placeholder
 
@@ -104,7 +104,7 @@ beside of min and max you can also set your own custom validation like any other
 const validationList = [
         {
             validator:/^13.*$/g,
-            message:'تاریخ باید تنها در قرن 13 شمسی باشد'
+            message:'date must be in 13 century'
         },
         {
             validator:({text, inputObject, valueObject, valueText})=>{
@@ -115,7 +115,7 @@ const validationList = [
                 //if you want to validate incomplete date you can use inputText
                 return valueObject.jalali.day == 15;
             },
-            message:'باید تاریخ حتما  15 ماه انتخاب شود'
+            message:'you can only choose 15th day of month'
         }
     <JBDateInput validationList={validationList}></JBDateInput>
 ];

@@ -12,14 +12,16 @@ import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilen
 import { registerDefaultVariables } from 'jb-core/theme';
 import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from './types.js';
 import { DateFactory } from './date-factory.js';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, dictionary, emptyInputValueString, inputFormat, inputRegex  } from 'jb-date-input/module';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, emptyInputValueString, inputFormat, inputRegex  } from 'jb-date-input/module';
 import { requiredValidation } from './validations.js';
 import { renderHTML } from './render.js';
 import { InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
+import { dictionary } from './i18n';
+import { i18n } from 'jb-core/i18n';
 
 export * from "./types.js";
 //headless usage exports
-export {handleBeforeInput, emptyInputValueString, getFixedCaretPos,InputTypes, JBDateInputValueObject, InputType}
+export {handleBeforeInput, emptyInputValueString, getFixedCaretPos,InputTypes, JBDateInputValueObject, InputType, dictionary}
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser
@@ -368,12 +370,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   get valueFormat() {
     return this.#dateFactory.valueFormat;
   }
-  #showPersianNumber = false;
+  #showPersianNumber = i18n.locale.numberingSystem == "arabext";
   get showPersianNumber() {
     return this.#showPersianNumber;
   }
   set showPersianNumber(value) {
     this.#showPersianNumber = value;
+    this.elements.calendar.showPersianNumber = value;
     this.#updateInputTextFromValue();
   }
   constructor() {
@@ -519,13 +522,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         this.elements.calendar.setAttribute('direction', value);
         break;
       case 'show-persian-number':
-        if (value == 'true' || value == '') {
+        if (value == 'true' || value === '') {
           this.showPersianNumber = true;
-          this.elements.calendar.showPersianNumber = true;
-        }
-        if (value == 'false' || value == null) {
+        }else if (value == 'false' || value == null) {
           this.showPersianNumber = false;
-          this.elements.calendar.showPersianNumber = false;
         }
         break;
       case 'placeholder':
@@ -999,7 +999,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         validator: (value) => {
           return checkMinValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.min);
         },
-        message: dictionary.errors.minRangeViolation,
+        message: dictionary.get(i18n,"minRangeViolation"),
         stateType: "rangeUnderflow"
       });
     }
@@ -1008,7 +1008,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         validator: (value) => {
           return checkMaxValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.max);
         },
-        message: dictionary.errors.maxRangeViolation,
+        message: dictionary.get(i18n,"maxRangeViolation"),
         stateType: "rangeOverflow"
       });
     }

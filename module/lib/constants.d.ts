@@ -4,11 +4,4 @@ export declare const emptyInputValueString = "    /  /  ";
  */
 export declare const inputFormat = "YYYY/MM/DD";
 export declare const inputRegex: RegExp;
-export declare const dictionary: {
-    errors: {
-        minRangeViolation: string;
-        maxRangeViolation: string;
-        required: string;
-    };
-};
 //# sourceMappingURL=constants.d.ts.map

@@ -4,6 +4,7 @@ import { getEmptyValueObject, isLeapYearJalali } from 'jb-date-input/module';
 import { getYear, getMonth, getTime as getTimeStamp, isLeapYear, getDate } from 'date-fns';
 import { newDate, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate, getHours, getMinutes, getSeconds, getMilliseconds } from 'date-fns-jalali';
 import { InputType, InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
+import { i18n } from 'jb-core/i18n';
 
 
 export type DateFactoryConstructorArg = {
@@ -12,7 +13,7 @@ export type DateFactoryConstructorArg = {
 }
 export class DateFactory {
   #valueType: ValueType = "GREGORIAN";
-  #inputType: InputType = InputTypes.jalali;
+  #inputType: InputType = i18n.locale.calendar == "persian"?InputTypes.jalali:InputTypes.gregorian;
   //here we keep numbers that replace the year,month,day in niche situations
   #nicheNumbers:NicheNumbers = {
     //when year is invalid or empty and we want to show the calendar we need to show the current year or any other base on user config

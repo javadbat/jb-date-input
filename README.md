@@ -2,7 +2,8 @@
 
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/jb-date-input)
 [![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/main/LICENSE)
-[![NPM Downloads](https://img.shields.io/npm/dw/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
+[![NPM Version](https://img.shields.io/npm/v/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
+![GitHub Created At](https://img.shields.io/github/created-at/javadbat/jb-date-input)
 
 ## Pure js Jalali Date Picker Web-Component
 
@@ -16,7 +17,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - can set min and max date value
 
-- web component so it can be used in every framework and even purejs project
+- web component so it can be used in every framework and even pure-js project
 
 - responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard)
 
@@ -42,7 +43,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 ## using with JS frameworks
 
-to use this component in **react** see [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react);
+- [<img src="https://img.shields.io/badge/jb--date--input/react-000.svg?logo=react&logoColor=%2361DAFB" height="30" />](https://github.com/javadbat/jb-date-input/tree/main/react)
 
 ## instructions
 
@@ -69,7 +70,7 @@ import 'jb-date-input';
 ```
 #### using cdn
 
-beware that jb-date-input umd build do not exclude external dependancy and bundled as a standalone module, so only use this way if you dont access npm in your app.   
+beware that jb-date-input umd build do not exclude external dependency and bundled as a standalone module, so only use this way if you dont access npm in your app.   
 
 1- you can just add script tag to your html file and then use web component how ever you need.    
 
@@ -84,12 +85,12 @@ beware that jb-date-input umd build do not exclude external dependancy and bundl
 ## format
 
 default format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
-you can change it however you need and `[Z]` mean the exact Z charecter that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
+you can change it however you need and `[Z]` mean the exact Z character that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
 you can change format by format attribute:
 
 ```html
 
-<jb-date-input label="تاریخ" format="YYYY/MM/DD" value="2020/08/14"></jb-date-input>
+<jb-date-input label="date" format="YYYY/MM/DD" value="2020/08/14"></jb-date-input>
 
 ```
 
@@ -102,7 +103,8 @@ we have 3 value type:
     <jb-date-input value="1596291030322" value-type="TIME_STAMP"/>
     <jb-date-input value="1399-05-01T12:05:39.530Z" value-type="JALALI"/>
 ```
-by setting value type you can tell component what type of value you provideing to it and expecting from it. remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
+
+by setting value type you can tell component what type of value you providing to it and expecting from it. remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
 
 ## min and max date limit
 
@@ -144,7 +146,7 @@ beside of min and max you can also set your own custom validation like any other
 const validationList = [
         {
             validator:/^13.*$/g,
-            message:'تاریخ باید تنها در قرن 13 شمسی باشد'
+            message:'date must be in 13 century'
         },
         {
             validator:({text, inputObject, valueObject, valueText})=>{
@@ -155,7 +157,7 @@ const validationList = [
                 //if you want to validate incomplete date you can use inputText
                 return valueObject.jalali.day == 15;
             },
-            message:'باید تاریخ حتما  15 ماه انتخاب شود'
+            message:'you can only choose 15th day of month'
         }
 ];
 document.querySelector('jb-date-input').validation.list = validationList
@@ -189,8 +191,8 @@ document.querySelector('jb-date-input').addEventListener('change',(e)=>{
 
 ## date input type
 
-jb-calendar support both jalali and gregorian(miladi) calendar input type. like value-type that let you determine how you want to provide/expect data to/from jb-date-input you can specify how user must fill the date input.
-to achive this you have to set `input-type` attribute or set `inputType` object to component dom directly.
+jb-calendar support both jalali and gregorian(Miladi) calendar input type. like value-type that let you determine how you want to provide/expect data to/from jb-date-input you can specify how user must fill the date input.
+to achieve this you have to set `input-type` attribute or set `inputType` object to component dom directly.
 to set it as attribute you can set value like this:
 
 ```HTML
@@ -230,7 +232,7 @@ you can get the selected date by using following method:
     document.querySelector('jb-date-input').valueInDate
 
 ```
-note that providing & getting value with `Date` is faster and more perfomant than using value string
+note that providing & getting value with `Date` is faster and more performant than using value string
 
 
 ## show persian number
@@ -247,6 +249,7 @@ you can change calendar icon base on your own need to doing so you just have to 
 ```html
 <jb-date-input >
         <div slot="calendar-trigger-icon">
+            <!-- sample calendar svg to show in the box -->
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 610.398 610.398">
                 <g>
                     <g>
@@ -267,6 +270,7 @@ you can change calendar icon base on your own need to doing so you just have to 
         </div>
     </jb-date-input>
 ```
+
 ## Change Month List
 you may want to change the default month list for both  of Jalali and Gregorian calendars base on your country month labels. here how you can do it:
 ```js
@@ -323,9 +327,11 @@ example:
     <div slot="start-section">before</div>
 </jb-date-input>
 ```
+
 ## Headless usage:
 you can use `jb-date-input` headless functions to bring `jb-date-input` features to your own component.
 for doing so you just have to import some utils function and bind your input events and use them:
+
 ```js
 import {handleBeforeInput,emptyInputValueString} from 'jb-date-input';
 

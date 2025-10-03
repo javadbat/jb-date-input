@@ -1,5 +1,11 @@
 # Changelog  
 
+## [6.0.0] - 2025-10-03
+### Breaking changes:
+- separate language from calendar type now both jalali and gregorian calendar can be persian or english base on user config 
+### new features:
+- Add i18n support
+
 ## [5.11.0] - 2025-09-20
 ### new features:
 - add smooth animation for calendar open

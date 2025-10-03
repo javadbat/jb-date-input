@@ -8,6 +8,8 @@ import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
+import type { ValidationValue } from 'jb-form';
+import type { JBDateInputEventType } from '../dist/types';
 
 const meta: Meta<Props> = {
   title: "Components/form elements/Inputs/JBDateInput",
@@ -19,17 +21,19 @@ type Story = StoryObj<typeof JBDateInput>;
 export const Normal: Story = {
   args: {
     label: "date",
+  }
+};
+export const Jalali: Story = {
+  args: {
+    label: "jalali date",
     valueType: "GREGORIAN",
     inputType: "JALALI",
-    direction: "ltr",
   }
 };
 
 export const CustomFormat: Story = {
   args: {
     label: "date",
-    valueType: "GREGORIAN",
-    inputType: "JALALI",
     format: "YYYY/MM/DD",
     direction: "ltr",
   }
@@ -39,8 +43,6 @@ export const Placeholder: Story = {
   args: {
     label: "date",
     placeholder: "please enter your date",
-    valueType: "GREGORIAN",
-    inputType: "JALALI",
     direction: "ltr",
   }
 };
@@ -89,7 +91,8 @@ export const CustomMonthName: Story = {
 }
 export const Required: Story = {
   args: {
-    label: "فیلد اجباری",
+    label: "required field",
+    message:"please focus and then unfocus the input to see require validation message",
     required: true,
     direction: "ltr",
   }
@@ -227,13 +230,13 @@ export const JalaliTest: Story = {
     const validationList = [
       {
         validator: /^13.*$/g,
-        message: 'تاریخ باید قبل از تنها در قرن 13 شمسی باشد'
+        message:'date must be in 13 century'
       },
       {
-        validator: ({ text, inputObject, valueObject, valueText }) => {
+        validator: ({ valueObject }:ValidationValue) => {
           return valueObject.jalali.day >= 15;
         },
-        message: 'باید تاریخ بعد از  15 ماه انتخاب شود'
+        message:'you can only choose 15th day of month'
       }
     ];
     return (
@@ -297,7 +300,7 @@ export const TimeStampTest: Story = {
         return null;
       }
     }, [setValue]);
-    const onChange = useCallback((e) => {
+    const onChange = useCallback((e:JBDateInputEventType<Event>) => {
       setValueSetter(e.target.value);
     }, []);
 
@@ -433,8 +436,8 @@ export const InFormTest: Story = {
       //     console.log(formData);
       //     debugger;
       // });
-      function handleForm(event) {
-        var formData = new FormData(event.target);
+      function handleForm(event:SubmitEvent) {
+        var formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData);
         console.log(data);
         event.preventDefault();

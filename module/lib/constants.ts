@@ -4,11 +4,3 @@ export const emptyInputValueString = '    /  /  ';
  */
 export const inputFormat = 'YYYY/MM/DD';
 export const inputRegex = /^(?<year>[\u06F0-\u06F90-9,\s]{4})\/(?<month>[\u06F0-\u06F90-9,\s]{2})\/(?<day>[\u06F0-\u06F90-9,\s]{2})$/g
-
-export const dictionary = {
-  errors: {
-    minRangeViolation: 'تاریخ انتخابی کمتر از بازه مجاز است',
-    maxRangeViolation: 'تاریخ انتخابی بیشتر از بازه مجاز است',
-    required:'لطفا مقدار تاریخ را کامل وارد کنید',
-  }
-}
