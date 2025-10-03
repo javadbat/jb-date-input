@@ -13,7 +13,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - support keyboard arrow key and fast date input with keyboard
 
-- customizable style with css variables
+- 💅customizable style with css variables
 
 - can set min and max date value
 
@@ -25,7 +25,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - good typing experience for desktop user
 
-- it use your page font by default. 
+- has headless module so you can use it with any input [read more](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-readme--docs#headless-usage)
 
 - have 3 value type so you can get inputted value in gregorian, jalali or timestamp base on your project need
 
@@ -34,6 +34,8 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 - support `esm` import build for modern `ECMA Script` nodejs app.
 
 - compatible with native HTML `form` element to send data to server.
+
+- support multi-language and i18n see [jb design system getting starting guidance](https://javadbat.github.io/design-system/?path=/docs/getting-started-introduction--docs)
 
 ## Demo & Sample:    
 
@@ -330,9 +332,9 @@ example:
 
 ## Headless usage:
 you can use `jb-date-input` headless functions to bring `jb-date-input` features to your own component.
-for doing so you just have to import some utils function and bind your input events and use them:
+for doing so you just have to import some utils function and bind your input events and use them:    
 
-```js
+```javascript
 import {handleBeforeInput,emptyInputValueString} from 'jb-date-input';
 
 const input = document.querySelector('input');
