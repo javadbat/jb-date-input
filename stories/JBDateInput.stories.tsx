@@ -26,8 +26,13 @@ export const Normal: Story = {
 export const Jalali: Story = {
   args: {
     label: "jalali date",
-    valueType: "GREGORIAN",
     inputType: "JALALI",
+  }
+};
+export const Gregorian: Story = {
+  args: {
+    label: "gregorian date",
+    inputType: "GREGORIAN",
   }
 };
 
