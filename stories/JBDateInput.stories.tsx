@@ -37,10 +37,22 @@ export const Gregorian: Story = {
 };
 
 export const CustomFormat: Story = {
+  render:(args)=>{
+    const [value, setValue] = useState('');
+    const [value2, setValue2] = useState('');
+    return (
+      <div>
+        <h2>input.value in different format</h2>
+        <p>try to input some value inside date-input and see the changes in the paragraphs below</p>
+        <JBDateInput label="value with arguments format" format={args.format} value={value} onChange={(e)=>setValue(e.target.value)}/>
+        <p>your inputted value is: {value}</p>
+        <JBDateInput label="value with YYYY-MM-DD format" format="YYYY-MM-DD format" value={value2} onChange={(e)=>setValue2(e.target.value)}/>
+        <p>your inputted value is: {value2}</p>
+      </div>
+    )
+  },
   args: {
-    label: "date",
     format: "YYYY/MM/DD",
-    direction: "ltr",
   }
 };
 
