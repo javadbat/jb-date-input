@@ -1,10 +1,17 @@
 # Changelog  
 
+## [6.1.0] - 2025-12-06
+### fixed:
+- fix caret position fixing.
+### new features:
+- change calendar section when user change focus between date section.
+- add `isAutoValidationDisabled` prop to react component.
+
 ## [6.0.0] - 2025-10-04
 ### Breaking changes:
-- separate language from calendar type now both jalali and gregorian calendar can be persian or english base on user config 
+- separate language from calendar type now both jalali and gregorian calendar can be persian or english base on user config. 
 ### new features:
-- Add i18n support
+- Add i18n support.
 
 ## [5.11.0] - 2025-09-20
 ### new features:
@@ -25,7 +32,7 @@
 
 ## [5.9.1] - 2025-06-16
 ### fixed:
-- fix 30 day "esfand" type by checking leap lear in both type and set month
+- fix 30 day "esfand" type by checking leap lear in both type and set month.
 
 ## [5.9.0] - 2025-06-05
 

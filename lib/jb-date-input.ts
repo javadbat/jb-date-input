@@ -12,7 +12,7 @@ import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilen
 import { registerDefaultVariables } from 'jb-core/theme';
 import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from './types.js';
 import { DateFactory } from './date-factory.js';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, emptyInputValueString, inputFormat, inputRegex  } from 'jb-date-input/module';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, emptyInputValueString, inputFormat, inputRegex, getSelectionPart  } from 'jb-date-input/module';
 import { requiredValidation } from './validations.js';
 import { renderHTML } from './render.js';
 import { InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
@@ -227,6 +227,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     } else {
       this.elements.popover.close();
       this.elements.calendarTriggerButton.classList.remove('--active');
+      // will reset calendar value to seated value of date-input
+      this.#updateCalendarView();
     }
   }
 
@@ -902,10 +904,17 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #handleCaretPosOnInputFocus() {
     const newCaretPos = getFixedCaretPos({inputValue:this.inputValue,selectionStart:this.elements.input.selectionStart})
     if (newCaretPos !== null) {
-      this.elements.input.setSelectionRange(newCaretPos, newCaretPos);
+      if(newCaretPos !== this.elements.input.selectionStart){
+        this.elements.input.setSelectionRange(newCaretPos, newCaretPos);
+      }
+    }
+    const caretPos = newCaretPos ?? this.elements.input.selectionStart
+    const selectionPart = getSelectionPart(caretPos)
+    if(selectionPart){
+      this.elements.calendar.activeSection = selectionPart;
     }
   }
-  #lastInputStringValue = '    /  /  ';
+  #lastInputStringValue = emptyInputValueString;
   /**
    * check if there is no update from last time then if change we update. remember to call returned update.
    * @param { string }newString newly typed String
@@ -963,6 +972,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const focusedElement = e.relatedTarget;
     if (focusedElement !== this.elements.input && focusedElement !== this.elements.calendarTriggerButton) {
       this.showCalendar = false;
+      
     }
   }
   #onPopoverClose() {

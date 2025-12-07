@@ -359,7 +359,7 @@ export const GregorianInputTest: Story = {
 
 export const RightToLeftTest: Story = {
   args: {
-    label: "rtl",
+    label: "راست به چپ",
     style: { direction: "rtl" }
   }
 }

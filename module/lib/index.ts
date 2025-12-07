@@ -39,6 +39,22 @@ export function getYear(value: string) {
 export function getDay(value: string) {
   return value.substring(8, 10)
 }
+/**
+ * tell you that given caret pos is belonging to each part of web-component
+ */
+export function getSelectionPart(caretPos:number){
+  if(caretPos<5){
+    return 'YEAR';
+  }
+  if(caretPos<8){
+    return 'MONTH'
+  }
+  if(caretPos < 11){
+    return 'DAY'
+  }
+  return null;
+}
+
 export function handleDayBeforeInput(inputType: InputType, typedNumber: number, caretPos: number, value: string, inputChar: (char: string, pos: number) => void): { isIgnoreChar: boolean, caretPos: number } {
   let isIgnoreChar = false;
   if (caretPos == 8 && typedNumber > 3) {
@@ -251,16 +267,18 @@ export function getFixedCaretPos(params:HandleFocusParams):number|null{
     const caretPos = params.selectionStart;
     if (caretPos) {
       const trimmedYearLength =  getYear(params.inputValue).trim().length;
-      if (trimmedYearLength < caretPos && caretPos <= 4) {
+      const trimmedMonthLength = getMonth(params.inputValue).trim().length;
+      const trimmedDayLength = getDay(params.inputValue).trim().length;
+      //
+      if (trimmedYearLength < caretPos && (caretPos <= 4 || (trimmedMonthLength == 0 && trimmedDayLength == 0))) {
         //if year was null we move cursor to first char of year
         return trimmedYearLength;
       }
-      const trimmedMonthLength = getMonth(params.inputValue).trim().length;
-      if (trimmedMonthLength + 5 < caretPos && caretPos > 4 && caretPos <= 7) {
+      // when user focus on month section or focus on day when month is'nt filled yet.
+      if (caretPos > 4 && ((caretPos <= 7 && trimmedMonthLength + 5 < caretPos) || (trimmedDayLength == 0 && trimmedMonthLength<2)) ) {
         //if month was null we move cursor to first char of month
         return trimmedMonthLength+ 5
       }
-      const trimmedDayLength = getDay(params.inputValue).trim().length;
       if (trimmedDayLength + 8 < caretPos && caretPos > 7 && caretPos <= 10) {
         //if day was null we move cursor to first char of day
         return trimmedDayLength + 8;

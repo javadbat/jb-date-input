@@ -19,6 +19,7 @@ export type JBDateInputAttributes = {
   gregorianMonthList?: string[] | null | undefined,
   overflowHandler?: "NONE" | "SLIDE",
   overflowRef?: RefObject<HTMLElement|null> | null,
+  isAutoValidationDisabled?:boolean
   //
   disabled?: boolean,
   error?: string,
@@ -142,6 +143,7 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
       element?.current?.setAttribute('disabled', `${props.disabled}`);
     }
   }, [props.disabled]);
+  
   useEffect(() => {
     if (props.error) {
       element?.current?.setAttribute('error', props.error);
@@ -149,4 +151,11 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
       element?.current?.removeAttribute('error');
     }
   }, [props.error]);
+
+  useEffect(()=>{
+    if(element?.current){
+      element.current.isAutoValidationDisabled = !!props.isAutoValidationDisabled
+    }
+  },[props.isAutoValidationDisabled])
 }
+
