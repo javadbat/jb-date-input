@@ -9,33 +9,33 @@
 
 web component date input (picker) to get date (jalali & gregorian) from user.
 
-- support jalali date as well as gregorian date
+- support jalali date as well as gregorian date.
 
-- support keyboard arrow key and fast date input with keyboard
+- support keyboard arrow key and fast date input with keyboard.
 
-- 💅customizable style with css variables
+- 💅customizable style with css variables.
 
-- can set min and max date value
+- can set min and max date value.
 
-- web component so it can be used in every framework and even pure-js project
+- web component so it can be used in every framework and even pure-js project.
 
-- responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard)
+- responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard).
 
-- support typescript
+- support typescript.
 
-- good typing experience for desktop user
+- good typing experience for desktop user.
 
-- has headless module so you can use it with any input [read more](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-readme--docs#headless-usage)
+- has headless module so you can use it with any input [read more](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-readme--docs#headless-usage).
 
-- have 3 value type so you can get inputted value in gregorian, jalali or timestamp base on your project need
+- have 3 value type so you can get inputted value in gregorian, jalali or timestamp base on your project need.
 
-- customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`
+- customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`.
 
 - support `esm` import build for modern `ECMA Script` nodejs app.
 
 - compatible with native HTML `form` element to send data to server.
 
-- support multi-language and i18n see [jb design system getting starting guidance](https://javadbat.github.io/design-system/?path=/docs/getting-started-introduction--docs)
+- support multi-language and i18n see [jb design system getting starting guidance](https://javadbat.github.io/design-system/?path=/docs/getting-started-introduction--docs).
 
 ## Demo & Sample:    
 
@@ -74,7 +74,8 @@ import 'jb-date-input';
 
 beware that jb-date-input umd build do not exclude external dependency and bundled as a standalone module, so only use this way if you dont access npm in your app.   
 
-1- you can just add script tag to your html file and then use web component how ever you need.    
+1- you can just add script tag to your html file and then use web component how ever you need.
+
 
 ```HTML
 <script src="https://unpkg.com/jb-date-input/dist/JBDateInput.umd.js"></script>
@@ -82,19 +83,10 @@ beware that jb-date-input umd build do not exclude external dependency and bundl
 2- use it in your `.html` file like any other tag:
 
 ```HTML
-<jb-date-input label="date label"></jb-date-input>
+<jb-date-input label="your date input"></jb-date-input>
 ```
-## format
 
-default format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
-you can change it however you need and `[Z]` mean the exact Z character that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
-you can change format by format attribute:
 
-```html
-
-<jb-date-input label="date" format="YYYY/MM/DD" value="2020/08/14"></jb-date-input>
-
-```
 
 ## Value Type
 
@@ -271,6 +263,15 @@ you can change calendar icon base on your own need to doing so you just have to 
             </svg>
         </div>
     </jb-date-input>
+```
+## format
+
+default format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
+you can change it however you need and `[Z]` mean the exact Z character that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
+you can change format by format attribute:
+
+```html
+<jb-date-input label="date" format="YYYY/MM/DD" value="2020/08/14"></jb-date-input>
 ```
 
 ## Change Month List
