@@ -45,7 +45,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 ## using with JS frameworks
 
-- [<img src="https://img.shields.io/badge/jb--date--input/react-000.svg?logo=react&logoColor=%2361DAFB" height="30" />](https://github.com/javadbat/jb-date-input/tree/main/react)
+- [<img src="https://img.shields.io/badge/jb--date--input/react-000.svg?logo=react&logoColor=%2361DAFB" height="30" />](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-react-readme)
 
 ## instructions
 
@@ -72,33 +72,19 @@ import 'jb-date-input';
 ```
 #### using cdn
 
-beware that jb-date-input umd build do not exclude external dependency and bundled as a standalone module, so only use this way if you dont access npm in your app.   
-
-1- you can just add script tag to your html file and then use web component how ever you need.
+1- First, add script tag to your html file and then use web component how ever you need.
 
 
 ```HTML
 <script src="https://unpkg.com/jb-date-input/dist/JBDateInput.umd.js"></script>
 ```
+> we recommend you to use `UMD` build of the component when you using CDN but you can also use compressed and ESM module too. for more information see [package structure](https://javadbat.github.io/design-system/?path=/docs/general-package-structure) 
+
 2- use it in your `.html` file like any other tag:
 
 ```HTML
 <jb-date-input label="your date input"></jb-date-input>
 ```
-
-
-
-## Value Type
-
-we have 3 value type:
-
-```html
-    <jb-date-input value="2020-08-01T14:05:39.530Z" value-type="GREGORIAN"/>
-    <jb-date-input value="1596291030322" value-type="TIME_STAMP"/>
-    <jb-date-input value="1399-05-01T12:05:39.530Z" value-type="JALALI"/>
-```
-
-by setting value type you can tell component what type of value you providing to it and expecting from it. remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
 
 ## min and max date limit
 
@@ -119,8 +105,8 @@ const max = new Date('2022-08-15T08:51:23.176Z');
 document.querySelector('jb-date-input').setMaxDate(max);
 // or string
 document.querySelector('jb-date-input').setMinDate('2022-08-15T08:51:23.176Z');
-
 ```
+
 ## placeholder
 
 you can set placeholder to show it to user when input is empty. to doing so just set `placeholder` attribute in HTML DOM or `placeholder` in JavaScript: 
@@ -236,6 +222,19 @@ if you want to show persian number instead of English number char you just have 
 //or
 <jb-date-input show-persian-number="true"></jb-date-input >
 ```
+
+## Value Type
+
+we have 3 value type:
+
+```html
+    <jb-date-input value="2020-08-01T14:05:39.530Z" value-type="GREGORIAN"/>
+    <jb-date-input value="1596291030322" value-type="TIME_STAMP"/>
+    <jb-date-input value="1399-05-01T12:05:39.530Z" value-type="JALALI"/>
+```
+
+by setting value type you can tell component what type of value you providing to it and expecting from it. remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
+
 ## customize calendar button trigger
 
 you can change calendar icon base on your own need to doing so you just have to put your custom html inside web component with `slot="calendar-trigger-icon"` like below:

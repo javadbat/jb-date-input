@@ -1,9 +1,11 @@
 # jb-date-input React component
 
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/jb-date-input)
 [![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/main/LICENSE)
-[![NPM Downloads](https://img.shields.io/npm/dw/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
+[![NPM Version](https://img.shields.io/npm/v/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
+![GitHub Created At](https://img.shields.io/github/created-at/javadbat/jb-date-input)
 
-react component date input (picker) to get date (jalali & gregorian) from user.
+React component date input (picker) to get date (jalali & gregorian) from user.
 this component is a simple react component that use [jb-date-input](https://github.com/javadbat/jb-date-input) inside and its just a simple wrapper for it so i suggest you to read jb-date-input document too, it has more complete & updated document.    
 
 - support jalali date as well as gregorian date
