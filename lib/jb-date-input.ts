@@ -28,6 +28,7 @@ if (HTMLElement == undefined) {
   console.error('you cant render web component on a server side. try to load this component as a client side component');
 }
 //TODO: refactor date-input to use Temporal value as a core value so date object could be filled even with incomplete value
+//TODO: add showPicker method for html standard https://web-platform-dx.github.io/web-features-explorer/features/show-picker-input/
 export class JBDateInputWebComponent extends HTMLElement implements WithValidation<ValidationValue>, JBFormInputStandards<string> {
   static formAssociated = true;
   #internals?: ElementInternals;
