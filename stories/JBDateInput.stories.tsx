@@ -372,6 +372,7 @@ export const Headless: Story = {
       <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus} />
     )
   },
+  storyName:'headless sample',
   args: {
 
   }

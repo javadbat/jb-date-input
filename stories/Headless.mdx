@@ -1,0 +1,71 @@
+import {Meta, Title, Story, Controls, Stories, Description, CodeOrSourceMdx} from '@storybook/blocks';
+import * as DateInputStories from './JBDateInput.stories';
+
+<Meta title='Components/form elements/Inputs/JBDateInput/Headless' />
+
+<Title>Headless</Title>
+<Description of={DateInputStories.Headless}>turn every input to jb-date-input</Description>
+<p>turn every input to jb-date-input</p>
+
+<p>to make this happen we have several way. if you are using ReactJS it's quite easy with just simple hook, but if you are in other frameworks or in pure js or you just want more flexibility you can use or helper functions.</p>
+
+<h2>Headless in ReactJS</h2>
+<p>you can use `useJBDateInput` hook to make every input to jb-date-input</p>
+
+```jsx
+import {useJBDateInput } from "jb-date-input/react";
+
+export function YourDateInput(){
+  const ref = useRef<HTMLInputElement>(null);
+  const { value, onChange, onClick, onFocus } = useJBDateInput({ dateInputType: "JALALI", ref, showPersianNumber: false })
+  return (
+    <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus} />
+  )
+}
+```
+here is the sample:
+<Story of={DateInputStories.Headless} />
+
+**What about calendar?**
+jb-date-input headless module intended to control date-input typing and caret pos ,... as light as possible
+if you need calendar, you can use [jb-calendar](?path=/docs/components-jbcalendar--overview) and add calendar to your own date input
+
+<h2>Headless in Other tools</h2>
+<p>import our headless helpers function from `jb-date-input/module` then use these functions inside your code to control what user type</p>
+
+```typescript
+import { type InputType, type BeforeInputHandlerResponse, handleBeforeInput, emptyInputValueString, getFixedCaretPos} from 'jb-date-input/module';
+
+//you input dom
+const inputDom = document.querySelector('input');
+
+// set initial value of the input. jb-date-input need this empty string to keep it's pattern and control input during the type
+inputDom.value = emptyInputValueString;
+//this will give the last index that caret should be placed.
+// you can use this function in when user click or focus on the input
+const newCaretPos = getFixedCaretPos({ inputValue: value, selectionStart: inputDom.selectionStart });
+
+// main function that control input value when user type the value
+// you better use this function inside `beforeinput` event
+inputDom.addEventListener("beforeinput",(e)=>{
+  const response:BeforeInputHandlerResponse = handleBeforeInput({
+    dateInputType: 'JALALI', //or 'GREGORIAN'
+    selection: {
+      start: inputDom.selectionStart,
+      end: inputDom.selectionEnd,
+    },
+    value: inputDom.value,
+    showPersianNumber: true,
+    event: {
+      inputType: e.inputType,
+      data: e.data
+    }
+  });
+  // you should disable difualt value input and handle it yourself
+  e.preventDefault();
+  setValue(response.value);
+  //we set it twice because in some scenario value dont change but selection range should be set
+  params.ref.current.setSelectionRange(response.selectionStart, response.selectionEnd);
+  // set the selection range after the value is set
+})
+```
