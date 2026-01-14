@@ -37,16 +37,16 @@ export const Gregorian: Story = {
 };
 
 export const CustomFormat: Story = {
-  render:(args)=>{
+  render: (args) => {
     const [value, setValue] = useState('');
     const [value2, setValue2] = useState('');
     return (
       <div>
         <h2>input.value in different format</h2>
         <p>try to input some value inside date-input and see the changes in the paragraphs below</p>
-        <JBDateInput label="value with arguments format" format={args.format} value={value} onChange={(e)=>setValue(e.target.value)}/>
+        <JBDateInput label="value with arguments format" format={args.format} value={value} onChange={(e) => setValue(e.target.value)} />
         <p>your inputted value is: {value}</p>
-        <JBDateInput label="value with YYYY-MM-DD format" format="YYYY-MM-DD format" value={value2} onChange={(e)=>setValue2(e.target.value)}/>
+        <JBDateInput label="value with YYYY-MM-DD format" format="YYYY-MM-DD format" value={value2} onChange={(e) => setValue2(e.target.value)} />
         <p>your inputted value is: {value2}</p>
       </div>
     )
@@ -109,7 +109,7 @@ export const CustomMonthName: Story = {
 export const Required: Story = {
   args: {
     label: "required field",
-    message:"please focus and then unfocus the input to see require validation message",
+    message: "please focus and then unfocus the input to see require validation message",
     required: true,
     direction: "ltr",
   }
@@ -247,13 +247,13 @@ export const JalaliTest: Story = {
     const validationList = [
       {
         validator: /^13.*$/g,
-        message:'date must be in 13 century'
+        message: 'date must be in 13 century'
       },
       {
-        validator: ({ valueObject }:ValidationValue) => {
+        validator: ({ valueObject }: ValidationValue) => {
           return valueObject.jalali.day >= 15;
         },
-        message:'you can only choose 15th day of month'
+        message: 'you can only choose 15th day of month'
       }
     ];
     return (
@@ -317,7 +317,7 @@ export const TimeStampTest: Story = {
         return null;
       }
     }, [setValue]);
-    const onChange = useCallback((e:JBDateInputEventType<Event>) => {
+    const onChange = useCallback((e: JBDateInputEventType<Event>) => {
       setValueSetter(e.target.value);
     }, []);
 
@@ -372,7 +372,7 @@ export const Headless: Story = {
       <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus} />
     )
   },
-  storyName:'headless sample',
+  storyName: 'headless sample',
   args: {
 
   }
@@ -423,19 +423,13 @@ export const WithoutIcon: Story = {
   }
 };
 
-export const WithStartSection: Story = {
+export const WithInlineSections: Story = {
   render: (args) => (
     <JBDateInput {...args}>
-      <div
-        slot="end-section"
-        style={{ width: "24px", height: "24px", backgroundColor: "#262626" }}
-      >
+      <div slot="inline-start-section" style={{ height: "1.5rem", borderInlineEnd: "2px solid #262626", paddingInline: "0.5rem" }}>
+        🎉Birthday
       </div>
-      <div
-        slot="start-section"
-        style={{ width: "24px", height: "24px", backgroundColor: "#262626" }}
-      >
-      </div>
+      <div slot="inline-end-section">⭐</div>
     </JBDateInput>
   ),
   args: {
@@ -454,7 +448,7 @@ export const InFormTest: Story = {
       //     console.log(formData);
       //     debugger;
       // });
-      function handleForm(event:SubmitEvent) {
+      function handleForm(event: SubmitEvent) {
         var formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData);
         console.log(data);

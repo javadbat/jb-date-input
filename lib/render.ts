@@ -2,6 +2,9 @@ export function renderHTML(): string {
   return /* html */ `
     <div class="jb-date-input-web-component">
         <jb-input disable-auto-validation part="input">
+            <div slot="start-section">
+                <slot name="inline-start-section"></slot>
+            </div>
             <div class="date-input-end-section" slot="end-section">
                 <div class="calendar-trigger" tabindex="0" >
                     <slot name="calendar-trigger-icon">
@@ -16,8 +19,8 @@ export function renderHTML(): string {
                         </svg>
                     </slot>
                 </div>
+                <slot name="inline-end-section"></slot>
             </div>
-            <!-- <slot name="end-section"></slot> -->
         </jb-input>
         <jb-popover part="popover">
             <jb-calendar tabindex="0" part="calendar"></jb-calendar>

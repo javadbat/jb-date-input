@@ -1,0 +1,21 @@
+import { Meta, Markdown, Story, Source } from '@storybook/blocks';
+import * as DateInputStories from './JBDateInput.stories';
+
+<Meta title="Components/form elements/Inputs/JBDateInput/Slots" />
+
+# Slots
+jb-date-input allow you to use your own custom HTML inside certain position, for example you can change calendar icon or you can add some content in start or end of the input box.     
+
+## Add Start Selection & End Section
+You can easily add icon or any other HTML content before and after input inside input box by put `inline-start-section` or `inline-end-section` as slot attribute.    
+here we put confetti icon with birthday text in `inline-start-section` slot and a start in the `inline-end-section` slot.
+
+<Story of={DateInputStories.WithInlineSections} />
+<Source of={DateInputStories.WithInlineSections} />
+
+## Customize Calendar Icon 
+You can change calendar icon with whatever icon you desire, so that you just have to put your custom html inside web component with `slot="calendar-trigger-icon"`.    
+here is the live example:
+
+<Story of={DateInputStories.WithCustomIcon} />
+<Source of={DateInputStories.WithCustomIcon} />

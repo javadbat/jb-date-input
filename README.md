@@ -234,8 +234,22 @@ we have 3 value type:
 ```
 
 by setting value type you can tell component what type of value you providing to it and expecting from it. remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
+## Slots
 
-## customize calendar button trigger
+See [Slots](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-slots--docs) for demo and code in React
+### add custom element in input box
+
+in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to place custom DOM in `jb-date-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
+example:
+
+```HTML
+<jb-date-input>
+    <div slot="end-section">after</div>
+    <div slot="start-section">before</div>
+</jb-date-input>
+```
+
+### customize calendar button trigger
 
 you can change calendar icon base on your own need to doing so you just have to put your custom html inside web component with `slot="calendar-trigger-icon"` like below:
 
@@ -318,56 +332,12 @@ more than above here is the css variable that we use in jb-date-input itself:
 | --jb-date-input-calendar-icon-color           | calendar icon color                                                       |
 | --jb-date-input-calendar-icon-color-active    | calendar icon color when calendar is open                                 |
 
-## add custom element in input box
 
-in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to place custom DOM in `jb-date-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
-example:
-
-```HTML
-<jb-date-input>
-    <div slot="end-section">after</div>
-    <div slot="start-section">before</div>
-</jb-date-input>
-```
 
 ## Headless usage:
 you can use `jb-date-input` headless functions to bring `jb-date-input` features to your own component.
 for doing so you just have to import some utils function and bind your input events and use them:    
-
-```javascript
-import {handleBeforeInput,emptyInputValueString} from 'jb-date-input';
-
-const input = document.querySelector('input');
-// first make sure you input default value is emptyInputValueString value.
-input.value = emptyInputValueString
-// this will help you to control what user can type in input field
-input.addEventListener('beforeinput',(e)=>{
-    const beforeInputRes = handleBeforeInput({
-      dateInputType: 'JALALI',
-      //make it true if you want to see persian number char
-      showPersianNumber: false,
-      //current value before new input happen
-      value: e.target.value,
-      selection: {
-        start: e.target.selectionStart,
-        end: e.target.selectionEnd,
-      },
-      event: {
-        data: e.data,
-        inputType: e.inputType,
-      },
-    });
-    e.preventDefault();
-    input.value = beforeInputRes.value;
-    input.setSelectionRange(beforeInputRes.selectionStart,beforeInputRes.selectionEnd);
-});
-// manage caret pos for when user click and focus on the input. it will stick the caret to the last typed char and skip empty value
-// use this function in `click`. `focus` , `selectionchange`,... event base on your needs.
-const newCaretPos = getFixedCaretPos({inputValue:input.value,selectionStart:input.selectionStart});
-if (newCaretPos !== null) {
-    input.setSelectionRange(newCaretPos, newCaretPos);
-}
-```
+**[See Sample and  Implement Document Here](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-headless--docs)**
 
 ## Other Related Docs:
 
