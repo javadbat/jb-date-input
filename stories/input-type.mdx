@@ -1,0 +1,50 @@
+import { Meta, Markdown, Story, Source } from '@storybook/blocks';
+import * as DateInputStories from './JBDateInput.stories';
+
+<Meta title="Components/form elements/Inputs/JBDateInput/InputType" />
+
+# Input type
+
+jb-date-input support both jalali(shamcy) and gregorian(Miladi) calendar input type. like value-type that let you determine how you want to provide/expect data to/from jb-date-input you can specify how user must fill the date input.
+to achieve this you have to set `input-type` attribute or set `inputType` object to component dom directly.
+to set it as attribute you can set value like this:
+
+```html
+
+<jb-date-input input-type="GREGORIAN"></jb-date-input>
+<jb-date-input input-type="JALALI"></jb-date-input>
+```
+
+and for doing it with direct DOM assignment you can use following js code:
+
+```js
+//to show gregorian calendar
+document.querySelector('jb-date-input').inputType = "GREGORIAN" 
+document.querySelector('jb-date-input').inputType = "JALALI"
+```
+Jalali example:
+<Story of={DateInputStories.Jalali} />
+Gregorian Example:
+<Story of={DateInputStories.Gregorian} />
+<br/>
+<br/>
+
+## ReactJS
+in react js you just have to set `inputType` prop. here is the code:
+<Source of={DateInputStories.Jalali} />
+<Source of={DateInputStories.Gregorian} />
+
+## Language of date-input 
+JB Design System have a global i18n mechanism to determine which language is your component should render by default. [(see)](https://javadbat.github.io/design-system/?path=/docs/getting-started-introduction--docs&globals=locale:fa#internationalizationi18n)
+in previous versions we use to load jalali in farsi and gregorian in english but currently we support both language in both input type.     
+the easiest way to change the language of the input is that you set `lang="fa"` or `lang="en"` inside your `<html>` tag.
+
+You can also change the language of the demo here by clicking at 🌐 icon in the header of the demo to see each component in your expected language.    
+Here we show you jalali calendar with full persian setup:
+<Story of={DateInputStories.JalaliWithPersianSetup} height='30rem' inline={false}/>
+<Source of={DateInputStories.JalaliWithPersianSetup} />
+
+## Difference With ValueType
+
+`value-type` is an attribute we use to determine input value format and has no effect on what user see. for example if you set `value-type="JALALI"` and ``input-type="GREGORIAN"`` user will see a gregorian calendar but when you get value by `document.querySelector('jb-date-input').value` you will get `1400-08-24` means value is jalali but calendar is gregorian 
+

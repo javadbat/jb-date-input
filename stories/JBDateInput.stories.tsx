@@ -10,10 +10,12 @@ import { useCallback } from 'react';
 import { useEffect } from 'react';
 import type { ValidationValue } from 'jb-form';
 import type { JBDateInputEventType } from '../dist/types';
-
+import {JBButton} from 'jb-button/react';
 const meta: Meta<Props> = {
   title: "Components/form elements/Inputs/JBDateInput",
   component: JBDateInput,
+  //we create custom docs for this stories so we don't need them in display
+  // excludeStories:['Headless','WithInlineSections','WithCustomIcon', 'Jalali', 'Gregorian','JalaliWithPersianSetup']
 };
 export default meta;
 type Story = StoryObj<typeof JBDateInput>;
@@ -35,7 +37,19 @@ export const Gregorian: Story = {
     inputType: "GREGORIAN",
   }
 };
-
+export const JalaliWithPersianSetup: Story = {
+  globals:{
+    locale:"fa",
+    dir:"rtl"
+  },
+    args: {
+    label: "تاریخ جلالی",
+    inputType: "JALALI",
+    direction:'rtl',
+    showPersianNumber:true,
+    message:"تاریخ جلالی با اعداد فارسی و به صورت راست به چپ"
+  }
+}
 export const CustomFormat: Story = {
   render: (args) => {
     const [value, setValue] = useState('');
@@ -44,7 +58,7 @@ export const CustomFormat: Story = {
       <div>
         <h2>input.value in different format</h2>
         <p>try to input some value inside date-input and see the changes in the paragraphs below</p>
-        <JBDateInput label="value with arguments format" format={args.format} value={value} onChange={(e) => setValue(e.target.value)} />
+        <JBDateInput label={`value with arguments format(${args.format})`} format={args.format} value={value} onChange={(e) => setValue(e.target.value)} />
         <p>your inputted value is: {value}</p>
         <JBDateInput label="value with YYYY-MM-DD format" format="YYYY-MM-DD format" value={value2} onChange={(e) => setValue2(e.target.value)} />
         <p>your inputted value is: {value2}</p>
@@ -158,6 +172,17 @@ export const withError: Story = {
   }
 };
 
+export const ValueSetGet:Story = {
+  render:()=>{
+    const [value,setValue] = useState<Date | string>("");
+    return (
+    <div style={{display:'flex', flexDirection:"column", gap:"0.5rem"}}>
+      <JBDateInput value={value} onChange={(e)=>setValue(e.target.value)}></JBDateInput>
+      <JBButton onClick={()=>setValue(new Date())}>set value to Today</JBButton>
+    </div>
+    )
+  }
+}
 export const sizeTest: Story = {
   render: () => {
     return (
@@ -191,51 +216,62 @@ export const sizeTest: Story = {
   }
 };
 
-export const GregorianTest: Story = {
+export const ValueTypeTest: Story = {
   render: (args) => {
-    const [setValue, setValueSetter] = useState("");
+    const [value, setValue] = useState("");
     return (
       <div>
         <JBDateInput
           {...args}
+
           onChange={(e) => {
-            setValueSetter(e.target.value);
+            setValue(e.target.value);
           }}
         >
         </JBDateInput>
-        <br />
-        <JBDateInput label="gregorian date" input-type="GREGORIAN" {...args} />
         <div>
-          <br />
-          <br />valueType is {args.valueType}
-          <br />
-          <br />inputType is {args.inputType}
-          <br />
-          <br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
-          <br />
-          <br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
-          <br />
-          <br />Your chosen date is: {setValue}
+          <table style={{margin:'1rem'}}>
+            <tr>
+              <td>valueType is</td>
+              <td>{args.valueType}</td>
+            </tr>
+            <tr>
+              <td>inputType is</td>
+              <td>{args.inputType}</td>
+            </tr>
+            <tr>
+              <td>Min date is:</td>
+              <td>{args.min ? args.min.toString() : "Unlimited"}</td>
+            </tr>
+            <tr>
+              <td>Max date is:</td>
+              <td>{args.max ? args.max.toString() : "Unlimited"}</td>
+            </tr>
+            <tr>
+              <td>Your chosen date is:</td>
+              <td>{value}</td>
+            </tr>
+          </table>
         </div>
       </div>
     );
   },
   args: {
-    label: "date",
     valueType: "GREGORIAN",
     inputType: "GREGORIAN",
-    direction: "ltr",
-  }
+    min:"",
+    max:""
+  },
+  //TODO add arg types so control in Value doc works better for test
 };
 
 export const GregorianMinMaxTest: Story = {
-  ...GregorianTest,
+  ...ValueTypeTest,
   args: {
-    label: "date",
     valueType: "GREGORIAN",
+    inputType: "GREGORIAN",
     min: "2020-09-05T08:51:23.176Z",
     max: "2020-10-15T08:51:23.176Z",
-    inputType: "GREGORIAN",
     direction: "ltr",
   }
 };
@@ -372,7 +408,7 @@ export const Headless: Story = {
       <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus} />
     )
   },
-  storyName: 'headless sample',
+  name: 'headless sample',
   args: {
 
   }

@@ -169,24 +169,9 @@ document.querySelector('jb-date-input').addEventListener('change',(e)=>{
 });
 ```
 
-## date input type
+## Input Type
 
-jb-calendar support both jalali and gregorian(Miladi) calendar input type. like value-type that let you determine how you want to provide/expect data to/from jb-date-input you can specify how user must fill the date input.
-to achieve this you have to set `input-type` attribute or set `inputType` object to component dom directly.
-to set it as attribute you can set value like this:
-
-```HTML
-<jb-date-input input-type="GREGORIAN"></jb-date-input>
-<jb-date-input input-type="JALALI"></jb-date-input>
-```
-
-and for doing it with direct DOM assignment you can use following js code:
-
-```js
-//to show gregorian calendar
-document.querySelector('jb-date-input').inputType = "GREGORIAN" 
-document.querySelector('jb-date-input').inputType = "JALALI"
-```
+See [Here](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-inputtype--docs)
 
 ## set default date for calendar when opened
 
@@ -202,18 +187,6 @@ document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'G
 //set default year and month for jalali input-type
 document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'JALALI');
 ```
-## get value
-you can get the selected date by using following method:
-```javascript
-    // return string value base on your provided format and value type
-    document.querySelector('jb-date-input').value   
-
-    // return javascript Date value (or null)
-    document.querySelector('jb-date-input').valueInDate
-
-```
-note that providing & getting value with `Date` is faster and more performant than using value string
-
 
 ## show persian number
 if you want to show persian number instead of English number char you just have to set `show-persian-number` attribute like this:
@@ -225,18 +198,12 @@ if you want to show persian number instead of English number char you just have 
 
 ## Value Type
 
-we have 3 value type:
+See [Value Type](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-value--docs#valuetype) for explanation and code
 
-```html
-    <jb-date-input value="2020-08-01T14:05:39.530Z" value-type="GREGORIAN"/>
-    <jb-date-input value="1596291030322" value-type="TIME_STAMP"/>
-    <jb-date-input value="1399-05-01T12:05:39.530Z" value-type="JALALI"/>
-```
-
-by setting value type you can tell component what type of value you providing to it and expecting from it. remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
 ## Slots
 
 See [Slots](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-slots--docs) for demo and code in React
+
 ### add custom element in input box
 
 in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to place custom DOM in `jb-date-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
@@ -279,13 +246,6 @@ you can change calendar icon base on your own need to doing so you just have to 
 ```
 ## format
 
-default format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
-you can change it however you need and `[Z]` mean the exact Z character that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
-you can change format by format attribute:
-
-```html
-<jb-date-input label="date" format="YYYY/MM/DD" value="2020/08/14"></jb-date-input>
-```
 
 ## Change Month List
 you may want to change the default month list for both  of Jalali and Gregorian calendars base on your country month labels. here how you can do it:

@@ -1,0 +1,79 @@
+import { Meta, Markdown, Story, Source, Controls } from '@storybook/blocks';
+import * as DateInputStories from './JBDateInput.stories';
+
+<Meta title="Components/form elements/Inputs/JBDateInput/Value" />
+
+# Value
+As `jb-date-input` tried to looks native as possible, working with value is similar to native HTML `<input>` element.     
+Get/Set value in `jb-date-input` is quite simple like this:
+
+## Get Value
+```javascript
+  // return string value base on your provided format and value type
+  const value = document.querySelector('jb-date-input').value // will return '0000-00-00T00:00:00.000Z' on empty value   
+
+  // return javascript Date value (or null)
+  const dateValue = document.querySelector('jb-date-input').valueInDate // will return null when date-input is empty and Date() when it have value
+
+```
+## Set Value
+
+```javascript
+  // set value with string value
+  document.querySelector('jb-date-input').value =  '2024-01-15T00:00:00.000Z'
+  // set value by Date value  
+  document.querySelector('jb-date-input').value =  new Date();
+```
+or in HTML
+
+```html
+  <jb-date-input value="2024-01-15T00:00:00.000Z" />
+```
+> note that providing & getting value with `Date` is faster and more performant than using value string
+
+### In ReactJS
+exactly like normal input + it support `Date` value as well 
+<Story of={DateInputStories.ValueSetGet} />
+<Source of={DateInputStories.ValueSetGet} />
+
+## ValueType
+
+we have 3 value type:
+
+```html
+  <jb-date-input value="2020-08-01T14:05:39.530Z" value-type="GREGORIAN"/>
+  <jb-date-input value="1596291030322" value-type="TIME_STAMP"/>
+  <jb-date-input value="1399-05-01T12:05:39.530Z" value-type="JALALI"/>
+```
+
+by setting value type you can tell component what type of value you providing to it and expecting from it.
+remember that value type is not effect input type, for example user input jalali date but you will get gregorian date when call `e.target.value`. you can also provide and get js `Date` type for more performance if you like see "get value" section for get and for set just set value like: `element.value = new Date()`.
+
+**Here is the live sample in React: **
+
+<Story of={DateInputStories.ValueTypeTest} />
+
+change `valueType`, `inputType` in the control below and select a new date in date input and see the difference.
+
+<Controls of={DateInputStories.ValueTypeTest} />
+
+> to test min & max set the value with ISO string format like `2024-02-20T00:00:00.000Z` or for JALALI value-type → `1380-02-20T00:00:00.000Z` and see how it works, as you can see min & max is also works base on `valueType`.
+here is the code in ReactJS:
+
+<Source of={DateInputStories.ValueTypeTest} />
+
+## Format
+
+Default format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
+you can change it however you need and `[Z]` mean the exact Z character that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
+you can change format by format attribute:
+
+```html
+<jb-date-input label="date" format="YYYY/MM/DD" value="2020/08/14"></jb-date-input>
+```
+<Story of={DateInputStories.CustomFormat} />
+Here change the format and see effect on above date-input 
+<Controls of={DateInputStories.CustomFormat} />
+Here is above example code in ReactJS
+<Source of={DateInputStories.CustomFormat} />
+
