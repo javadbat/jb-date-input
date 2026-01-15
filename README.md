@@ -246,6 +246,7 @@ you can change calendar icon base on your own need to doing so you just have to 
 ```
 ## format
 
+**[See Value Doc](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-value--docs#format)**
 
 ## Change Month List
 you may want to change the default month list for both  of Jalali and Gregorian calendars base on your country month labels. here how you can do it:
