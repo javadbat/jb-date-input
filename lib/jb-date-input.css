@@ -23,8 +23,8 @@
         gap:0.5rem;
         .calendar-trigger {
             display: var(--calendar-trigger-display, block);
-            width: var(--calendar-trigger-width, 1.5rem);
-            height: var(--calendar-trigger-height, 1.5rem);
+            width: var(--calendar-trigger-width);
+            height: var(--calendar-trigger-height);
             cursor: pointer;
             object-fit: contain;
 

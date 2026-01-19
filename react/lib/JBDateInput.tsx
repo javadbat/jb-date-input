@@ -6,6 +6,7 @@ import { JBDateInputWebComponent,type ValidationValue, type JBDateInputValueObje
 import { type ValidationItem } from 'jb-validation';
 import {EventProps, useEvents} from './events-hook.js';
 import { JBDateInputAttributes, useJBDateInputAttribute } from './attributes-hooks.js';
+import type { SizeVariants } from 'jb-input';
 // re-export imported types for easier use for user
 export {type JBDateInputValueObject, type ValidationItem, type ValidationValue, InputType };
 export {useJBDateInput} from './utils.js';
@@ -19,6 +20,7 @@ declare module "react" {
       class?: string,
       label?: string,
       name?: string,
+      size?:SizeVariants,
       "value-type"?: string,
       "input-type"?: string,
       ref:React.RefObject<JBDateInputWebComponent>,
@@ -30,6 +32,7 @@ type JBDateInputProps = EventProps & JBDateInputAttributes & {
   className?: string,
   label?: string,
   style?: CSSProperties,
+  size?:SizeVariants,
   valueType?: 'GREGORIAN' | 'JALALI' | 'TIME_STAMP',
   inputType?: 'GREGORIAN' | 'JALALI',
 }
@@ -46,7 +49,7 @@ export const JBDateInput = forwardRef((props: Props, ref) => {
   useJBDateInputAttribute(element,props);
   useEvents(element,props);
   return (
-    <jb-date-input style={props.style} class={props.className ? props.className : ""} label={props.label} value-type={props.valueType ? props.valueType : 'GREGORIAN'} ref={element} input-type={props.inputType ? props.inputType : 'JALALI'}>
+    <jb-date-input style={props.style} size={props.size} class={props.className ? props.className : ""} label={props.label} value-type={props.valueType ? props.valueType : 'GREGORIAN'} ref={element} input-type={props.inputType ? props.inputType : 'JALALI'}>
       {props.children}
     </jb-date-input>
   );

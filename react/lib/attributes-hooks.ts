@@ -59,6 +59,7 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
         element?.current?.removeAttribute('name');
       }
   }, [props.name]);
+
   useEffect(() => {
     if (props.min) {
       if (props.format && props.format !== element.current?.valueFormat) {
@@ -70,51 +71,61 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
       }
     }
   }, [props.min]);
+
   useEffect(() => {
-    if (element.current && props.value) {
+    if (element.current) {
       element.current.value = props.value;
     }
   }, [props.value]);
+
   useEffect(() => {
     if (element.current) {
       element.current.setAttribute("message",props.message || "");
     }
   }, [props.message]);
+
   useEffect(() => {
     if (element.current && Array.isArray(props.jalaliMonthList)) {
       element.current.setMonthList("JALALI", props.jalaliMonthList);
     }
   }, [props.jalaliMonthList]);
+
   useEffect(() => {
     if (element.current && Array.isArray(props.gregorianMonthList)) {
       element.current.setMonthList("GREGORIAN", props.gregorianMonthList);
     }
   }, [props.gregorianMonthList]);
+
   useEffect(() => {
     if (element.current && props.placeholder !== undefined) {
       element.current.placeholder = props.placeholder;
     }
   }, [props.placeholder]);
+
   useEffect(() => {
     if (element.current && props.overflowHandler !== undefined) {
       element.current.elements.popover.overflowHandler = props.overflowHandler;
     }
   }, [props.overflowHandler]);
+
   useEffect(() => {
     if (element.current && props.overflowRef !== undefined) {
       element.current.elements.popover.overflowDom = props.overflowRef.current;
     }
   }, [props.overflowRef]);
+
   useEffect(() => {
     if (element.current && Array.isArray(props.validationList)) {
       element.current.validation.list = props.validationList;
     }
   }, [props.validationList]);
+
   useEffect(() => {
     if (element.current && props.direction) {
       element.current.setAttribute('direction', props.direction);
     }
   }, [props.direction]);
+
   useEffect(() => {
     if (element.current) {
       if (props.required) {
@@ -123,13 +134,14 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
         element.current.required = false;
       }
     }
-
   }, [props.required,element.current]);
+
   useEffect(() => {
     if (typeof props.calendarDefaultDateView == "object" && props.calendarDefaultDateView.year && props.calendarDefaultDateView.month) {
       element.current?.setCalendarDefaultDateView(props.calendarDefaultDateView.year, props.calendarDefaultDateView.month, props.calendarDefaultDateView.dateType);
     }
   }, [props.calendarDefaultDateView]);
+  
   useEffect(() => {
     if (props.showPersianNumber) {
       element.current?.setAttribute('show-persian-number', 'true');

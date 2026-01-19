@@ -1,8 +1,8 @@
 :host{
   --margin:var(--jb-date-input-margin,0 0);
   --calendar-trigger-display: var(--jb-date-input-calendar-trigger-display, block);
-  --calendar-trigger-width: var(--jb-date-input-calendar-trigger-width, 1.5rem);
-  --calendar-trigger-height: var(--jb-date-input-calendar-trigger-height, 1.5rem);
+  --calendar-trigger-width: var(--jb-date-input-calendar-trigger-width, auto);
+  --calendar-trigger-height: var(--jb-date-input-calendar-trigger-height, 100%);
   --calendar-icon-color: var(--jb-date-input-calendar-icon-color, var(--jb-neutral-6));
   --calendar-icon-color-active: var(--jb-date-input-calendar-icon-color-active, var(--jb-neutral));
 }

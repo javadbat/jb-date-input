@@ -37,6 +37,31 @@ export const Gregorian: Story = {
     inputType: "GREGORIAN",
   }
 };
+export const SizeVariants: Story = {
+  render:()=>{
+    return (<div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'1rem'}}>
+      <JBDateInput label='xl size' message="message underneath" size='xl'></JBDateInput>
+      <JBDateInput label='xl size' placeholder="placeholder" size='xl'></JBDateInput>
+      <JBDateInput label='xl size' value='2021-08-03T00:00:00.000Z' size='xl'></JBDateInput>
+
+      <JBDateInput label='lg size' message="message underneath" size='lg'></JBDateInput>
+      <JBDateInput label='lg size' placeholder="placeholder" size='lg'></JBDateInput>
+      <JBDateInput label='lg size' value='2021-08-03T00:00:00.000Z' size='lg'></JBDateInput>
+
+      <JBDateInput label='md size' message="message underneath" size='md'></JBDateInput>
+      <JBDateInput label='md size' placeholder="placeholder" size='md'></JBDateInput>
+      <JBDateInput label='md size' value='2021-08-03T00:00:00.000Z' size='md'></JBDateInput>
+
+      <JBDateInput label='sm size' message="message underneath" size='sm'></JBDateInput>
+      <JBDateInput label='sm size' placeholder="placeholder" size='sm'></JBDateInput>
+      <JBDateInput label='sm size' value='2021-08-03T00:00:00.000Z' size='sm'></JBDateInput>
+
+      <JBDateInput label='xs size' message="message underneath" size='xs'></JBDateInput>
+      <JBDateInput label='xs size' placeholder="placeholder" size='xs'></JBDateInput>
+      <JBDateInput label='xs size' value='2021-08-03T00:00:00.000Z' size='xs'></JBDateInput>
+    </div>)
+  }
+}
 export const JalaliWithPersianSetup: Story = {
   globals:{
     locale:"fa",
