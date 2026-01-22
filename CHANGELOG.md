@@ -1,11 +1,18 @@
 # Changelog  
 
+## [6.2.0] - 2025-0.-22
+### Document:
+- Create doc stories file and move some documentation to storybook MDX file with more explanation and better fragmentation
+### New Features:
+- Add Size variants
+- Add `inline-start-section` and `inline-end-section`slots.
+
 ## [6.1.0] - 2025-12-06
 ### fixed:
-- fix caret position fixing.
+- Fix caret position fixing.
 ### new features:
-- change calendar section when user change focus between date section.
-- add `isAutoValidationDisabled` prop to react component.
+- Change calendar section when user change focus between date section.
+- Add `isAutoValidationDisabled` prop to react component.
 
 ## [6.0.0] - 2025-10-04
 ### Breaking changes:

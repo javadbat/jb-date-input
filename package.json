@@ -32,7 +32,7 @@
     "jalali web-component",
     "jalali web component"
   ],
-  "version": "6.1.0",
+  "version": "6.2.0",
   "bugs": "https://github.com/javadbat/jb-date-input/issues",
   "license": "MIT",
   "files": [
@@ -57,7 +57,7 @@
     "jb-calendar": ">=5.0.2",
     "jb-popover":">=1.4.0",
     "jb-validation":">=0.4.0",
-    "jb-input":">=3.11.3",
+    "jb-input":">=3.13.0",
     "jb-core":"0.19.0"
   },
   "devDependencies": {
