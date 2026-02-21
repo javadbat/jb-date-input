@@ -4,7 +4,7 @@ import 'jb-calendar';
 import 'jb-input';
 import 'jb-popover';
 // eslint-disable-next-line no-duplicate-imports
-import { type InputType, type JBCalendarWebComponent } from 'jb-calendar';
+import type { InputType, JBCalendarWebComponent } from 'jb-calendar';
 import type { JBFormInputStandards } from 'jb-form';
 import { JBInputWebComponent } from 'jb-input';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
@@ -21,7 +21,7 @@ import { i18n } from 'jb-core/i18n';
 
 export * from "./types.js";
 //headless usage exports
-export {handleBeforeInput, emptyInputValueString, getFixedCaretPos,InputTypes, JBDateInputValueObject, InputType, dictionary}
+export {handleBeforeInput, emptyInputValueString, getFixedCaretPos,InputTypes, type JBDateInputValueObject, type InputType, dictionary}
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser
