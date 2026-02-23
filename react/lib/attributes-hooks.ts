@@ -1,6 +1,6 @@
-import { JBDateInputWebComponent, type ValidationValue, type InputType } from "jb-date-input";
-import { type ValidationItem } from "jb-validation";
-import { RefObject, useEffect, useRef } from "react";
+import type { JBDateInputWebComponent, ValidationValue, InputType } from "jb-date-input";
+import type { ValidationItem } from "jb-validation";
+import { type RefObject, useEffect, useRef } from "react";
 
 export type JBDateInputAttributes = {
   min?: string | null | undefined | Date,
