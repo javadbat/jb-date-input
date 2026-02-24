@@ -12,7 +12,7 @@ import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilen
 import { registerDefaultVariables } from 'jb-core/theme';
 import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from './types.js';
 import { DateFactory } from './date-factory.js';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, emptyInputValueString, inputFormat, inputRegex, getSelectionPart  } from 'jb-date-input/module';
+import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, emptyInputValueString, inputFormat, inputRegex, getSelectionPart } from 'jb-date-input/module';
 import { requiredValidation } from './validations.js';
 import { renderHTML } from './render.js';
 import { InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
@@ -21,7 +21,7 @@ import { i18n } from 'jb-core/i18n';
 
 export * from "./types.js";
 //headless usage exports
-export {handleBeforeInput, emptyInputValueString, getFixedCaretPos,InputTypes, type JBDateInputValueObject, type InputType, dictionary}
+export { handleBeforeInput, emptyInputValueString, getFixedCaretPos, InputTypes, type JBDateInputValueObject, type InputType, dictionary }
 
 if (HTMLElement == undefined) {
   //in case of server render or old browser
@@ -136,7 +136,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    */
   set required(value: boolean) {
     this.#required = value;
-    this.#internals.ariaRequired = value?"true":"false";
+    this.#internals.ariaRequired = value ? "true" : "false";
     this.#checkValidity(false);
   }
   get required() {
@@ -144,6 +144,14 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #valueObject: JBDateInputValueObject = getEmptyValueObject();
   get name() { return this.getAttribute('name') || ''; }
+  set name(value: string | null | undefined) {
+    if (value) {
+      this.setAttribute('name', value)
+    }
+    else {
+      this.removeAttribute('name')
+    }
+  }
   get form() { return this.#internals!.form; }
   get value(): string {
     const value = this.getDateValue();
@@ -527,7 +535,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       case 'show-persian-number':
         if (value == 'true' || value === '') {
           this.showPersianNumber = true;
-        }else if (value == 'false' || value == null) {
+        } else if (value == 'false' || value == null) {
           this.showPersianNumber = false;
         }
         break;
@@ -631,7 +639,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (e.data) {
       if (this.placeholder && target.value === "") {
         this.#inputValue = emptyInputValueString;
-        target.setSelectionRange(0,0);
+        target.setSelectionRange(0, 0);
       }
     }
 
@@ -650,7 +658,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     },);
     e.preventDefault();
     this.#inputValue = beforeInputRes.value;
-    target.setSelectionRange(beforeInputRes.selectionStart,beforeInputRes.selectionEnd);
+    target.setSelectionRange(beforeInputRes.selectionStart, beforeInputRes.selectionEnd);
     //show placeholder if input were empty
     if (this.placeholder && target.value == emptyInputValueString) {
       this.#inputValue = "";
@@ -903,15 +911,15 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.showCalendar = true;
   }
   #handleCaretPosOnInputFocus() {
-    const newCaretPos = getFixedCaretPos({inputValue:this.inputValue,selectionStart:this.elements.input.selectionStart})
+    const newCaretPos = getFixedCaretPos({ inputValue: this.inputValue, selectionStart: this.elements.input.selectionStart })
     if (newCaretPos !== null) {
-      if(newCaretPos !== this.elements.input.selectionStart){
+      if (newCaretPos !== this.elements.input.selectionStart) {
         this.elements.input.setSelectionRange(newCaretPos, newCaretPos);
       }
     }
     const caretPos = newCaretPos ?? this.elements.input.selectionStart
     const selectionPart = getSelectionPart(caretPos)
-    if(selectionPart){
+    if (selectionPart) {
       this.elements.calendar.activeSection = selectionPart;
     }
   }
@@ -973,7 +981,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const focusedElement = e.relatedTarget;
     if (focusedElement !== this.elements.input && focusedElement !== this.elements.calendarTriggerButton) {
       this.showCalendar = false;
-      
+
     }
   }
   #onPopoverClose() {
@@ -1010,7 +1018,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         validator: (value) => {
           return checkMinValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.min);
         },
-        message: dictionary.get(i18n,"minRangeViolation"),
+        message: dictionary.get(i18n, "minRangeViolation"),
         stateType: "rangeUnderflow"
       });
     }
@@ -1019,7 +1027,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         validator: (value) => {
           return checkMaxValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.max);
         },
-        message: dictionary.get(i18n,"maxRangeViolation"),
+        message: dictionary.get(i18n, "maxRangeViolation"),
         stateType: "rangeOverflow"
       });
     }
