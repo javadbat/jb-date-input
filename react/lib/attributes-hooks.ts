@@ -118,7 +118,7 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
     if (element.current && Array.isArray(props.validationList)) {
       element.current.validation.list = props.validationList;
     }
-  }, [props.validationList]);
+  }, [props.validationList,element]);
 
   useEffect(() => {
     if (element.current && props.direction) {
