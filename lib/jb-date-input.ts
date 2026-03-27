@@ -405,17 +405,19 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.#initProp();
   }
   #callOnLoadEvent() {
-    const event = new CustomEvent('load', { bubbles: true, composed: true });
+    const event = new CustomEvent('load', { bubbles: true, composed: false });
     this.dispatchEvent(event);
   }
   #callOnInitEvent() {
-    const event = new CustomEvent('init', { bubbles: true, composed: true });
+    const event = new CustomEvent('init', { bubbles: true, composed: false });
     this.dispatchEvent(event);
   }
   #initWebComponent() {
     const shadowRoot = this.attachShadow({
       mode: 'open',
-      delegatesFocus: true
+      delegatesFocus: true,
+      serializable:true,
+      clonable: true,
     });
     registerDefaultVariables();
     const html = `<style>${CSS} ${VariablesCSS}</style>` + '\n' + renderHTML();
