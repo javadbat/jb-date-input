@@ -1,7 +1,7 @@
+export type DatePart = 'year' | 'month' | 'day';
+export type TimePart = 'hour' | 'minute' | 'second' | 'millisecond';
 export type DateInObject = {
-    year:number | null;
-    month:number | null;
-    day:number | null;
+    [key in DatePart]:number | null
 }
 
 export type JBDateInputValueObject = {
@@ -10,10 +10,7 @@ export type JBDateInputValueObject = {
     timeStamp:number | null;
     //just keep received date value time to pass it on date value recreation 
     time:{
-        hour:number | null,
-        minute:number | null,
-        second:number | null,
-        millisecond:number | null
+        [key in TimePart]: number | null;
     }
 }
 export type BeforeInputHandlerResponse = {
