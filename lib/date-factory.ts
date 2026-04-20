@@ -1,9 +1,9 @@
 
-import {  ValueTypes, ValueType, InputtedValueInObject, DateValidResult, type NicheNumbers } from './types';
+import type { ValueTypes, ValueType, InputtedValueInObject, DateValidResult, NicheNumbers } from './types';
 import { getEmptyValueObject, isLeapYearJalali } from 'jb-date-input/module';
 import { getYear, getMonth, getTime as getTimeStamp, isLeapYear, getDate } from 'date-fns';
 import { newDate, getYear as getJalaliYear, getMonth as getJalaliMonth, getDate as getJalaliDate, getHours, getMinutes, getSeconds, getMilliseconds } from 'date-fns-jalali';
-import { InputType, InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
+import { type InputType, InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
 import { i18n } from 'jb-core/i18n';
 
 
@@ -13,9 +13,9 @@ export type DateFactoryConstructorArg = {
 }
 export class DateFactory {
   #valueType: ValueType = "GREGORIAN";
-  #inputType: InputType = i18n.locale.calendar == "persian"?InputTypes.jalali:InputTypes.gregorian;
+  #inputType: InputType = i18n.locale.calendar == "persian" ? InputTypes.jalali : InputTypes.gregorian;
   //here we keep numbers that replace the year,month,day in niche situations
-  #nicheNumbers:NicheNumbers = {
+  #nicheNumbers: NicheNumbers = {
     //when year is invalid or empty and we want to show the calendar we need to show the current year or any other base on user config
     calendarYearOnEmpty: {
       jalali: DateFactory.todayJalaliYear,
@@ -27,14 +27,14 @@ export class DateFactory {
     }
   }
   #valueFormat = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
-  get valueFormat():string{
+  get valueFormat(): string {
     return this.#valueFormat;
   }
   set valueFormat(valueFormat: string) {
     this.#valueFormat = valueFormat;
   }
-  get nicheNumbers():NicheNumbers{
-    return  this.#nicheNumbers;
+  get nicheNumbers(): NicheNumbers {
+    return this.#nicheNumbers;
   }
   get yearOnEmptyBaseOnInputType() {
     if (this.#inputType == "JALALI") {
@@ -91,12 +91,12 @@ export class DateFactory {
     let resultDate: Date | null = null;
     //create min date base on input value type
     if (this.valueType == "TIME_STAMP") {
-      resultDate = DateFactory.getDateFromTimestamp(parseInt(valueDateString));
+      resultDate = DateFactory.getDateFromTimestamp(Number(valueDateString));
     } else {
       const dateValueObj = this.getDateObjectValueBaseOnFormat(valueDateString);
-      const year = parseInt(dateValueObj.year);
-      const month = parseInt(dateValueObj.month);
-      const day = parseInt(dateValueObj.day);
+      const year = Number(dateValueObj.year);
+      const month = Number(dateValueObj.month);
+      const day = Number(dateValueObj.day);
       //sometimes format set after min value restriction set by user so this object returned null in these scenario we set min after format set again
       if (dateValueObj !== null && dateValueObj !== undefined && year !== null && month !== null && day !== null) {
         if (this.valueType == "GREGORIAN") {
@@ -120,7 +120,7 @@ export class DateFactory {
    * @description use when user want component value and convert valueObject to user formatted value string base on format and value type
    */
   getDateValueStringFromValueObject(valueObject: JBDateInputValueObject, type = this.valueType): string {
-    //this function convert inputed date to expected format base on valueType
+    //this function convert inputted date to expected format base on valueType
     const emptyYearString = '0000';
     const emptyMonthString = '00';
     const emptyDayString = '00';
@@ -130,9 +130,9 @@ export class DateFactory {
     const millisecondStr = valueObject.time.millisecond?.toString().padStart(3, '0') ?? '000';
     const getGregorianValue = () => {
       const { year, month, day } = valueObject.gregorian;
-      const yearStr: string = year == null ? emptyYearString : (year < 1000 ? (year < 100 ? (year < 10 ? "000" + year : "00" + year) : "0" + year) : year.toString());
-      const monthStr: string = month == null ? emptyMonthString : month < 10 ? "0" + month : month.toString();
-      const dayStr: string = day == null ? emptyDayString : day < 10 ? "0" + day : day.toString();
+      const yearStr: string = year == null ? emptyYearString : (year < 1000 ? (year < 100 ? (year < 10 ? `000${year}` : `00${year}`) : `0${year}`) : year.toString());
+      const monthStr: string = month == null ? emptyMonthString : month < 10 ? `0${month}` : month.toString();
+      const dayStr: string = day == null ? emptyDayString : day < 10 ? `0${day}` : day.toString();
       const value = this.#valueFormat.replace('YYYY', yearStr).replace('MM', monthStr).replace('DD', dayStr)
         .replace('HH', hourStr).replace('mm', minuteStr).replace('ss', secondStr).replace('SSS', millisecondStr)
         .replace('[Z]', 'Ž').replace('Z', '+00:00').replace('Ž', 'Z');
@@ -140,9 +140,9 @@ export class DateFactory {
     };
     const getJalaliValue = () => {
       const { year, month, day } = valueObject.jalali;
-      const yearStr: string = year == null ? emptyYearString : (year < 1000 ? (year < 100 ? (year < 10 ? "000" + year : "00" + year) : "0" + year) : year.toString());
-      const monthStr: string = month == null ? emptyMonthString : month < 10 ? "0" + month : month.toString();
-      const dayStr: string = day == null ? emptyDayString : day < 10 ? "0" + day : day.toString();
+      const yearStr: string = year == null ? emptyYearString : (year < 1000 ? (year < 100 ? (year < 10 ? `000${year}` : `00${year}`) : `0${year}`) : year.toString());
+      const monthStr: string = month == null ? emptyMonthString : month < 10 ? `0${month}` : month.toString();
+      const dayStr: string = day == null ? emptyDayString : day < 10 ? `0${day}` : day.toString();
       const value = this.valueFormat.replace('YYYY', yearStr).replace('MM', monthStr).replace('DD', dayStr)
         .replace('HH', hourStr).replace('mm', minuteStr).replace('ss', secondStr).replace('SSS', millisecondStr)
         .replace('[Z]', 'Ž').replace('Z', '+00:00').replace('Ž', 'Z');
@@ -184,7 +184,7 @@ export class DateFactory {
       this.#nicheNumbers.calendarMonthOnEmpty.jalali = month;
     }
   }
-  getDateValueObjectBaseOnInputType(year: number, month: number, day: number, oldYear: number | null, oldMonth: number | null, hour?: number, minute?: number, second?: number, millisecond?: number): JBDateInputValueObject {
+  getDateValueObjectBaseOnInputType(year: number, month: number, day: number, oldYear: number | null, oldMonth: number | null, hour?: number | null, minute?: number | null, second?: number | null, millisecond?: number | null): JBDateInputValueObject {
     if (this.#inputType == InputTypes.gregorian) {
       return this.#getDateValueFromGregorian(year, month, day, oldYear, oldMonth, hour, minute, second, millisecond);
     }
@@ -245,16 +245,16 @@ export class DateFactory {
       isValid: true,
       error: null
     };
-    //this function check date itself validation not user setted validation
-    if (isNaN(jalaliYear)) {
+    //this function check date itself validation not user set validation
+    if (Number.isNaN(jalaliYear)) {
       result.isValid = false;
       result.error = "INVALID_YEAR";
     }
-    if (isNaN(jalaliMonth)) {
+    if (Number.isNaN(jalaliMonth)) {
       result.isValid = false;
       result.error = "INVALID_MONTH";
     }
-    if (isNaN(jalaliDay)) {
+    if (Number.isNaN(jalaliDay)) {
       result.isValid = false;
       result.error = "INVALID_DAY";
     }
@@ -314,16 +314,16 @@ export class DateFactory {
       isValid: true,
       error: null
     };
-    //this function check date itself validation not user setted validation
-    if (isNaN(gregorianYear)) {
+    //this function check date itself validation not user set validation
+    if (Number.isNaN(gregorianYear)) {
       result.isValid = false;
       result.error = "INVALID_YEAR";
     }
-    if (isNaN(gregorianMonth)) {
+    if (Number.isNaN(gregorianMonth)) {
       result.isValid = false;
       result.error = "INVALID_MONTH";
     }
-    if (isNaN(gregorianDay)) {
+    if (Number.isNaN(gregorianDay)) {
       result.isValid = false;
       result.error = "INVALID_DAY";
     }
@@ -377,7 +377,7 @@ export class DateFactory {
     return result;
 
   }
-  #getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number, oldGregorianYear: number | null, oldGregorianMonth: number | null, hour?: number, minute?: number, second?: number, millisecond?: number): JBDateInputValueObject {
+  #getDateValueFromGregorian(gregorianYear: number, gregorianMonth: number, gregorianDay: number, oldGregorianYear: number | null, oldGregorianMonth: number | null, hour?: number | null, minute?: number | null, second?: number | null, millisecond?: number | null): JBDateInputValueObject {
 
     const valueObject: JBDateInputValueObject = getEmptyValueObject();
     const dateValidationResult = DateFactory.checkGregorianDateValidation(gregorianYear, gregorianMonth, gregorianDay);
@@ -402,20 +402,20 @@ export class DateFactory {
       }
       if (dateValidationResult.error == "INVALID_DAY_IN_MONTH") {
         if (oldGregorianMonth != gregorianMonth && gregorianDay > 29) {
-          //if we update to 30days month when day set to 31 we substrc day to 30 instead of prevent user from updating month
+          //if we update to 30days month when day set to 31 we sub day to 30 instead of prevent user from updating month
           return this.#getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1, oldGregorianYear, oldGregorianMonth, hour, minute, second, millisecond);
         }
       }
       if (dateValidationResult.error == "INVALID_DAY_FOR_LEAP") {
         //if it was leap year and calender go to next year in 30 esfand
         if (oldGregorianYear != gregorianYear && gregorianDay == 29) {
-          //if we update year and prev year was kabiseh so new year cant update, we update day to 29 esfand and let user change year smootly without block
+          //if we update year and prev year was kabiseh so new year cant update, we update day to 29 esfand and let user change year smoothly without block
           return this.#getDateValueFromGregorian(gregorianYear, gregorianMonth, gregorianDay - 1, oldGregorianYear, oldGregorianMonth, hour, minute, second, millisecond);
         }
       }
       return getEmptyValueObject();
     }
-    const date = DateFactory.getDateFromGregorian(gregorianYear, gregorianMonth, gregorianDay, hour, minute, second, millisecond);
+    const date = DateFactory.getDateFromGregorian(gregorianYear, gregorianMonth, gregorianDay, hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
     valueObject.gregorian = {
       year: getYear(date),
       month: getMonth(date) + 1,
@@ -428,14 +428,14 @@ export class DateFactory {
     };
     valueObject.timeStamp = getTimeStamp(date);
     valueObject.time = {
-      hour: hour,
-      minute: minute,
-      second: second,
-      millisecond: millisecond,
+      hour: hour ?? null,
+      minute: minute ?? null,
+      second: second ?? null,
+      millisecond: millisecond ?? null,
     };
     return valueObject;
   }
-  #getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number, oldJalaliYear: number | null, oldJalaliMonth: number | null, hour?: number, minute?: number, second?: number, millisecond?: number): JBDateInputValueObject {
+  #getDateValueFromJalali(jalaliYear: number, jalaliMonth: number, jalaliDay: number, oldJalaliYear: number | null, oldJalaliMonth: number | null, hour?: number | null, minute?: number | null, second?: number | null, millisecond?: number | null): JBDateInputValueObject {
     const valueObject = getEmptyValueObject();
     const dateValidationResult = DateFactory.checkJalaliDateValidation(jalaliYear, jalaliMonth, jalaliDay);
     if (!dateValidationResult.isValid) {
@@ -471,7 +471,7 @@ export class DateFactory {
       }
       return getEmptyValueObject();
     }
-    const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay, hour, minute, second, millisecond);
+    const date = DateFactory.getDateFromJalali(jalaliYear, jalaliMonth, jalaliDay, hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
     valueObject.gregorian = {
       year: getYear(date),
       month: getMonth(date) + 1,
@@ -484,10 +484,10 @@ export class DateFactory {
     };
     valueObject.timeStamp = getTimeStamp(date);
     valueObject.time = {
-      hour: hour,
-      minute: minute,
-      second: second,
-      millisecond: millisecond,
+      hour: hour ?? null,
+      minute: minute ?? null,
+      second: second ?? null,
+      millisecond: millisecond ?? null,
     };
     return valueObject;
   }
@@ -502,7 +502,7 @@ export class DateFactory {
       minute: null,
       second: null
     };
-    if (res && res.groups) {
+    if (res?.groups) {
       dateInObject.year = res.groups.year;
       dateInObject.month = res.groups.month;
       dateInObject.day = res.groups.day;
@@ -525,9 +525,9 @@ export class DateFactory {
   }
   static getDate(year: number, month: number, day: number, inputType: InputType, hour?: number, minute?: number, second?: number, millisecond?: number): Date {
     if (inputType == InputTypes.jalali) {
-      return DateFactory.getDateFromJalali(year, month, day);
+      return DateFactory.getDateFromJalali(year, month, day,hour,minute,second,millisecond);
     }
-    return DateFactory.getDateFromGregorian(year, month, day);
+    return DateFactory.getDateFromGregorian(year, month, day, hour,minute,second,millisecond);
   }
   static getDateFromGregorian(year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number): Date {
     return new Date(year, month - 1, day, hour, minute, second, millisecond);

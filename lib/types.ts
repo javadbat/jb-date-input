@@ -40,7 +40,7 @@ export type NicheNumbers = {
  * @description when user type some value in input we just dived and separate string in 3 section (there is no date calculation behind it) and it mostly used in
  */
 export type InputtedValueInObject = {
-    [key in DatePart & TimePart]: string;
+    [key in (DatePart | TimePart)]: string | null;
 }
 export type ValidationValue = { text: string, inputObject: InputtedValueInObject, valueObject: JBDateInputValueObject, valueText: string };
 export type JBCalendarValue = {

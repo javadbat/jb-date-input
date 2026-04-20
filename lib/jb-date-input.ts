@@ -29,7 +29,7 @@ if (HTMLElement == undefined) {
 }
 //TODO: refactor date-input to use Temporal value as a core value so date object could be filled even with incomplete value
 //TODO: add showPicker method for html standard https://web-platform-dx.github.io/web-features-explorer/features/show-picker-input/
-export class JBDateInputWebComponent extends HTMLElement implements WithValidation<ValidationValue>, JBFormInputStandards<string> {
+export class JBDateInputWebComponent extends HTMLElement implements WithValidation<ValidationValue>, JBFormInputStandards<string | null> {
   static formAssociated = true;
   #internals?: ElementInternals;
   elements!: ElementsObject;
@@ -78,11 +78,11 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.#disabled = value;
     this.elements.input.disabled = value;
     if (value) {
-      this.#internals.states?.add("disabled");
-      this.#internals.ariaDisabled = "true";
+      this.#internals?.states?.add("disabled");
+      this.#internals!.ariaDisabled = "true";
     } else {
-      this.#internals.states?.delete("disabled");
-      this.#internals.ariaDisabled = "false";
+      this.#internals?.states?.delete("disabled");
+      this.#internals!.ariaDisabled = "false";
     }
   }
   /**
@@ -136,14 +136,14 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    */
   set required(value: boolean) {
     this.#required = value;
-    this.#internals.ariaRequired = value ? "true" : "false";
+    this.#internals!.ariaRequired = value ? "true" : "false";
     this.#checkValidity(false);
   }
   get required() {
     return this.#required;
   }
   #valueObject: JBDateInputValueObject = getEmptyValueObject();
-  get name() { return this.getAttribute('name') || ''; }
+  get name():string{ return this.getAttribute('name') || ''; }
   set name(value: string | null | undefined) {
     if (value) {
       this.setAttribute('name', value)
@@ -200,7 +200,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   set placeholder(value: string | null) {
     this.#placeholder = value;
-    this.#internals.ariaPlaceholder = value;
+    this.#internals!.ariaPlaceholder = value;
     if (value !== null) {
       this.elements.input.elements.input.placeholder = value;
     } else {
@@ -420,7 +420,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       clonable: true,
     });
     registerDefaultVariables();
-    const html = `<style>${CSS} ${VariablesCSS}</style>` + '\n' + renderHTML();
+    const html = `<style>${CSS} ${VariablesCSS}</style>\n${renderHTML()}`;
     const element = document.createElement('template');
     element.innerHTML = html;
     shadowRoot.appendChild(element.content.cloneNode(true));
@@ -587,7 +587,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         this.elements.calendar.dateRestrictions.min = minDate;
       }
     } else {
-      console.error(`min date ${dateInput} is not valid and it will be ignored`, '\n', 'please provide min date in format : ' + this.#dateFactory.valueFormat);
+      console.error(`min date ${dateInput} is not valid and it will be ignored`, '\n', `please provide min date in format : ${this.#dateFactory.valueFormat}`);
     }
 
   }
@@ -608,7 +608,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         this.elements.calendar.dateRestrictions.max = maxDate;
       }
     } else {
-      console.error(`max date ${dateInput} is not valid and it will be ignored`, '\n', 'please provide max date in format : ' + this.#dateFactory.valueFormat);
+      console.error(`max date ${dateInput} is not valid and it will be ignored`, '\n', `please provide max date in format : ${this.#dateFactory.valueFormat}`);
     }
   }
   /**
@@ -719,15 +719,15 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay, hour, minute, second, millisecond);
+    this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay,hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
     this.#updateInputTextFromValue();
   }
   #addMonth(interval: number) {
     const currentYear = this.yearDisplayValue ? this.yearDisplayValue : this.#dateFactory.yearOnEmptyBaseOnInputType;
     const currentMonth = this.monthDisplayValue || 1;
-    let currentDay = this.dayDisplayValue || 1;
+    const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour, minute, second, millisecond);
+    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
     this.#updateInputTextFromValue();
   }
   #addDay(interval: number) {
@@ -735,7 +735,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth, currentDay + interval, hour, minute, second, millisecond);
+    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth, currentDay + interval, hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
     this.#updateInputTextFromValue();
   }
   /**
@@ -786,8 +786,11 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   /**
    * @description set date value from javascript Date
    */
-  #setDateValueFromDate(value: Date) {
-    const valueObject = this.#dateFactory.getDateObjectValueFromDateValue(value);
+  #setDateValueFromDate(value: Date | null) {
+    let valueObject = getEmptyValueObject();
+    if(value){
+      valueObject = this.#dateFactory.getDateObjectValueFromDateValue(value);
+    }
     this.#valueObject = valueObject;
     this.#updateCalendarView();
   }
@@ -832,7 +835,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    * @param {number} month jalali or gregorian month
    * @param {number} day jalali or gregorian day
    */
-  #setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number) {
+  #setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number, hour?: number | null, minute?: number | null, second?: number | null, millisecond?: number | null) {
     //TODO: refactor this component to use Temporal value as a core object
     const prevYear = this.yearBaseOnInputType;
     const prevMonth = this.monthBaseOnInputType;
@@ -853,25 +856,25 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     let yearString = '    ', monthString = '  ', dayString = '  ';
     if (year != null && !Number.isNaN(year)) {
       if (year < 10) {
-        yearString = '000' + year;
+        yearString = `000${year}`;
       } else if (year < 100) {
-        yearString = '00' + year;
+        yearString = `00${year}`;
       } else if (year < 1000) {
-        yearString = '0' + year;
+        yearString = `0${year}`;
       } else {
         yearString = year.toString();
       }
     }
     if (month != null && !Number.isNaN(month)) {
       if (month < 10) {
-        monthString = '0' + month;
+        monthString = `0${month}`;
       } else {
         monthString = month.toString();
       }
     }
     if (day != null && !Number.isNaN(day)) {
       if (day < 10) {
-        dayString = '0' + day;
+        dayString = `0${day}`;
       } else {
         dayString = day.toString();
       }
@@ -892,7 +895,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #updateValueFromInputString(inputString: string) {
     inputRegex.lastIndex = 0;
     const res = inputRegex.exec(inputString);
-    if (res && res.groups) {
+    if (res?.groups) {
       //TODO: update this when support Temporal time and get times factor from input
       const { hour, minute, millisecond, second } = this.#valueObject.time;
       const year = Number(res.groups.year);
@@ -1005,10 +1008,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #getInsideValidations() {
     const validationList: ValidationItem<ValidationValue>[] = [];
-    if (this.getAttribute("error") !== null && this.getAttribute("error").trim().length > 0) {
+    if (this.getAttribute("error") !== null && (this.getAttribute("error")??"").trim().length > 0) {
       validationList.push({
         validator: undefined,
-        message: this.getAttribute("error"),
+        message: this.getAttribute("error")!,
         stateType: "customError"
       });
     }
@@ -1018,7 +1021,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (this.dateRestrictions.min) {
       validationList.push({
         validator: (value) => {
-          return checkMinValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.min);
+          return checkMinValidation(new Date(value.valueObject.timeStamp!), this.dateRestrictions.min!);
         },
         message: dictionary.get(i18n, "minRangeViolation"),
         stateType: "rangeUnderflow"
@@ -1027,7 +1030,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (this.dateRestrictions.max) {
       validationList.push({
         validator: (value) => {
-          return checkMaxValidation(new Date(value.valueObject.timeStamp), this.dateRestrictions.max);
+          return checkMaxValidation(new Date(value.valueObject.timeStamp!), this.dateRestrictions.max!);
         },
         message: dictionary.get(i18n, "maxRangeViolation"),
         stateType: "rangeOverflow"
@@ -1038,11 +1041,11 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   showValidationError(error: ShowValidationErrorParameters) {
     this.elements.input.showValidationError(error);
-    (this.#internals as any).states?.add("invalid");
+    this.#internals?.states?.add("invalid");
   }
   clearValidationError() {
     this.elements.input.clearValidationError();
-    (this.#internals as any).states?.delete("invalid");
+    this.#internals?.states?.delete("invalid");
 
   }
   #onCalendarElementInitiated() {
@@ -1170,7 +1173,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    */
   #setValidationResult(result: ValidationResult<ValidationValue>) {
     if (result.isAllValid) {
-      this.#internals.setValidity({}, '');
+      this.#internals?.setValidity({}, '');
     } else {
       const states: ValidityStateFlags = {};
       let message = "";
@@ -1181,15 +1184,15 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
           } else {
             states["customError"] = true;
           }
-          if (message == '') { message = res.message; }
+          if (message == '') { message = res.message??""; }
 
         }
       });
-      this.#internals.setValidity(states, message);
+      this.#internals?.setValidity(states, message);
     }
   }
   get validationMessage() {
-    return this.#internals.validationMessage;
+    return this.#internals!.validationMessage;
   }
 }
 //register component in document custom element registry
