@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
         "rootDir": "./lib",
         "declarationDir": "./dist",
     },
