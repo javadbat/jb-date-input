@@ -47,5 +47,7 @@
             }
         }
     }
-
+    jb-popover{
+        --jb-popover-top:4rem;
+    }
 }
