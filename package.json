@@ -55,13 +55,13 @@
     "date-fns": "^4.1.0",
     "date-fns-jalali": "^4.1.0-0",
     "jb-calendar": ">=5.0.2",
-    "jb-popover":">=1.4.0",
+    "jb-popover":">=1.7.1",
     "jb-validation":">=0.4.0",
-    "jb-input":">=3.13.0",
-    "jb-core":"0.25.0"
+    "jb-input":">=3.16.0",
+    "jb-core":"00.27.0"
   },
   "devDependencies": {
-    "jb-form":">=0.7.1"
+    "jb-form":">=0.11.0"
   },
   "peerDependencies": {
     "tslib": "^2.8.1",
