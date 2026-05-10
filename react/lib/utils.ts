@@ -19,7 +19,7 @@ export function useJBDateInput(params: Params) {
   useEffect(() => {
     if (resRef.current) {
       setTimeout(() => {
-        params.ref.current.setSelectionRange(resRef.current.selectionStart, resRef.current.selectionEnd);
+        params.ref.current!.setSelectionRange(resRef.current!.selectionStart, resRef.current!.selectionEnd);
         resRef.current = null;
       }, 0)
     }
@@ -29,8 +29,8 @@ export function useJBDateInput(params: Params) {
     resRef.current = handleBeforeInput({
       dateInputType: params.dateInputType,
       selection: {
-        start: params.ref.current.selectionStart,
-        end: params.ref.current.selectionEnd,
+        start: params.ref.current?.selectionStart??0,
+        end: params.ref.current?.selectionEnd??0,
       },
       value: value,
       showPersianNumber: params.showPersianNumber,
@@ -42,14 +42,14 @@ export function useJBDateInput(params: Params) {
     e.preventDefault();
     setValue(resRef.current.value);
     //we set it twice because in some scenario value dont change but selection range should be set
-    params.ref.current.setSelectionRange(resRef.current.selectionStart, resRef.current.selectionEnd);
+    params.ref.current?.setSelectionRange(resRef.current.selectionStart, resRef.current.selectionEnd);
     // set the selection range after the value is set
   }
   const fixSelection = () => {
     if (resRef.current === null) {
-      const newCaretPos = getFixedCaretPos({ inputValue: value, selectionStart: params.ref.current.selectionStart });
-      if (newCaretPos !== null && newCaretPos !== undefined && newCaretPos !== params.ref.current.selectionStart) {
-        params.ref.current.setSelectionRange(newCaretPos,newCaretPos);
+      const newCaretPos = getFixedCaretPos({ inputValue: value, selectionStart: params.ref.current?.selectionStart??0 });
+      if (newCaretPos !== null && newCaretPos !== undefined && newCaretPos !== params.ref.current?.selectionStart) {
+        params.ref.current?.setSelectionRange(newCaretPos,newCaretPos);
       }
     }
   }

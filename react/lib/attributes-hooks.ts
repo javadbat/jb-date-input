@@ -24,7 +24,7 @@ export type JBDateInputAttributes = {
   disabled?: boolean,
   error?: string,
 }
-export function useJBDateInputAttribute(element: RefObject<JBDateInputWebComponent>, props: JBDateInputAttributes) {
+export function useJBDateInputAttribute(element: RefObject<JBDateInputWebComponent | null>, props: JBDateInputAttributes) {
   const onFormatChangeCallBackQueueRef = useRef<(() => void)[]>([]);
   useEffect(() => {
     if (props.format) {
@@ -74,7 +74,7 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
 
   useEffect(() => {
     if (element.current) {
-      element.current.value = props.value;
+      element.current.value = props.value??null;
     }
   }, [props.value]);
 
@@ -109,7 +109,7 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
   }, [props.overflowHandler]);
 
   useEffect(() => {
-    if (element.current && props.overflowRef !== undefined) {
+    if (element.current && props.overflowRef !== undefined && props.overflowRef !== null) {
       element.current.elements.popover.overflowDom = props.overflowRef.current;
     }
   }, [props.overflowRef]);

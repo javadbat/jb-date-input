@@ -35,7 +35,7 @@ export type EventProps = {
   onFocus?: (e: JBDateInputEventType<FocusEvent>) => void,
   onBlur?: (e: JBDateInputEventType<FocusEvent>) => void,
 }
-export function useEvents(element:RefObject<JBDateInputWebComponent>,props:EventProps){
+export function useEvents(element:RefObject<JBDateInputWebComponent | null>,props:EventProps){
   useEvent(element, 'load', props.onLoad, true);
   useEvent(element, 'init', props.onInit, true);
   useEvent(element, 'invalid', props.onInvalid, true);

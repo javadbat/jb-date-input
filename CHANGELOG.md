@@ -1,6 +1,10 @@
 # Changelog  
 
-## [6.2.0] - 2025-0.-22
+## [6.2.1] - 2026-05-11
+### fixed:
+- fix popover position problem
+
+## [6.2.0] - 2026-02-11
 ### Document:
 - Create doc stories file and move some documentation to storybook MDX file with more explanation and better fragmentation
 ### New Features:

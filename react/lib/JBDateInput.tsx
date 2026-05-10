@@ -26,7 +26,7 @@ declare module "react" {
       size?:SizeVariants,
       "value-type"?: string,
       "input-type"?: string,
-      ref:React.RefObject<JBDateInputWebComponent>,
+      ref:React.RefObject<JBDateInputWebComponent | null>,
     }
   }
 }
@@ -41,10 +41,10 @@ type JBDateInputProps = EventProps & JBDateInputAttributes & {
 export type Props = PropsWithChildren<JBDateInputProps> & JBElementStandardProps<JBDateInputWebComponent,keyof JBDateInputProps>;
 
 export const JBDateInput = forwardRef((props: Props, ref) => {
-  const element = useRef<JBDateInputWebComponent>(null);
+  const element = useRef<JBDateInputWebComponent | null>(null);
   useImperativeHandle(
     ref,
-    () => (element ? element.current : undefined),
+    () => (element.current??undefined),
     [element],
   );
   const {size, label, inputType, valueType,calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList,value, onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect, ...otherProps} = props;

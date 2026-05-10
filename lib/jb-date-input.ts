@@ -157,7 +157,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const value = this.getDateValue();
     return value;
   }
-  set value(value: string | Date) {
+  set value(value: string | Date | null) {
     this.#setDateValue(value);
     this.#updateInputTextFromValue();
   }
@@ -747,7 +747,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   /**
    * @description when user change value this function called and update inner value object base on user value
    */
-  #setDateValue(value: string | Date) {
+  #setDateValue(value: string | Date | null) {
+    if(value === null){this.#setValueObjNull();}
     if (typeof value == "string") {
       switch (this.#dateFactory.valueType) {
         case "GREGORIAN":
