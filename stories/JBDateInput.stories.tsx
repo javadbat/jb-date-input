@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useRef } from "react";
-import { JBDateInput, Props, useJBDateInput } from "jb-date-input/react";
-
+import { JBDateInput, type Props, useJBDateInput } from "jb-date-input/react";
+//@ts-ignore
 import './styles/themes.css';
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 import { useEffect } from 'react';
 import type { ValidationValue } from 'jb-form';
 import type { JBDateInputEventType } from '../dist/types';
-import {JBButton} from 'jb-button/react';
+import { JBButton } from 'jb-button/react';
 const meta: Meta<Props> = {
   title: "Components/form elements/Inputs/JBDateInput",
   component: JBDateInput,
@@ -38,8 +38,8 @@ export const Gregorian: Story = {
   }
 };
 export const SizeVariants: Story = {
-  render:()=>{
-    return (<div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'1rem'}}>
+  render: () => {
+    return (<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
       <JBDateInput label='xl size' message="message underneath" size='xl'></JBDateInput>
       <JBDateInput label='xl size' placeholder="placeholder" size='xl'></JBDateInput>
       <JBDateInput label='xl size' value='2021-08-03T00:00:00.000Z' size='xl'></JBDateInput>
@@ -63,16 +63,16 @@ export const SizeVariants: Story = {
   }
 }
 export const JalaliWithPersianSetup: Story = {
-  globals:{
-    locale:"fa",
-    dir:"rtl"
+  globals: {
+    locale: "fa",
+    dir: "rtl"
   },
-    args: {
+  args: {
     label: "تاریخ جلالی",
     inputType: "JALALI",
-    direction:'rtl',
-    showPersianNumber:true,
-    message:"تاریخ جلالی با اعداد فارسی و به صورت راست به چپ"
+    direction: 'rtl',
+    showPersianNumber: true,
+    message: "تاریخ جلالی با اعداد فارسی و به صورت راست به چپ"
   }
 }
 export const CustomFormat: Story = {
@@ -197,14 +197,14 @@ export const withError: Story = {
   }
 };
 
-export const ValueSetGet:Story = {
-  render:()=>{
-    const [value,setValue] = useState<Date | string>("");
+export const ValueSetGet: Story = {
+  render: () => {
+    const [value, setValue] = useState<Date | string>("");
     return (
-    <div style={{display:'flex', flexDirection:"column", gap:"0.5rem"}}>
-      <JBDateInput value={value} onChange={(e)=>setValue(e.target.value)}></JBDateInput>
-      <JBButton onClick={()=>setValue(new Date())}>set value to Today</JBButton>
-    </div>
+      <div style={{ display: 'flex', flexDirection: "column", gap: "0.5rem" }}>
+        <JBDateInput value={value} onChange={(e) => setValue(e.target.value)}></JBDateInput>
+        <JBButton onClick={() => setValue(new Date())}>set value to Today</JBButton>
+      </div>
     )
   }
 }
@@ -255,7 +255,7 @@ export const ValueTypeTest: Story = {
         >
         </JBDateInput>
         <div>
-          <table style={{margin:'1rem'}}>
+          <table style={{ margin: '1rem' }}>
             <tr>
               <td>valueType is</td>
               <td>{args.valueType}</td>
@@ -284,8 +284,8 @@ export const ValueTypeTest: Story = {
   args: {
     valueType: "GREGORIAN",
     inputType: "GREGORIAN",
-    min:"",
-    max:""
+    min: "",
+    max: ""
   },
   //TODO add arg types so control in Value doc works better for test
 };
@@ -326,7 +326,7 @@ export const JalaliTest: Story = {
           <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
           <br /><br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
           <br /><br />Your chosen date is: {value}
-          <br /><button onClick={() => { valueSetter("1400-06-18T00:00:00.000Z"); }}>set value to 1400-06-18T00:00:00.000Z</button>
+          <br /><JBButton onClick={() => { valueSetter("1400-06-18T00:00:00.000Z"); }}>set value to 1400-06-18T00:00:00.000Z</JBButton>
         </div>
         <h3>Center Aligned</h3>
         <div style={({ '--jb-date-input-text-align': 'center' } as any)}>
@@ -424,7 +424,6 @@ export const RightToLeftTest: Story = {
     style: { direction: "rtl" }
   }
 }
-
 export const Headless: Story = {
   render: (args) => {
     const ref = useRef<HTMLInputElement>(null);
@@ -449,6 +448,7 @@ export const WithCustomIcon: Story = {
           y="0px"
           viewBox="0 0 610.398 610.398"
         >
+          <title>calendar icon</title>
           <g>
             <g>
               <path d="M159.567,0h-15.329c-1.956,0-3.811,0.411-5.608,0.995c-8.979,2.912-15.616,12.498-15.616,23.997v10.552v27.009v14.052    c0,2.611,0.435,5.078,1.066,7.44c2.702,10.146,10.653,17.552,20.158,17.552h15.329c11.724,0,21.224-11.188,21.224-24.992V62.553    V35.544V24.992C180.791,11.188,171.291,0,159.567,0z" />
