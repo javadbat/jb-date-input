@@ -2,7 +2,7 @@
 
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/jb-date-input)
 [![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/javadbat/jb-date-input/main/LICENSE)
-[![NPM Version](https://img.shields.io/npm/v/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
+[![NPM Version](https://img.shields.io/npm/v/jb-date-input-react)](https://www.npmjs.com/package/jb-date-input-react)
 ![GitHub Created At](https://img.shields.io/github/created-at/javadbat/jb-date-input)
 
 React component date input (picker) to get date (jalali & gregorian) from user.
