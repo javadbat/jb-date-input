@@ -45,7 +45,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 ## Using with JS frameworks
 
-- [<img src="https://img.shields.io/badge/jb--date--input/react-000.svg?logo=react&logoColor=%2361DAFB" height="30" />](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-react-readme)
+- [<img src="https://img.shields.io/badge/React.js-jb--date--input%2Freact-000.svg?logo=react&logoColor=%2361DAFB" height="30" />](https://github.com/javadbat/jb-date-input/tree/main/react)
 
 ## Instructions
 
