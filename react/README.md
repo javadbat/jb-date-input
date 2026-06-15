@@ -12,7 +12,7 @@ this component is a simple react component that use [jb-date-input](https://gith
 
 - support keyboard arrow key and fast date input with keyboard
 
-- customizable style with css variables
+- customizable style with CSS variables
 
 - can set min and max date value
 
@@ -28,7 +28,7 @@ this component is a simple react component that use [jb-date-input](https://gith
 
 - customizable month names so you can change it for afghan or any other locals
 
-- have 3 value type so you can get inputted value in gregorian, jalali or timestamp base on your project need
+- have 3 value type so you can get inputted value in gregorian, jalali or timestamp based on your project need
 
 - customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`
 
@@ -110,9 +110,9 @@ const validationList = [
         },
         {
             validator:({text, inputObject, valueObject, valueText})=>{
-                //you can use raw imputed text or formatted text in expected value in arguments
+                //you can use raw inputted text or formatted text in expected value in arguments
                 //you have access to both jalali and gregorian date object here in valueObject
-                //inputObject is a object contain imputed day & month & year unprocessed base on format so it have value before date imputed completely
+                //inputObject is a object contain inputted day & month & year unprocessed based on format so it have value before date inputted completely
                 // remember valueObject and valueText are both empty and null when date is incomplete
                 //if you want to validate incomplete date you can use inputText
                 return valueObject.jalali.day == 15;
@@ -153,8 +153,7 @@ const MyForm = (props) => {
 
 ```
 
-## events
-
+## Events
 we support most normal input events + `onSelect`, `onEnter` events.
 
 ```jsx
@@ -207,7 +206,7 @@ See [Slots](https://javadbat.github.io/design-system/?path=/docs/components-form
 
 ## Change Month List
 
-you may want to change the default month list for both  of Jalali and Gregorian calendars base on your country month labels. here how you can do it:   
+you may want to change the default month list for both  of Jalali and Gregorian calendars based on your country month labels. here how you can do it:   
 
 ```jsx
 document.querySelector('jb-date-input').setMonthList('GREGORIAN',['1','2','3','4','5','6','7','8','9','10','11','12']);
@@ -222,7 +221,7 @@ to fix this we add a feature called `overflowHandler` by set this to `SLIDE` the
 
 ```jsx
 <JBDateInput overflowHandler="SLIDE" />
-//if you want to check your overflow base on another dom and not window for example when you put date input in a modal
+//if you want to check your overflow based on another dom and not window for example when you put date input in a modal
 <div ref={ref} style={{ height: "12rem", border: "solid 1px #666", overflow:"hidden" }}>
     <JBDateInput {...args} overflowRef={ref} />
 </div>
@@ -231,21 +230,21 @@ to fix this we add a feature called `overflowHandler` by set this to `SLIDE` the
 ### set custom style
 
 in some cases in your project you need to change default style of react-component for example you need zero margin or different border-radius and etc.    
-if you want to set a custom style to this react-component all you need is to set css variable in parent scope of react-component.    
+if you want to set a custom style to this react-component all you need is to set CSS variable in parent scope of react-component.    
 #### usage example:
 
 ```css
 body{
 /* if you need more margin */
   --jb-date-input-margin: 16px 32px;
-/* if you dont want rounded corner */
+/* if you don't want rounded corner */
   --jb-input-border-radius:0px;
 /* if you want different text color*/
   --jb-input-value-color:red;
 }
 ```
 #### variable list
-if you want the full variable list read [jb-date-input](https://github.com/javadbat/jb-date-input) doc for more updated list of styles and css variables.
+if you want the full variable list read [jb-date-input](https://github.com/javadbat/jb-date-input) doc for more updated list of styles and CSS variables.
 
 ## using headless
 
@@ -256,8 +255,12 @@ for doing so you just have to import `useJBDateInput` and bind your input events
 if you want more control over your component you can use native headless utils function of `jb-date-input` build your own custom hook.
 
 
-## Other Related Docs:
 
+## Shared Documentation
+
+For web-component behavior, events, slots, and CSS variables, see [`jb-date-input`](https://github.com/javadbat/jb-date-input).
+
+## Related Docs
 - see [jb-date-input](https://github.com/javadbat/jb-date-input) if you want to use this component as a web-component
 
 - see [All JB Design system Component List](https://javadbat.github.io/design-system/) for more components

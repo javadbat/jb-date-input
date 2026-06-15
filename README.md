@@ -13,7 +13,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - support keyboard arrow key and fast date input with keyboard.
 
-- 💅customizable style with css variables.
+- 💅customizable style with CSS variables.
 
 - can set min and max date value.
 
@@ -27,7 +27,7 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - has headless module so you can use it with any input [read more](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-readme--docs#headless-usage).
 
-- have 3 value type so you can get inputted value in gregorian, jalali or timestamp base on your project need.
+- have 3 value type so you can get inputted value in gregorian, jalali or timestamp based on your project need.
 
 - customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`.
 
@@ -37,14 +37,12 @@ web component date input (picker) to get date (jalali & gregorian) from user.
 
 - support multi-language and i18n see [jb design system getting starting guidance](https://javadbat.github.io/design-system/?path=/docs/getting-started-introduction--docs).
 
-## Demo & Sample:    
-
+## Demo
 - [github pages](https://javadbat.github.io/jb-date-input/)
 - [codepen](https://codepen.io/javadbat/pen/qBRyYKY)
 - [storybook](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput)
 
-## Using with JS frameworks
-
+## Using With JS Frameworks
 - [<img src="https://img.shields.io/badge/React.js-jb--date--input%2Freact-000.svg?logo=react&logoColor=%2361DAFB" height="30" />](https://github.com/javadbat/jb-date-input/tree/main/react)
 
 ## Instructions
@@ -72,7 +70,7 @@ import 'jb-date-input';
 ```
 #### using cdn
 
-1- First, add script tag to your html file and then use web component how ever you need.
+1- First, add script tag to your html file and then use web component however you need.
 
 
 ```HTML
@@ -130,9 +128,9 @@ const validationList = [
         },
         {
             validator:({text, inputObject, valueObject, valueText})=>{
-                //you can use raw imputed text or formatted text in expected value in arguments
+                //you can use raw inputted text or formatted text in expected value in arguments
                 //you have access to both jalali and gregorian date object here in valueObject
-                //inputObject is a object contain imputed day & month & year unprocessed base on format so it have value before date imputed completely
+                //inputObject is a object contain inputted day & month & year unprocessed based on format so it have value before date inputted completely
                 // remember valueObject and valueText are both empty and null when date is incomplete
                 //if you want to validate incomplete date you can use inputText
                 return valueObject.jalali.day == 15;
@@ -148,13 +146,12 @@ remember your min and max date must be in the same format and valueType of your 
 to trigger validation and check is the element has a valid value:
 
 ```js
-// if show error was false, in case of error component dont show error itself and function will return if data valid or not
+// if show error was false, in case of error component don't show error itself and function will return if data valid or not
 const showError = true
 const validationObj = dom.validation.checkValidity({showError})
 ```
 
-## events
-
+## Events
 ```js
 //when default property are defined best time for impl your config like min and max date
 document.querySelector('jb-date-input').addEventListener('init',this.onCalendarElementInitiated);
@@ -218,7 +215,7 @@ example:
 
 ### customize calendar button trigger
 
-you can change calendar icon base on your own need to doing so you just have to put your custom html inside web component with `slot="calendar-trigger-icon"` like below:
+you can change calendar icon based on your own need to doing so you just have to put your custom html inside web component with `slot="calendar-trigger-icon"` like below:
 
 ```html
 <jb-date-input >
@@ -249,7 +246,7 @@ you can change calendar icon base on your own need to doing so you just have to 
 **[See Value Doc](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-value--docs#format)**
 
 ## Change Month List
-you may want to change the default month list for both  of Jalali and Gregorian calendars base on your country month labels. here how you can do it:
+you may want to change the default month list for both  of Jalali and Gregorian calendars based on your country month labels. here how you can do it:
 ```js
 document.querySelector('jb-date-input').setMonthList('JALALI',['حَمَل','ثَور','جَوزا','سَرَطان','اَسَد','سُنبُله','میزان','عَقرَب','قَوس','جَدْی','دَلو','حوت']);
 document.querySelector('jb-date-input').setMonthList('GREGORIAN',['1','2','3','4','5','6','7','8','9','10','11','12']);
@@ -264,27 +261,31 @@ document.querySelector('jb-date-input').elements.popover.overflowHandler = "SLID
 ## set custom style
 
 in some cases in your project you need to change default style of web-component for example you need zero margin or different border-radius and etc.    
-if you want to set a custom style to this web-component all you need is to set css variable in parent scope of web-component.
+if you want to set a custom style to this web-component all you need is to set CSS variable in parent scope of web-component.
 #### usage example:
 
 ```css
 body{
 /* if you need more margin */
   --jb-date-input-margin: 16px 32px;
-/* if you dont want rounded corner */
+/* if you don't want rounded corner */
   --jb-input-border-radius:0px;
 /* if you want different text color*/
   --jb-input-value-color:red;
 }
 ```
 
-you can customize jb-date-input look  by setting css variable in your app.    
-jb-date-input use [jb-input](https://github.com/javadbat/jb-input) and [jb-calendar](https://github.com/javadbat/jb-calendar) and [jb-popover](https://github.com/javadbat/jb-popover) underneath so to change the styles of your component read custom style section of these components and set their css variable.    
-more than above here is the css variable that we use in jb-date-input itself:    
+you can customize jb-date-input look  by setting CSS variable in your app.    
+jb-date-input use [jb-input](https://github.com/javadbat/jb-input) and [jb-calendar](https://github.com/javadbat/jb-calendar) and [jb-popover](https://github.com/javadbat/jb-popover) underneath so to change the styles of your component read custom style section of these components and set their CSS variable.    
+more than above here is the CSS variable that we use in jb-date-input itself:    
+
+## Styling Dependencies
+
+`jb-date-input` uses `jb-input`, `jb-calendar`, and `jb-popover` internally. Their CSS variables also apply when styling the composed date input.
 
 #### variable list
  
-| css variable name                             | description                                                               |
+| CSS variable name                             | description                                                               |
 | -------------                                 | -------------                                                             |
 | --jb-date-input-margin                        | web-component margin default is `0 0`                                     |
 | --jb-date-input-calendar-trigger-display      | set it no none to hide calendar icon                                      |
@@ -300,8 +301,7 @@ you can use `jb-date-input` headless functions to bring `jb-date-input` features
 for doing so you just have to import some utils function and bind your input events and use them:    
 **[See Sample and  Implement Document Here](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-headless--docs)**
 
-## Other Related Docs:
-
+## Related Docs
 - see [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react); if you want to use this component in react
 
 - see [All JB Design system Component List](https://javadbat.github.io/design-system/) for more components
