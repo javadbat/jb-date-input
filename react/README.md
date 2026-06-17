@@ -5,264 +5,344 @@
 [![NPM Version](https://img.shields.io/npm/v/jb-date-input-react)](https://www.npmjs.com/package/jb-date-input-react)
 ![GitHub Created At](https://img.shields.io/github/created-at/javadbat/jb-date-input)
 
-React component date input (picker) to get date (jalali & gregorian) from user.
-this component is a simple react component that use [jb-date-input](https://github.com/javadbat/jb-date-input) inside and its just a simple wrapper for it so i suggest you to read jb-date-input document too, it has more complete & updated document.    
+React wrapper for [`jb-date-input`](https://github.com/javadbat/jb-date-input). It imports and registers the underlying web component, forwards React props to the element, and exposes the same Jalali/Gregorian date input behavior in JSX.
 
-- support jalali date as well as gregorian date
+- Supports Jalali and Gregorian input.
+- Supports custom `valueType`, `inputType`, and `format`.
+- Supports `Date`, string, and null values.
+- Supports min/max date limits.
+- Supports custom validation through `validationList`.
+- Supports custom Jalali and Gregorian month names.
+- Supports calendar popover overflow handling.
+- Supports headless usage through `useJBDateInput`.
 
-- support keyboard arrow key and fast date input with keyboard
+## Demo
 
-- customizable style with CSS variables
+- [CodeSandbox preview](https://3f63dj.csb.app/samples/jb-date-input)
+- [CodeSandbox editor](https://codesandbox.io/p/sandbox/jb-design-system-3f63dj?file=%2Fsrc%2Fsamples%2FJBDateInput.tsx)
+- [Storybook](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput)
 
-- can set min and max date value
-
-- web component so it can be used in every framework and even pure-js project
-
-- responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard)
-
-- support typescript
-
-- good typing experience for desktop user
-
-- it use your page font by default.
-
-- customizable month names so you can change it for afghan or any other locals
-
-- have 3 value type so you can get inputted value in gregorian, jalali or timestamp based on your project need
-
-- customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`
-
-- support `esm` import build for modern `ECMA Script` nodejs app. 
-
-Demo:
-
-[codeSandbox preview](https://3f63dj.csb.app/samples/jb-date-input) for just see the demo
-[codeSandbox editor](https://codesandbox.io/p/sandbox/jb-design-system-3f63dj?file=%2Fsrc%2Fsamples%2FJBDateInput.tsx) if you want to see and play with code
-[storybook](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput) for a complete show case
-
-
-## getting started
-
-1- install package:
+## Installation
 
 ```sh
 npm i jb-date-input
 ```
 
-2- import package in your jsx file:
+```jsx
+import { JBDateInput } from 'jb-date-input/react';
 
-```js
-import {JBDateInput} from 'jb-date-input/react';
+<JBDateInput label="Date" />;
 ```
 
-3- use it in your jsx file like any other tag:
+## Props
+
+`JBDateInput` accepts standard React element props plus these component props:
+
+| prop | type | description |
+| --- | --- | --- |
+| `value` | `string \| Date \| null` | Controlled value. String values must match `valueType` and `format`. |
+| `valueType` | `'GREGORIAN' \| 'JALALI' \| 'TIME_STAMP'` | Controls the canonical value returned by `event.target.value`. |
+| `inputType` | `'GREGORIAN' \| 'JALALI'` | Controls the date system users type and see in the calendar. |
+| `format` | `string` | Value format used for `value`, `min`, and `max`. |
+| `min` | `string \| Date \| null` | Minimum accepted date. |
+| `max` | `string \| Date \| null` | Maximum accepted date. |
+| `label` | `string` | Label forwarded to the internal input. |
+| `message` | `string` | Helper message forwarded to the internal input. |
+| `name` | `string` | Form field name. |
+| `placeholder` | `string` | Placeholder shown while the value is empty. |
+| `required` | `boolean` | Enables required validation. |
+| `disabled` | `boolean` | Disables the date input. |
+| `error` | `string` | External validation error message. |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | Visual size forwarded to the internal `jb-input`. |
+| `direction` | `'ltr' \| 'rtl'` | Direction forwarded to the internal calendar. |
+| `showPersianNumber` | `boolean` | Displays Persian digits while the canonical value remains English digits. |
+| `validationList` | `ValidationItem<ValidationValue>[]` | Custom validation rules. |
+| `calendarDefaultDateView` | `{ year: number; month: number; dateType?: InputType }` | Calendar year/month shown when the value is empty. |
+| `jalaliMonthList` | `string[]` | Custom Jalali month names. |
+| `gregorianMonthList` | `string[]` | Custom Gregorian month names. |
+| `overflowHandler` | `'NONE' \| 'SLIDE'` | Internal popover overflow behavior. |
+| `overflowRef` | `RefObject<HTMLElement \| null>` | Overflow container used by the internal popover. |
+| `isAutoValidationDisabled` | `boolean` | Disables automatic validation when true. |
+
+## Controlled value
 
 ```jsx
-<JBDateInput label="date label"></JBDateInput>
+import { useState } from 'react';
+import { JBDateInput } from 'jb-date-input/react';
+
+function Example() {
+  const [value, setValue] = useState('');
+
+  return (
+    <JBDateInput
+      label="Start date"
+      value={value}
+      onChange={(event) => setValue(event.target.value)}
+    />
+  );
+}
 ```
 
-## format
+Use `onInput` when you need every typed edit, and `onChange` when you need the committed date value after blur or calendar selection.
 
-default format of date input is 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' that compatible and exact format of `new Date().toISOString()`
-you can change it however you need and `[Z]` mean the exact Z character that used in ISO standard format `YYYY-MM-DDTHH:mm:ss.SSSZ[Z]` => `2012-06-21T00:00:00.000+3:30Z`
-you can change format by format attribute:
+## Date and value type
+
+`inputType` controls what users see. `valueType` controls what `event.target.value` returns.
 
 ```jsx
-<JBDateInput label="label" format="YYYY/MM/DD" value="2020/08/14"></JBDateInput>
+<JBDateInput inputType="JALALI" valueType="GREGORIAN" />
+<JBDateInput inputType="GREGORIAN" valueType="JALALI" />
+<JBDateInput valueType="TIME_STAMP" />
 ```
 
-## valueType
-
-we have 3 value type:
+You can also pass a JavaScript `Date` as the controlled value.
 
 ```jsx
-    <JBDateInput value="2020-08-01T14:05:39.530Z" valueType="GREGORIAN"/>
-    <JBDateInput value="1596291030322" valueType="TIME_STAMP"/>
-    <JBDateInput value="1399-05-01T12:05:39.530Z" valueType="JALALI"/>
+const [value, setValue] = useState<Date | string | null>(new Date());
+
+<JBDateInput
+  value={value}
+  onChange={(event) => setValue(event.target.valueInDate)}
+/>;
 ```
 
-## min and max date limit
+## Format
 
-you can set minimum date and maximum date range for your app in string or Date type
+Default format is `YYYY-MM-DDTHH:mm:ss.SSS[Z]`.
 
 ```jsx
- const today = new Date();
- <JBDateInput label="start date"  max={today} />
- //or using string
- <JBDateInput label="start day" value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z" />
+<JBDateInput
+  format="YYYY/MM/DD"
+  value="2024/01/15"
+  min="2024/01/01"
+  max="2024/12/29"
+/>
 ```
-## placeholder
 
-you can set placeholder to show it to user when input is empty. to doing so just set `placeholder` attribute in JSX DOM: 
+Set `format` before setting string `value`, `min`, or `max`.
+
+## Min and max
 
 ```jsx
- <JBDateInput placeholder="Enter Date Here" />
-```
-## custom validation
+const today = new Date();
 
-beside of min and max you can also set your own custom validation like any other jb react components family to achieve this, you must create a array of validations and pass it to validationList props.
+<JBDateInput label="Start date" min={today} />;
+
+<JBDateInput
+  label="Start date"
+  value="2020-08-10T08:51:23.176Z"
+  min="2020-08-05T08:51:23.176Z"
+  max="2020-08-15T08:51:23.176Z"
+/>;
+```
+
+String `min` and `max` must use the configured `valueType` and `format`.
+
+## Validation
+
+Use `validationList` for custom `jb-validation` rules.
 
 ```jsx
 const validationList = [
-        {
-            validator:/^13.*$/g,
-            message:'date must be in 13 century'
-        },
-        {
-            validator:({text, inputObject, valueObject, valueText})=>{
-                //you can use raw inputted text or formatted text in expected value in arguments
-                //you have access to both jalali and gregorian date object here in valueObject
-                //inputObject is a object contain inputted day & month & year unprocessed based on format so it have value before date inputted completely
-                // remember valueObject and valueText are both empty and null when date is incomplete
-                //if you want to validate incomplete date you can use inputText
-                return valueObject.jalali.day == 15;
-            },
-            message:'you can only choose 15th day of month'
-        }
-    <JBDateInput validationList={validationList}></JBDateInput>
+  {
+    validator: /^13.*$/g,
+    message: 'Date must be in the 13th century',
+  },
+  {
+    validator: ({ inputObject, valueObject }) => {
+      if (inputObject.year && inputObject.year < '1300') {
+        return 'Typed year must be 1300 or later';
+      }
+      return valueObject.jalali.day === 15;
+    },
+    message: 'Only the 15th day of the month is accepted',
+  },
 ];
-    
+
+<JBDateInput required validationList={validationList} />;
 ```
+
+For manual validation, use a ref:
 
 ```jsx
+const dateInputRef = useRef(null);
+
+<JBDateInput ref={dateInputRef} />;
+<button onClick={() => dateInputRef.current?.reportValidity()}>
+  Check
+</button>;
 ```
 
-you can also pass your own error message to show as an error under the input field:
-
-```jsx
-    <JBDateInput error="your error message"></JBDateInput>
-```
-
-remember your min and max date must be in the same format and valueType of your value.
-to trigger validation and check is the element has a valid value:
-
-```jsx
-const MyForm = (props) => {
-    const dateElementRef = useRef(null);
-    const [validationResult, setValidationResult] = useState();
-    return(
-        <div>
-            <JBDateInput ref={dateElementRef}></JBDateInput>
-            {/*report validity will show error to user and return validation result*/}
-            <button onClick={()=>{setValidationResult(dateElementRef.current.reportValidity())}}>check and show validation error</button>
-            {/*check validity will just return validation result and user wont see the error(good for some background check for button activation,...)*/}
-            <button onClick={()=>{setValidationResult(dateElementRef.current.checkValidity(false))}}>check validation</button>
-        </div>
-        )
-    };
-
-```
+Custom validators receive `{ text, inputObject, valueObject, valueText }`.
 
 ## Events
-we support most normal input events + `onSelect`, `onEnter` events.
+
+| prop | description |
+| --- | --- |
+| `onLoad` | Called when the web component dispatches `load`. |
+| `onInit` | Called when internal components are ready and initial value is applied. |
+| `onBeforeInput` | Cancelable typing event before visible text changes. |
+| `onInput` | Called after user typing changes visible text. |
+| `onChange` | Called when the committed date value changes after blur or calendar selection. |
+| `onSelect` | Called when the user selects a date from the calendar. |
+| `onInvalid` | Called when validation fails. |
+| `onFocus` | Called when the internal input receives focus. |
+| `onBlur` | Called when the internal input loses focus. |
+| `onKeyDown` | Called for keydown. ArrowUp/ArrowDown change the selected date part. |
+| `onKeyUp` | Called after keyup and value-object update. |
+| `onKeyPress` | Called for keypress. |
 
 ```jsx
-    //when user select a date in picker
-    <JBDateInput onSelect={(event) => {console.log(event.target.value)}}></JBDateInput>
-    //when user hit enter button
-    <JBDateInput onEnter={(event) => {console.log(event.target.value)}}></JBDateInput>
-    //onChange in JBDate input follow the JS onChange standard and not react OnChange if you want something similar to react onChange use `onInput` event
-    <JBDateInput onChange={(event) => {console.log(event.target.value)}}></JBDateInput>
-    <JBDateInput onInput={(event) => {console.log(event.target.value)}}></JBDateInput>
-    <JBDateInput onKeyUp={(event) => {console.log(event.target.value)}}></JBDateInput>
+<JBDateInput
+  onSelect={(event) => console.log(event.target.value)}
+  onChange={(event) => console.log(event.target.value)}
+  onInput={(event) => console.log(event.target.inputValue)}
+/>
 ```
 
-## date input type
-
-jb-date-input support both jalali and gregorian(milady) calendar input type. like value-type that let you determine how you want to provide/expect data to/from JBDateInput you can specify how user must fill the date input.
-to achieve this you have to set `inputType` props or set `inputType` object to component  directly using your elements ref.
-to set it as props you can set value like this:
+## Calendar default date
 
 ```jsx
-<JBDateInput inputType="GREGORIAN"></JBDateInput>
-<JBDateInput inputType="JALALI"></JBDateInput>
+<JBDateInput
+  inputType="JALALI"
+  calendarDefaultDateView={{ year: 1350, month: 3 }}
+/>
 ```
-and for doing it with direct DOM assignment you can use following js code:
 
-```js
-//to show gregorian calendar
-const elementRef =  React.createRef();
-//set ref to element ...
-elementRef.current.inputType = "GREGORIAN" 
-elementRef.current.inputType = "JALALI"
-```
-## set default date for calendar when opened
-
-when date input value is empty we show today year and month in opened calendar by default but you can change it to another date. for example you want user fill they birthdate you can set it to 20 years ago so user can pick his/her birthday easier and faster. to doing so all you have to do is to use `calendarDefaultDateView`function like this:
+Use `dateType` when the default view should target a specific calendar type:
 
 ```jsx
-<JBDateInput inputType="JALALI" calendarDefaultDateView={{year:1350, month:3}}></JBDateInput>
+<JBDateInput
+  calendarDefaultDateView={{ year: 1985, month: 8, dateType: 'GREGORIAN' }}
+/>
 ```
-## show persian number
-if you want to show persian number instead of English number char you just have to set `showPersianNumber` prop like this:
+
+## Persian digits and i18n
+
 ```jsx
-<JBDateInput showPersianNumber={true}></JBDateInput>
+<JBDateInput showPersianNumber />
 ```
+
+This affects display only. `event.target.value` remains English digits.
+
+For app-wide locale, calendar, and numbering-system setup, configure [`jb-core/i18n`](https://github.com/javadbat/jb-core/tree/main/i18n).
 
 ## Slots
 
-You can easily change calendar icon or put your own custom HTML content into input box.    
-See [Slots](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-slots--docs) for demo and code in React
-
-## Change Month List
-
-you may want to change the default month list for both  of Jalali and Gregorian calendars based on your country month labels. here how you can do it:   
+Pass slotted children with the same slot names as the web component.
 
 ```jsx
-document.querySelector('jb-date-input').setMonthList('GREGORIAN',['1','2','3','4','5','6','7','8','9','10','11','12']);
-// for afghanistan month list 
-<JBDateInput jalaliMonthList={['حَمَل','ثَور','جَوزا','سَرَطان','اَسَد','سُنبُله','میزان','عَقرَب','قَوس','جَدْی','دَلو','حوت']}></JBDateInput>
-<JBDateInput gregorianMonthList={['1','2','3','4','5','6','7','8','9','10','11','12']}></JBDateInput>
+<JBDateInput label="Birthday">
+  <span slot="inline-start-section">Birthday</span>
+  <span slot="inline-end-section">optional</span>
+</JBDateInput>
 ```
-## overflow handler
 
-sometimes you place date input inside modal or end of the pages so when user open the input picker it overflow the page and some part of picker will be invisible.  
-to fix this we add a feature called `overflowHandler` by set this to `SLIDE` the picker will move, on mouse enter it's territory so user can easily pick date
+```jsx
+<JBDateInput>
+  <span slot="calendar-trigger-icon">open</span>
+</JBDateInput>
+```
+
+## Month names
+
+```jsx
+<JBDateInput
+  jalaliMonthList={[
+    'حَمَل',
+    'ثَور',
+    'جَوزا',
+    'سَرَطان',
+    'اَسَد',
+    'سُنبُله',
+    'میزان',
+    'عَقرَب',
+    'قَوس',
+    'جَدْی',
+    'دَلو',
+    'حوت',
+  ]}
+  gregorianMonthList={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']}
+/>
+```
+
+## Overflow handler
 
 ```jsx
 <JBDateInput overflowHandler="SLIDE" />
-//if you want to check your overflow based on another dom and not window for example when you put date input in a modal
-<div ref={ref} style={{ height: "12rem", border: "solid 1px #666", overflow:"hidden" }}>
-    <JBDateInput {...args} overflowRef={ref} />
+```
+
+Use `overflowRef` when the popover should calculate overflow against a specific container.
+
+```jsx
+const overflowRef = useRef(null);
+
+<div ref={overflowRef} style={{ height: '12rem', overflow: 'hidden' }}>
+  <JBDateInput overflowHandler="SLIDE" overflowRef={overflowRef} />
 </div>
 ```
 
-### set custom style
+## Styling
 
-in some cases in your project you need to change default style of react-component for example you need zero margin or different border-radius and etc.    
-if you want to set a custom style to this react-component all you need is to set CSS variable in parent scope of react-component.    
-#### usage example:
+The React component uses the same CSS variables and parts as the web component.
 
 ```css
-body{
-/* if you need more margin */
-  --jb-date-input-margin: 16px 32px;
-/* if you don't want rounded corner */
-  --jb-input-border-radius:0px;
-/* if you want different text color*/
-  --jb-input-value-color:red;
+.date-field {
+  --jb-date-input-margin: 16px 0;
+  --jb-date-input-calendar-icon-color: #2563eb;
+}
+
+.date-field::part(input) {
+  --jb-input-border-radius: 8px;
 }
 ```
-#### variable list
-if you want the full variable list read [jb-date-input](https://github.com/javadbat/jb-date-input) doc for more updated list of styles and CSS variables.
 
-## using headless
+For the full list, see [`jb-date-input` CSS parts and variables](https://github.com/javadbat/jb-date-input#css-parts-and-variables).
 
-you can use `jb-date-input` headless functions to bring `jb-date-input` features to your own component.
-for doing so you just have to import `useJBDateInput` and bind your input events and use them:      
-**[See Sample and  Implement Document Here](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-headless--docs)**
+## Headless usage
+
+Use `useJBDateInput` when you want the date typing behavior with your own input.
+
+```jsx
+import { useRef } from 'react';
+import { useJBDateInput } from 'jb-date-input/react';
+
+function HeadlessDateInput() {
+  const ref = useRef(null);
+  const { value, onChange, onClick, onFocus } = useJBDateInput({
+    dateInputType: 'JALALI',
+    ref,
+    showPersianNumber: false,
+  });
+
+  return (
+    <input
+      ref={ref}
+      value={value}
+      onChange={onChange}
+      onClick={onClick}
+      onFocus={onFocus}
+    />
+  );
+}
 ```
-if you want more control over your component you can use native headless utils function of `jb-date-input` build your own custom hook.
-
-
 
 ## Shared Documentation
 
-For web-component behavior, events, slots, and CSS variables, see [`jb-date-input`](https://github.com/javadbat/jb-date-input).
+For web-component behavior, events, slots, validation, form association, CSS variables, and headless utilities, see [`jb-date-input`](https://github.com/javadbat/jb-date-input).
 
 ## Related Docs
-- see [jb-date-input](https://github.com/javadbat/jb-date-input) if you want to use this component as a web-component
 
-- see [All JB Design system Component List](https://javadbat.github.io/design-system/) for more components
+- See [`jb-date-input`](https://github.com/javadbat/jb-date-input) if you want to use this component as a web component.
+- See [All JB Design System Component List](https://javadbat.github.io/design-system/) for more components.
+- Use [Contribution Guide](https://github.com/javadbat/design-system/blob/main/docs/contribution-guide.md) if you want to contribute to this component.
 
-- use [Contribution Guide](https://github.com/javadbat/design-system/blob/main/docs/contribution-guide.md) if you want to contribute in this component.
+## AI agent notes
+
+- Import `JBDateInput` from `jb-date-input/react`; the wrapper imports and registers the underlying `jb-date-input` web component.
+- Use React prop names such as `valueType`, `inputType`, `showPersianNumber`, `validationList`, and `calendarDefaultDateView`.
+- Use `event.target.value` for the canonical value and `event.target.valueInDate` for a JavaScript `Date`.
+- Use `onInput` for typed edits and `onChange` for committed date changes.
+- Set `format` before string `value`, `min`, or `max`.
+- Slot names are `inline-start-section`, `inline-end-section`, and `calendar-trigger-icon`.
+- The wrapper currently exposes an `onEnter` prop type, but the underlying web component does not dispatch an `enter` event.

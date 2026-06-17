@@ -352,7 +352,7 @@ export class DateFactory {
       result.error = "INVALID_MAX_YEAR_NUMBER";
     }
 
-    if ([2, 4, 6, 9, 11].includes(gregorianDay)) {
+    if ([2, 4, 6, 9, 11].includes(gregorianMonth)) {
       //month has less than 31 day
       if (gregorianDay > 30) {
 

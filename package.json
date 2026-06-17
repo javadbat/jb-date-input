@@ -38,6 +38,7 @@
   "files": [
     "LICENSE",
     "README.md",
+    "custom-elements.json",
     "lib/",
     "dist/",
     "react/",
@@ -45,6 +46,7 @@
   ],
   "main": "index.js",
   "module": "index.js",
+  "customElements": "custom-elements.json",
   "homepage": "https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput",
   "repository": {
     "type": "git",

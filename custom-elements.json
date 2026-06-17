@@ -1,0 +1,691 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "README.md",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "lib/jb-date-input.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Form-associated Jalali and Gregorian date input web component with typed input editing, calendar popover, min/max validation, custom value formats, Persian digit display, and headless date-input utilities.",
+          "name": "JBDateInputWebComponent",
+          "tagName": "jb-date-input",
+          "customElement": true,
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "attributes": [
+            {
+              "name": "value",
+              "description": "Date value in the configured value-type and format. As an attribute this must be a string; the JavaScript property also accepts Date or null.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "value-type",
+              "description": "Controls the canonical .value format returned by the component. It does not control what calendar the user sees.",
+              "type": {
+                "text": "'GREGORIAN' | 'JALALI' | 'TIME_STAMP'"
+              },
+              "default": "GREGORIAN"
+            },
+            {
+              "name": "input-type",
+              "description": "Controls the date system used for typing and the calendar UI.",
+              "type": {
+                "text": "'GREGORIAN' | 'JALALI'"
+              },
+              "default": "locale based"
+            },
+            {
+              "name": "format",
+              "description": "Date value string format used for value, min, and max when value-type is GREGORIAN or JALALI.",
+              "type": {
+                "text": "string"
+              },
+              "default": "YYYY-MM-DDTHH:mm:ss.SSS[Z]"
+            },
+            {
+              "name": "min",
+              "description": "Minimum accepted date. String values must use the configured value-type and format; Date values can be assigned with setMinDate().",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "max",
+              "description": "Maximum accepted date. String values must use the configured value-type and format; Date values can be assigned with setMaxDate().",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "name",
+              "description": "Form field name. The component submits .value through ElementInternals.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "label",
+              "description": "Label forwarded to the internal jb-input.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "message",
+              "description": "Helper message forwarded to the internal jb-input.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "placeholder",
+              "description": "Placeholder shown while the date value is empty.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "required",
+              "description": "Enables required validation. Empty attribute and 'true' mean true; 'false' or a removed attribute means false.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "disabled",
+              "description": "Disables the internal input and sets the disabled custom state.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "error",
+              "description": "External validation error message. When present and non-empty, it is reported as a custom error.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "direction",
+              "description": "Direction forwarded to the internal calendar.",
+              "type": {
+                "text": "'ltr' | 'rtl' | string"
+              }
+            },
+            {
+              "name": "show-persian-number",
+              "description": "Displays Persian digits in the input and calendar while .value remains in English digits.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "locale based"
+            },
+            {
+              "name": "size",
+              "description": "Visual size forwarded to the internal jb-input.",
+              "type": {
+                "text": "'xs' | 'sm' | 'md' | 'lg' | 'xl'"
+              }
+            },
+            {
+              "name": "autocomplete",
+              "description": "Forwarded to the internal jb-input.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "readonly",
+              "description": "Forwarded to the internal jb-input.",
+              "type": {
+                "text": "boolean"
+              }
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "Canonical submitted value. Setter accepts a formatted string, Date, or null.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "valueInDate",
+              "description": "Current complete value as a JavaScript Date, or null when the date is empty or incomplete.",
+              "type": {
+                "text": "Date | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "inputValue",
+              "description": "Rendered typed input text in YYYY/MM/DD display format.",
+              "type": {
+                "text": "string"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "inputType",
+              "description": "Date system used by the input UI and calendar.",
+              "type": {
+                "text": "'GREGORIAN' | 'JALALI'"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "valueType",
+              "description": "Date system or timestamp mode used for the canonical .value.",
+              "type": {
+                "text": "'GREGORIAN' | 'JALALI' | 'TIME_STAMP'"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "valueFormat",
+              "description": "Current date value format. Use setFormat() to change it.",
+              "type": {
+                "text": "string"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "dateRestrictions",
+              "description": "Runtime min and max Date restrictions used by validation and the internal calendar.",
+              "type": {
+                "text": "{ min: Date | null; max: Date | null }"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validation",
+              "description": "jb-validation helper. Set validation.list for custom validators; validators receive text, inputObject, valueObject, and valueText.",
+              "type": {
+                "text": "ValidationHelper<ValidationValue>"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "isAutoValidationDisabled",
+              "description": "Disables automatic component validation when true.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "description": "Enables required validation.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "description": "Enables or disables the internal input.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "showPersianNumber",
+              "description": "Displays Persian digits while the canonical .value remains in English digits.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "showCalendar",
+              "description": "Opens or closes the internal calendar popover.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "placeholder",
+              "description": "Placeholder shown while the date value is empty.",
+              "type": {
+                "text": "string | null"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "form",
+              "description": "Associated form from ElementInternals.",
+              "type": {
+                "text": "HTMLFormElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "description": "Form field name.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isDirty",
+              "description": "True when current .value differs from initialValue.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "validationMessage",
+              "description": "Current validation message from ElementInternals.",
+              "type": {
+                "text": "string"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "yearValue",
+              "description": "Year in the configured valueType, or Gregorian year for TIME_STAMP.",
+              "type": {
+                "text": "number | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "monthValue",
+              "description": "Month in the configured valueType, or Gregorian month for TIME_STAMP.",
+              "type": {
+                "text": "number | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "dayValue",
+              "description": "Day in the configured valueType, or Gregorian day for TIME_STAMP.",
+              "type": {
+                "text": "number | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "yearDisplayValue",
+              "description": "Year in the configured inputType used by the visible input and calendar.",
+              "type": {
+                "text": "number | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "monthDisplayValue",
+              "description": "Month in the configured inputType used by the visible input and calendar.",
+              "type": {
+                "text": "number | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "dayDisplayValue",
+              "description": "Day in the configured inputType used by the visible input and calendar.",
+              "type": {
+                "text": "number | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "selectionStart",
+              "description": "Forwarded to the internal jb-input selectionStart.",
+              "type": {
+                "text": "number | null"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "selectionEnd",
+              "description": "Forwarded to the internal jb-input selectionEnd.",
+              "type": {
+                "text": "number | null"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "selectionDirection",
+              "description": "Forwarded to the internal jb-input selectionDirection.",
+              "type": {
+                "text": "'forward' | 'backward' | 'none' | null"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "elements",
+              "description": "Internal composed elements: input, calendar, popover, and calendarTriggerButton. Use only for advanced integration such as popover overflow configuration.",
+              "type": {
+                "text": "ElementsObject"
+              }
+            }
+          ],
+          "methods": [
+            {
+              "name": "setFormat",
+              "description": "Sets the date value format used for value, min, and max string parsing.",
+              "parameters": [
+                {
+                  "name": "newFormat",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "setMinDate",
+              "description": "Sets or clears the minimum accepted date.",
+              "parameters": [
+                {
+                  "name": "minDate",
+                  "type": {
+                    "text": "string | Date | null"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "setMaxDate",
+              "description": "Sets or clears the maximum accepted date.",
+              "parameters": [
+                {
+                  "name": "maxDate",
+                  "type": {
+                    "text": "string | Date | null"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "setMonthList",
+              "description": "Overrides month labels for the internal calendar.",
+              "parameters": [
+                {
+                  "name": "inputType",
+                  "type": {
+                    "text": "'GREGORIAN' | 'JALALI'"
+                  }
+                },
+                {
+                  "name": "monthName",
+                  "type": {
+                    "text": "string[]"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "setCalendarDefaultDateView",
+              "description": "Sets the year and month shown by the calendar when the input value is empty.",
+              "parameters": [
+                {
+                  "name": "year",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "month",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "dateType",
+                  "type": {
+                    "text": "'GREGORIAN' | 'JALALI' | undefined"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "getDateValue",
+              "description": "Returns the current value in the requested value type.",
+              "parameters": [
+                {
+                  "name": "type",
+                  "type": {
+                    "text": "'GREGORIAN' | 'JALALI' | 'TIME_STAMP'"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "name": "focus",
+              "description": "Focuses the internal input and opens the calendar popover."
+            },
+            {
+              "name": "setSelectionRange",
+              "description": "Forwards setSelectionRange to the internal jb-input.",
+              "parameters": [
+                {
+                  "name": "start",
+                  "type": {
+                    "text": "number | null"
+                  }
+                },
+                {
+                  "name": "end",
+                  "type": {
+                    "text": "number | null"
+                  }
+                },
+                {
+                  "name": "direction",
+                  "type": {
+                    "text": "'forward' | 'backward' | 'none' | undefined"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "checkValidity",
+              "description": "Runs validation without showing the error message and dispatches invalid when invalid.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "name": "reportValidity",
+              "description": "Runs validation, shows the first error message, and dispatches invalid when invalid.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "name": "triggerInputValidation",
+              "description": "Deprecated. Use validation.checkValidity(), checkValidity(), or reportValidity().",
+              "parameters": [
+                {
+                  "name": "showError",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "ValidationResult<ValidationValue> | undefined"
+                }
+              }
+            },
+            {
+              "name": "clearValidationError",
+              "description": "Clears the visible validation error and invalid custom state."
+            }
+          ],
+          "events": [
+            {
+              "name": "load",
+              "description": "Dispatched from connectedCallback before properties are initialized."
+            },
+            {
+              "name": "init",
+              "description": "Dispatched after jb-input, jb-calendar, and jb-popover are defined and the initial value is applied."
+            },
+            {
+              "name": "beforeinput",
+              "description": "Cancelable event re-dispatched before the internal typed input value is changed."
+            },
+            {
+              "name": "input",
+              "description": "Dispatched after user typing changes the visible input text."
+            },
+            {
+              "name": "change",
+              "description": "Dispatched when the committed date value changes after blur or calendar selection. Canceling change reverts the date."
+            },
+            {
+              "name": "select",
+              "description": "Dispatched when the user selects a date from the calendar."
+            },
+            {
+              "name": "focus",
+              "description": "Re-dispatched when the internal input receives focus."
+            },
+            {
+              "name": "blur",
+              "description": "Re-dispatched when the internal input loses focus."
+            },
+            {
+              "name": "keydown",
+              "description": "Re-dispatched from the internal input. ArrowUp and ArrowDown change the selected date part."
+            },
+            {
+              "name": "keyup",
+              "description": "Re-dispatched from the internal input after the value object is updated from typed text."
+            },
+            {
+              "name": "keypress",
+              "description": "Re-dispatched from the internal input."
+            },
+            {
+              "name": "invalid",
+              "description": "Dispatched when checkValidity() or reportValidity() finds an invalid value."
+            }
+          ],
+          "slots": [
+            {
+              "name": "inline-start-section",
+              "description": "Content rendered at the start of the internal jb-input box."
+            },
+            {
+              "name": "inline-end-section",
+              "description": "Content rendered after the calendar trigger inside the internal jb-input end section."
+            },
+            {
+              "name": "calendar-trigger-icon",
+              "description": "Custom calendar trigger icon content."
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "input",
+              "description": "The internal jb-input element."
+            },
+            {
+              "name": "popover",
+              "description": "The internal jb-popover that contains the calendar."
+            },
+            {
+              "name": "calendar",
+              "description": "The internal jb-calendar element."
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--jb-date-input-margin",
+              "description": "Host component margin."
+            },
+            {
+              "name": "--jb-date-input-calendar-trigger-display",
+              "description": "Display value for the calendar trigger."
+            },
+            {
+              "name": "--jb-date-input-calendar-trigger-width",
+              "description": "Calendar trigger width."
+            },
+            {
+              "name": "--jb-date-input-calendar-trigger-height",
+              "description": "Calendar trigger height."
+            },
+            {
+              "name": "--jb-date-input-calendar-icon-color",
+              "description": "Calendar icon color."
+            },
+            {
+              "name": "--jb-date-input-calendar-icon-color-active",
+              "description": "Calendar icon color while the calendar is open."
+            }
+          ],
+          "cssStates": [
+            {
+              "name": "disabled",
+              "description": "Applied when disabled is true."
+            },
+            {
+              "name": "invalid",
+              "description": "Applied while a validation error is visible."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "JBDateInputWebComponent",
+          "declaration": {
+            "name": "JBDateInputWebComponent",
+            "module": "lib/jb-date-input.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "jb-date-input",
+          "declaration": {
+            "name": "JBDateInputWebComponent",
+            "module": "lib/jb-date-input.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

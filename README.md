@@ -5,305 +5,450 @@
 [![NPM Version](https://img.shields.io/npm/v/jb-date-input)](https://www.npmjs.com/package/jb-date-input)
 ![GitHub Created At](https://img.shields.io/github/created-at/javadbat/jb-date-input)
 
-## Pure js Jalali Date Picker Web-Component
+`jb-date-input` is a form-associated Jalali and Gregorian date input web component with a typed input surface and a calendar popover.
 
-web component date input (picker) to get date (jalali & gregorian) from user.
+- Supports Jalali and Gregorian input.
+- Supports fast keyboard typing and ArrowUp/ArrowDown date-part changes.
+- Opens a responsive, mobile-friendly calendar picker.
+- Accepts Persian digits and can display Persian digits while keeping `.value` in English digits.
+- Supports `min` and `max` date limits.
+- Supports native HTML form submission through `ElementInternals`.
+- Supports custom validation through `jb-validation`.
+- Supports value output as Gregorian, Jalali, or timestamp.
+- Supports custom value formats such as ISO strings, `YYYY/MM/DD`, or `YYYY_MM_DD`.
+- Supports custom month names for Jalali and Gregorian calendars.
+- Includes headless utilities for using the date typing logic with your own input.
+- Supports TypeScript.
+- Provides a smooth desktop typing experience.
+- Supports ESM imports for modern JavaScript apps.
+- Supports app-level i18n through `jb-core/i18n`.
+- Supports custom styling with CSS variables and CSS parts. See [CSS parts and variables](#css-parts-and-variables).
+- Uses `jb-input`, `jb-calendar`, and `jb-popover` internally.
+- Framework friendly: use it in pure JavaScript or in frameworks such as React, Vue, and Angular.
 
-- support jalali date as well as gregorian date.
+## When to use
 
-- support keyboard arrow key and fast date input with keyboard.
+Use `jb-date-input` when users should type or pick a date and the field needs Jalali/Gregorian conversion, form association, validation, min/max limits, custom value formats, or Persian digit display.
 
-- 💅customizable style with CSS variables.
-
-- can set min and max date value.
-
-- web component so it can be used in every framework and even pure-js project.
-
-- responsive and mobile friendly (support swipe in touch devices and handle virtual keyboard).
-
-- support typescript.
-
-- good typing experience for desktop user.
-
-- has headless module so you can use it with any input [read more](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-readme--docs#headless-usage).
-
-- have 3 value type so you can get inputted value in gregorian, jalali or timestamp based on your project need.
-
-- customizable value format so you can get your value in standard iso format or custom format like `1400/12/08` or `1400_12_08`.
-
-- support `esm` import build for modern `ECMA Script` nodejs app.
-
-- compatible with native HTML `form` element to send data to server.
-
-- support multi-language and i18n see [jb design system getting starting guidance](https://javadbat.github.io/design-system/?path=/docs/getting-started-introduction--docs).
+Use [`jb-calendar`](https://github.com/javadbat/jb-calendar) when you need only a calendar UI without an input field. Use [`jb-input`](https://github.com/javadbat/jb-input) when the value is plain text and not a date.
 
 ## Demo
-- [github pages](https://javadbat.github.io/jb-date-input/)
-- [codepen](https://codepen.io/javadbat/pen/qBRyYKY)
-- [storybook](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput)
+
+- [GitHub Pages](https://javadbat.github.io/jb-date-input/)
+- [CodePen](https://codepen.io/javadbat/pen/qBRyYKY)
+- [Storybook](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput)
 
 ## Using With JS Frameworks
+
 - [<img src="https://img.shields.io/badge/React.js-jb--date--input%2Freact-000.svg?logo=react&logoColor=%2361DAFB" height="30" />](https://github.com/javadbat/jb-date-input/tree/main/react)
 
-## Instructions
-
-### getting started
-
-#### using npm
-
-1- install package:
+## Installation
 
 ```sh
 npm i jb-date-input
 ```
 
-2- import package in one of your `.js` file:
-
 ```js
 import 'jb-date-input';
 ```
 
-3- use it in your `.html` file like any other tag:
-
-```HTML
-<jb-date-input label="date label"></jb-date-input>
-```
-#### using cdn
-
-1- First, add script tag to your html file and then use web component however you need.
-
-
-```HTML
-<script src="https://unpkg.com/jb-date-input/dist/JBDateInput.umd.js"></script>
-```
-> we recommend you to use `UMD` build of the component when you using CDN but you can also use compressed and ESM module too. for more information see [package structure](https://javadbat.github.io/design-system/?path=/docs/general-package-structure) 
-
-2- use it in your `.html` file like any other tag:
-
-```HTML
-<jb-date-input label="your date input"></jb-date-input>
+```html
+<jb-date-input label="Date"></jb-date-input>
 ```
 
-## min and max date limit
-
-you can set minimum date and maximum date range for your date input in 2 way:    
-
-1- by html attribute in string format of your value
+### CDN
 
 ```html
- <jb-date-input label="تاریخ شروع " value="2020-08-10T08:51:23.176Z" min="2020-08-05T08:51:23.176Z" max="2020-08-15T08:51:23.176Z">
- </jb-date-input>
-```
-2- by call `setMinDate` and `setMaxDate` function and providing string or Date format:
-
-```javascript
-const today = new Date();
-document.querySelector('jb-date-input').setMinDate(today)
-const max = new Date('2022-08-15T08:51:23.176Z');
-document.querySelector('jb-date-input').setMaxDate(max);
-// or string
-document.querySelector('jb-date-input').setMinDate('2022-08-15T08:51:23.176Z');
+<script src="https://unpkg.com/jb-date-input/dist/jb-date-input.umd.js"></script>
 ```
 
-## placeholder
+## API reference
 
-you can set placeholder to show it to user when input is empty. to doing so just set `placeholder` attribute in HTML DOM or `placeholder` in JavaScript: 
+`jb-date-input` composes [`jb-input`](https://github.com/javadbat/jb-input), [`jb-calendar`](https://github.com/javadbat/jb-calendar), and [`jb-popover`](https://github.com/javadbat/jb-popover). For shared input styling and behavior, see the [`jb-input` API](https://github.com/javadbat/jb-input#api-reference).
+
+### Attributes
+
+| name | type | default | description |
+| --- | --- | --- | --- |
+| `value` | `string` | empty date value | Date value in the configured `value-type` and `format`. |
+| `value-type` | `'GREGORIAN' \| 'JALALI' \| 'TIME_STAMP'` | `GREGORIAN` | Controls the canonical `.value` returned by the component. |
+| `input-type` | `'GREGORIAN' \| 'JALALI'` | locale based | Controls what date system users type and see in the calendar. |
+| `format` | `string` | `YYYY-MM-DDTHH:mm:ss.SSS[Z]` | Format used for `.value`, `min`, and `max` when `value-type` is `GREGORIAN` or `JALALI`. |
+| `min` | `string` | none | Minimum accepted date. Must use the configured `value-type` and `format`. |
+| `max` | `string` | none | Maximum accepted date. Must use the configured `value-type` and `format`. |
+| `name` | `string` | `""` | Form field name. |
+| `label` | `string` | `""` | Label forwarded to the internal `jb-input`. |
+| `message` | `string` | `""` | Helper message forwarded to the internal `jb-input`. |
+| `placeholder` | `string` | `null` | Placeholder shown while the date value is empty. |
+| `required` | `boolean` | `false` | Enables required validation. Empty attribute and `"true"` mean true. |
+| `disabled` | `boolean` | `false` | Disables the internal input and sets the disabled custom state. |
+| `error` | `string` | `""` | External validation error message. |
+| `direction` | `'ltr' \| 'rtl'` | inherited | Direction forwarded to the internal calendar. |
+| `show-persian-number` | `boolean` | locale based | Displays Persian digits while `.value` remains English digits. |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `md` style defaults | Visual size forwarded to the internal `jb-input`. |
+| `autocomplete` | `string` | browser default | Forwarded to the internal `jb-input`. |
+| `readonly` | `boolean` | device based | Forwarded to the internal `jb-input`; mobile devices become readonly to favor the picker. |
+
+### Properties
+
+| name | type | readonly | description |
+| --- | --- | --- | --- |
+| `value` | `string` | no | Canonical value submitted with forms. Set with `string`, `Date`, or `null`. |
+| `valueInDate` | `Date \| null` | yes | Current complete value as a JavaScript `Date`, or `null` when empty/incomplete. |
+| `inputValue` | `string` | yes | Visible typed text in `YYYY/MM/DD` display format. |
+| `inputType` | `'GREGORIAN' \| 'JALALI'` | no | Date system used by the input UI and calendar. |
+| `valueType` | `'GREGORIAN' \| 'JALALI' \| 'TIME_STAMP'` | no | Date system or timestamp mode used for `.value`. |
+| `valueFormat` | `string` | yes | Current value format. Change it with `setFormat()`. |
+| `dateRestrictions` | `{ min: Date \| null; max: Date \| null }` | no | Runtime min/max restrictions used by validation and calendar. |
+| `validation` | `ValidationHelper<ValidationValue>` | yes | Validation helper from `jb-validation`; set `validation.list` for custom rules. |
+| `isAutoValidationDisabled` | `boolean` | no | Disables automatic validation when true. |
+| `required` | `boolean` | no | Enables required validation. |
+| `disabled` | `boolean` | no | Enables or disables the internal input. |
+| `showPersianNumber` | `boolean` | no | Displays Persian digits while `.value` remains English digits. |
+| `showCalendar` | `boolean` | no | Opens or closes the internal calendar popover. |
+| `placeholder` | `string \| null` | no | Placeholder shown while empty. |
+| `form` | `HTMLFormElement \| null` | yes | Associated form from `ElementInternals`. |
+| `isDirty` | `boolean` | yes | `true` when current `.value` differs from `initialValue`. |
+| `validationMessage` | `string` | yes | Current validation message from `ElementInternals`. |
+| `yearValue` / `monthValue` / `dayValue` | `number \| null` | yes | Date parts in the configured `valueType`. |
+| `yearDisplayValue` / `monthDisplayValue` / `dayDisplayValue` | `number \| null` | yes | Date parts in the configured `inputType`. |
+| `elements` | `ElementsObject` | no | Internal `input`, `calendar`, `popover`, and `calendarTriggerButton` for advanced integrations. |
+
+### Methods
+
+| name | returns | description |
+| --- | --- | --- |
+| `setFormat(newFormat)` | `void` | Sets the value format used for `.value`, `min`, and `max`. |
+| `setMinDate(minDate)` | `void` | Sets or clears the minimum accepted date. Accepts `string`, `Date`, or `null`. |
+| `setMaxDate(maxDate)` | `void` | Sets or clears the maximum accepted date. Accepts `string`, `Date`, or `null`. |
+| `setMonthList(inputType, monthName)` | `void` | Overrides month labels for `GREGORIAN` or `JALALI`. |
+| `setCalendarDefaultDateView(year, month, dateType?)` | `void` | Sets the year/month shown when the value is empty. |
+| `getDateValue(type?)` | `string` | Returns current value in `GREGORIAN`, `JALALI`, or `TIME_STAMP` mode. |
+| `focus()` | `void` | Focuses the internal input and opens the calendar. |
+| `setSelectionRange(start, end, direction?)` | `void` | Forwards selection range to the internal input. |
+| `checkValidity()` | `boolean` | Runs validation without showing the error message. Dispatches `invalid` when invalid. |
+| `reportValidity()` | `boolean` | Runs validation and shows the first error message. Dispatches `invalid` when invalid. |
+| `clearValidationError()` | `void` | Clears the visible validation error. |
+| `triggerInputValidation(showError?)` | `ValidationResult \| undefined` | Deprecated; use `checkValidity()`, `reportValidity()`, or `validation.checkValidity()`. |
+
+### Events
+
+| event | description |
+| --- | --- |
+| `load` | Dispatched from `connectedCallback` before property initialization. |
+| `init` | Dispatched after internal components are defined and the initial value is applied. |
+| `beforeinput` | Cancelable event dispatched before typed input is applied. |
+| `input` | Dispatched after user typing changes the visible input text. |
+| `change` | Dispatched when the committed date value changes after blur or calendar selection. Canceling it reverts the date. |
+| `select` | Dispatched when the user selects a date from the calendar. |
+| `focus` | Re-dispatched when the internal input receives focus. |
+| `blur` | Re-dispatched when the internal input loses focus. |
+| `keydown` | Re-dispatched from the internal input. ArrowUp/ArrowDown change the selected date part. |
+| `keyup` | Re-dispatched from the internal input after the value object is updated. |
+| `keypress` | Re-dispatched from the internal input. |
+| `invalid` | Dispatched when `checkValidity()` or `reportValidity()` fails. |
+
+## Value type and input type
+
+`input-type` controls what users see and edit. `value-type` controls what developers receive from `.value`.
 
 ```html
- <jb-date-input placeholder="Enter Date Here">
- </jb-date-input>
-```
-```js
-document.querySelector('jb-date-input').placeholder = `Enter Date Here`;
-```
-## custom validation
+<!-- User sees Jalali, developer receives Gregorian ISO-like value. -->
+<jb-date-input input-type="JALALI" value-type="GREGORIAN"></jb-date-input>
 
-beside of min and max you can also set your own custom validation like any other jb web components family to achieve this you must create a array of validations and assign them to component
+<!-- User sees Gregorian, developer receives Jalali formatted value. -->
+<jb-date-input input-type="GREGORIAN" value-type="JALALI"></jb-date-input>
+
+<!-- Developer receives a timestamp string. -->
+<jb-date-input value-type="TIME_STAMP"></jb-date-input>
+```
 
 ```js
-const validationList = [
-        {
-            validator:/^13.*$/g,
-            message:'date must be in 13 century'
-        },
-        {
-            validator:({text, inputObject, valueObject, valueText})=>{
-                //you can use raw inputted text or formatted text in expected value in arguments
-                //you have access to both jalali and gregorian date object here in valueObject
-                //inputObject is a object contain inputted day & month & year unprocessed based on format so it have value before date inputted completely
-                // remember valueObject and valueText are both empty and null when date is incomplete
-                //if you want to validate incomplete date you can use inputText
-                return valueObject.jalali.day == 15;
-            },
-            message:'you can only choose 15th day of month'
-        }
+const dateInput = document.querySelector('jb-date-input');
+
+dateInput.inputType = 'JALALI';
+dateInput.valueType = 'GREGORIAN';
+```
+
+## Value
+
+Get and set value like a native input.
+
+```js
+const dateInput = document.querySelector('jb-date-input');
+
+dateInput.value = '2024-01-15T00:00:00.000Z';
+console.log(dateInput.value);
+console.log(dateInput.valueInDate);
+
+dateInput.value = new Date();
+dateInput.value = null;
+```
+
+Empty values are represented with an empty date in the configured format, for example `0000-00-00T00:00:00.000Z` in the default Gregorian format. `valueInDate` returns `null` while the date is empty or incomplete.
+
+## Format
+
+The default format is compatible with `Date.prototype.toISOString()`:
+
+```html
+<jb-date-input value="2024-01-15T00:00:00.000Z"></jb-date-input>
+```
+
+Use `format` when your backend needs a different string.
+
+```html
+<jb-date-input
+  format="YYYY/MM/DD"
+  value="2024/01/15"
+  min="2024/01/01"
+  max="2024/12/29"
+></jb-date-input>
+```
+
+`format` also controls how string `min` and `max` are parsed. Set `format` before setting `value`, `min`, or `max` in JavaScript.
+
+## Min and max
+
+Set date limits with attributes:
+
+```html
+<jb-date-input
+  value="2020-08-10T08:51:23.176Z"
+  min="2020-08-05T08:51:23.176Z"
+  max="2020-08-15T08:51:23.176Z"
+></jb-date-input>
+```
+
+Or set them with JavaScript:
+
+```js
+const dateInput = document.querySelector('jb-date-input');
+
+dateInput.setMinDate(new Date());
+dateInput.setMaxDate('2025-12-31T00:00:00.000Z');
+
+dateInput.setMinDate(null);
+dateInput.setMaxDate(null);
+```
+
+`min` and `max` validation uses the configured `valueType` and `format` for string values.
+
+## Validation
+
+`jb-date-input` uses [`jb-validation`](https://github.com/javadbat/jb-validation). Built-in validation handles `required`, `error`, `min`, and `max`. Use `validation.list` for custom rules.
+
+```js
+const dateInput = document.querySelector('jb-date-input');
+
+dateInput.required = true;
+dateInput.validation.list = [
+  {
+    validator: /^13.*$/g,
+    message: 'Date must be in the 13th century',
+  },
+  {
+    validator: ({ text, inputObject, valueObject, valueText }) => {
+      if (inputObject.year && inputObject.year < '1300') {
+        return 'Typed year must be 1300 or later';
+      }
+      return valueObject.jalali.day === 15;
+    },
+    message: 'Only the 15th day of the month is accepted',
+  },
 ];
-document.querySelector('jb-date-input').validation.list = validationList
 ```
 
+Custom validators receive:
 
-remember your min and max date must be in the same format and valueType of your value.
-to trigger validation and check is the element has a valid value:
+| field | description |
+| --- | --- |
+| `text` | Visible input text in `YYYY/MM/DD` display format. |
+| `inputObject` | Raw typed date parts before complete date conversion. |
+| `valueObject` | Complete Gregorian, Jalali, timestamp, and time object. |
+| `valueText` | Canonical `.value`. |
+
+## Calendar default date
+
+When the input is empty, the calendar opens on the current month. Use `setCalendarDefaultDateView()` to change that view.
 
 ```js
-// if show error was false, in case of error component don't show error itself and function will return if data valid or not
-const showError = true
-const validationObj = dom.validation.checkValidity({showError})
+const dateInput = document.querySelector('jb-date-input');
+
+dateInput.setCalendarDefaultDateView(1360, 5);
+dateInput.setCalendarDefaultDateView(1985, 8, 'GREGORIAN');
+dateInput.setCalendarDefaultDateView(1360, 5, 'JALALI');
 ```
 
-## Events
+## Persian digits
+
+```html
+<jb-date-input show-persian-number></jb-date-input>
+<jb-date-input show-persian-number="true"></jb-date-input>
+<jb-date-input show-persian-number="false"></jb-date-input>
+```
+
 ```js
-//when default property are defined best time for impl your config like min and max date
-document.querySelector('jb-date-input').addEventListener('init',this.onCalendarElementInitiated);
-
-//when calendar init all property and function and dom created and bind successfully
-document.querySelector('jb-date-input').addEventListener('load',this.onCalendarElementLoaded);
-document.querySelector('jb-date-input').addEventListener('change',(e)=>{
-    //value in string
-    console.log(e.target.value)
-    //value in js Date object
-    console.log(e.target.valueInDate)
-});
+document.querySelector('jb-date-input').showPersianNumber = true;
 ```
 
-## Input Type
+This affects display only. `.value` remains English digits.
 
-See [Here](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-inputtype--docs)
-
-## set default date for calendar when opened
-
-when date input value is empty we show today year and month in opened calendar by default but you can change it to another date. for example you want user fill they birthdate you can set it to 20 years ago so user can pick his/her birthday easier and faster. to doing so all you have to do is to use `setCalendarDefaultDateView`function like this:
-
-```javascript
-const year = 1360
-const month = 5
-//just set year and month for current input-type date type
-document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month);
-//set default year and month for gregorian input-type
-document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'GREGORIAN');
-//set default year and month for jalali input-type
-document.querySelector('jb-date-input').setCalendarDefaultDateView(year,month,'JALALI');
-```
-
-## show persian number
-if you want to show persian number instead of English number char you just have to set `show-persian-number` attribute like this:
-```javascript
-<jb-date-input show-persian-number></jb-date-input >
-//or
-<jb-date-input show-persian-number="true"></jb-date-input >
-```
-
-## Value Type
-
-See [Value Type](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-value--docs#valuetype) for explanation and code
+For app-wide locale, calendar, and numbering-system setup, configure [`jb-core/i18n`](https://github.com/javadbat/jb-core/tree/main/i18n).
 
 ## Slots
 
-See [Slots](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-slots--docs) for demo and code in React
+| slot | description |
+| --- | --- |
+| `inline-start-section` | Content rendered at the start of the internal input box. |
+| `inline-end-section` | Content rendered after the calendar trigger in the internal input end section. |
+| `calendar-trigger-icon` | Custom calendar trigger icon. |
 
-### add custom element in input box
-
-in jb-input you can put icon or any other custom html DOM in input box. to doing so you just have to place custom DOM in `jb-date-input` tag and add `slot="start-section"` or `slot="end-section"` to place it before or after input field.
-example:
-
-```HTML
-<jb-date-input>
-    <div slot="end-section">after</div>
-    <div slot="start-section">before</div>
+```html
+<jb-date-input label="Birthday">
+  <span slot="inline-start-section">Birthday</span>
+  <span slot="inline-end-section">optional</span>
 </jb-date-input>
 ```
 
-### customize calendar button trigger
-
-you can change calendar icon based on your own need to doing so you just have to put your custom html inside web component with `slot="calendar-trigger-icon"` like below:
-
 ```html
-<jb-date-input >
-        <div slot="calendar-trigger-icon">
-            <!-- sample calendar svg to show in the box -->
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 610.398 610.398">
-                <g>
-                    <g>
-                        <path d="M159.567,0h-15.329c-1.956,0-3.811,0.411-5.608,0.995c-8.979,2.912-15.616,12.498-15.616,23.997v10.552v27.009v14.052    c0,2.611,0.435,5.078,1.066,7.44c2.702,10.146,10.653,17.552,20.158,17.552h15.329c11.724,0,21.224-11.188,21.224-24.992V62.553    V35.544V24.992C180.791,11.188,171.291,0,159.567,0z" />
-                        <path d="M461.288,0h-15.329c-11.724,0-21.224,11.188-21.224,24.992v10.552v27.009v14.052c0,13.804,9.5,24.992,21.224,24.992    h15.329c11.724,0,21.224-11.188,21.224-24.992V62.553V35.544V24.992C482.507,11.188,473.007,0,461.288,0z" />
-                        <path d="M539.586,62.553h-37.954v14.052c0,24.327-18.102,44.117-40.349,44.117h-15.329c-22.247,0-40.349-19.79-40.349-44.117    V62.553H199.916v14.052c0,24.327-18.102,44.117-40.349,44.117h-15.329c-22.248,0-40.349-19.79-40.349-44.117V62.553H70.818    c-21.066,0-38.15,16.017-38.15,35.764v476.318c0,19.784,17.083,35.764,38.15,35.764h468.763c21.085,0,38.149-15.984,38.149-35.764    V98.322C577.735,78.575,560.671,62.553,539.586,62.553z M527.757,557.9l-446.502-0.172V173.717h446.502V557.9z" />
-                        <path d="M353.017,266.258h117.428c10.193,0,18.437-10.179,18.437-22.759s-8.248-22.759-18.437-22.759H353.017    c-10.193,0-18.437,10.179-18.437,22.759C334.58,256.074,342.823,266.258,353.017,266.258z" />
-                        <path d="M353.017,348.467h117.428c10.193,0,18.437-10.179,18.437-22.759c0-12.579-8.248-22.758-18.437-22.758H353.017    c-10.193,0-18.437,10.179-18.437,22.758C334.58,338.288,342.823,348.467,353.017,348.467z" />
-                        <path d="M353.017,430.676h117.428c10.193,0,18.437-10.18,18.437-22.759s-8.248-22.759-18.437-22.759H353.017    c-10.193,0-18.437,10.18-18.437,22.759S342.823,430.676,353.017,430.676z" />
-                        <path d="M353.017,512.89h117.428c10.193,0,18.437-10.18,18.437-22.759c0-12.58-8.248-22.759-18.437-22.759H353.017    c-10.193,0-18.437,10.179-18.437,22.759C334.58,502.71,342.823,512.89,353.017,512.89z" />
-                        <path d="M145.032,266.258H262.46c10.193,0,18.436-10.179,18.436-22.759s-8.248-22.759-18.436-22.759H145.032    c-10.194,0-18.437,10.179-18.437,22.759C126.596,256.074,134.838,266.258,145.032,266.258z" />
-                        <path d="M145.032,348.467H262.46c10.193,0,18.436-10.179,18.436-22.759c0-12.579-8.248-22.758-18.436-22.758H145.032    c-10.194,0-18.437,10.179-18.437,22.758C126.596,338.288,134.838,348.467,145.032,348.467z" />
-                        <path d="M145.032,430.676H262.46c10.193,0,18.436-10.18,18.436-22.759s-8.248-22.759-18.436-22.759H145.032    c-10.194,0-18.437,10.18-18.437,22.759S134.838,430.676,145.032,430.676z" />
-                        <path d="M145.032,512.89H262.46c10.193,0,18.436-10.18,18.436-22.759c0-12.58-8.248-22.759-18.436-22.759H145.032    c-10.194,0-18.437,10.179-18.437,22.759C126.596,502.71,134.838,512.89,145.032,512.89z" />
-                    </g>
-                </g>
-            </svg>
-        </div>
-    </jb-date-input>
+<jb-date-input>
+  <span slot="calendar-trigger-icon">open</span>
+</jb-date-input>
 ```
-## format
 
-**[See Value Doc](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-value--docs#format)**
+## Month names
 
-## Change Month List
-you may want to change the default month list for both  of Jalali and Gregorian calendars based on your country month labels. here how you can do it:
+Override calendar month labels when your product needs custom locale names.
+
 ```js
-document.querySelector('jb-date-input').setMonthList('JALALI',['حَمَل','ثَور','جَوزا','سَرَطان','اَسَد','سُنبُله','میزان','عَقرَب','قَوس','جَدْی','دَلو','حوت']);
-document.querySelector('jb-date-input').setMonthList('GREGORIAN',['1','2','3','4','5','6','7','8','9','10','11','12']);
-```
-## overflow handler
+const dateInput = document.querySelector('jb-date-input');
 
-sometimes you place date input inside modal or end of the pages so when user open the input picker it overflow the page and some part of picker will be invisible.  
-to fix this we add a feature called `overflowHandler` by set this to `SLIDE` the picker will move, on mouse enter it's territory so user can easily pick date
+dateInput.setMonthList('JALALI', [
+  'حَمَل',
+  'ثَور',
+  'جَوزا',
+  'سَرَطان',
+  'اَسَد',
+  'سُنبُله',
+  'میزان',
+  'عَقرَب',
+  'قَوس',
+  'جَدْی',
+  'دَلو',
+  'حوت',
+]);
+
+dateInput.setMonthList('GREGORIAN', [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+]);
+```
+
+## Overflow handler
+
+When the calendar opens near the edge of a scroll area, configure the internal popover.
+
 ```js
-document.querySelector('jb-date-input').elements.popover.overflowHandler = "SLIDE"
-```
-## set custom style
+const dateInput = document.querySelector('jb-date-input');
 
-in some cases in your project you need to change default style of web-component for example you need zero margin or different border-radius and etc.    
-if you want to set a custom style to this web-component all you need is to set CSS variable in parent scope of web-component.
-#### usage example:
+dateInput.elements.popover.overflowHandler = 'SLIDE';
+dateInput.elements.popover.overflowDom = document.querySelector('.modal-body');
+```
+
+## CSS parts and variables
+
+| part | description |
+| --- | --- |
+| `input` | Internal `jb-input`. |
+| `popover` | Internal `jb-popover`. |
+| `calendar` | Internal `jb-calendar`. |
+
+| custom state | description |
+| --- | --- |
+| `disabled` | Applied when `disabled` is true. |
+| `invalid` | Applied while a validation error is visible. |
+
+| CSS variable name | description |
+| --- | --- |
+| `--jb-date-input-margin` | Host component margin. |
+| `--jb-date-input-calendar-trigger-display` | Calendar trigger display value. |
+| `--jb-date-input-calendar-trigger-width` | Calendar trigger width. |
+| `--jb-date-input-calendar-trigger-height` | Calendar trigger height. |
+| `--jb-date-input-calendar-icon-color` | Calendar icon color. |
+| `--jb-date-input-calendar-icon-color-active` | Calendar icon color while calendar is open. |
+
+Internal `jb-input`, `jb-calendar`, and `jb-popover` CSS variables also apply.
 
 ```css
-body{
-/* if you need more margin */
-  --jb-date-input-margin: 16px 32px;
-/* if you don't want rounded corner */
-  --jb-input-border-radius:0px;
-/* if you want different text color*/
-  --jb-input-value-color:red;
+jb-date-input {
+  --jb-date-input-margin: 16px 0;
+  --jb-date-input-calendar-icon-color: #2563eb;
+}
+
+jb-date-input::part(input) {
+  --jb-input-border-radius: 8px;
+}
+
+jb-date-input:state(invalid)::part(input) {
+  --jb-input-border-color: #dc2626;
 }
 ```
 
-you can customize jb-date-input look  by setting CSS variable in your app.    
-jb-date-input use [jb-input](https://github.com/javadbat/jb-input) and [jb-calendar](https://github.com/javadbat/jb-calendar) and [jb-popover](https://github.com/javadbat/jb-popover) underneath so to change the styles of your component read custom style section of these components and set their CSS variable.    
-more than above here is the CSS variable that we use in jb-date-input itself:    
+## Headless usage
 
-## Styling Dependencies
+Use the headless utilities when you want `jb-date-input` typing, caret, and date-string behavior in your own input component.
 
-`jb-date-input` uses `jb-input`, `jb-calendar`, and `jb-popover` internally. Their CSS variables also apply when styling the composed date input.
+```js
+import {
+  emptyInputValueString,
+  getFixedCaretPos,
+  handleBeforeInput,
+} from 'jb-date-input/module';
+```
 
-#### variable list
- 
-| CSS variable name                             | description                                                               |
-| -------------                                 | -------------                                                             |
-| --jb-date-input-margin                        | web-component margin default is `0 0`                                     |
-| --jb-date-input-calendar-trigger-display      | set it no none to hide calendar icon                                      |
-| --jb-date-input-calendar-trigger-width        | set calendar icon width                                                   |
-| --jb-date-input-calendar-trigger-height       | set calendar icon height                                                  |
-| --jb-date-input-calendar-icon-color           | calendar icon color                                                       |
-| --jb-date-input-calendar-icon-color-active    | calendar icon color when calendar is open                                 |
+For React, use the headless hook:
 
+```js
+import { useJBDateInput } from 'jb-date-input/react';
+```
 
+See the [Headless Storybook docs](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-headless--docs) for a complete example.
 
-## Headless usage:
-you can use `jb-date-input` headless functions to bring `jb-date-input` features to your own component.
-for doing so you just have to import some utils function and bind your input events and use them:    
-**[See Sample and  Implement Document Here](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-headless--docs)**
+## Accessibility notes
+
+- The component is form-associated and submits `.value`.
+- The shadow root delegates focus to the internal `jb-input`.
+- `label`, `message`, `required`, `disabled`, and validation states are forwarded to the internal input or synchronized with `ElementInternals`.
+- The calendar trigger is focusable and opens/closes the popover.
+- On mobile, the internal input is set to readonly so users interact through the picker.
 
 ## Related Docs
-- see [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react); if you want to use this component in react
 
-- see [All JB Design system Component List](https://javadbat.github.io/design-system/) for more components
+- See [`jb-date-input/react`](https://github.com/javadbat/jb-date-input/tree/main/react) if you want to use this component in React.
+- See [`jb-input`](https://github.com/javadbat/jb-input), [`jb-calendar`](https://github.com/javadbat/jb-calendar), and [`jb-popover`](https://github.com/javadbat/jb-popover) for composed component APIs.
+- See [All JB Design System Component List](https://javadbat.github.io/design-system/) for more components.
+- Use [Contribution Guide](https://github.com/javadbat/design-system/blob/main/docs/contribution-guide.md) if you want to contribute to this component.
 
-- use [Contribution Guide](https://github.com/javadbat/design-system/blob/main/docs/contribution-guide.md) if you want to contribute in this component.
+## AI agent notes
+
+- Import `jb-date-input` once before using `<jb-date-input>`.
+- Use `input-type` / `inputType` for the date system the user sees.
+- Use `value-type` / `valueType` for the canonical value returned by `.value`.
+- Set `format` before setting string `value`, `min`, or `max`.
+- Read `.value` for form/submitted value and `.valueInDate` when a JavaScript `Date` is needed.
+- Use `show-persian-number` only for display; `.value` remains English digits.
+- Use `inline-start-section`, `inline-end-section`, and `calendar-trigger-icon` slots. Do not use `start-section` or `end-section` directly on `jb-date-input`.
+- Use `validation.list` for custom validation; validators receive `{ text, inputObject, valueObject, valueText }`.
+- This package includes [`custom-elements.json`](./custom-elements.json) and points to it with the package.json `customElements` field. The field is documented by the Custom Elements Manifest project in [Referencing manifests from npm packages](https://github.com/webcomponents/custom-elements-manifest#referencing-manifests-from-npm-packages).
+- In `custom-elements.json`, `exports.kind: "js"` describes JavaScript/TypeScript exports and `exports.kind: "custom-element-definition"` maps the `jb-date-input` tag name to `JBDateInputWebComponent`.

@@ -8,7 +8,7 @@ import type { InputType, JBCalendarWebComponent } from 'jb-calendar';
 import type { JBFormInputStandards } from 'jb-form';
 import { JBInputWebComponent } from 'jb-input';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
-import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits } from 'jb-core';
+import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits, parseBooleanAttribute } from 'jb-core';
 import { registerDefaultVariables } from 'jb-core/theme';
 import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from './types.js';
 import { DateFactory } from './date-factory.js';
@@ -88,38 +88,38 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   /**
    * return start position of the selected text
   */
-  get selectionStart(): number {
+  get selectionStart(): number | null {
     return this.elements.input.selectionStart;
   }
   /**
   * set start position of the selected text
   */
-  set selectionStart(value: number) {
-    this.elements.input.selectionStart = value;
+  set selectionStart(value: number | null) {
+    this.elements.input.selectionStart = value ?? 0;
   }
   /**
   * return end position of the selected text
   */
-  get selectionEnd(): number {
+  get selectionEnd(): number | null {
     return this.elements.input.selectionEnd;
   }
   /**
   * set end position of the selected text
   */
-  set selectionEnd(value: number) {
-    this.elements.input.selectionEnd = value;
+  set selectionEnd(value: number | null) {
+    this.elements.input.selectionEnd = value ?? 0;
   }
   /**
   * return the user selection direction
   */
-  get selectionDirection(): "forward" | "backward" | "none" {
+  get selectionDirection(): "forward" | "backward" | "none" | null {
     return this.elements.input.selectionDirection;
   }
   /**
   * set the user selection direction
   */
-  set selectionDirection(value: "forward" | "backward" | "none") {
-    this.elements.input.selectionDirection = value;
+  set selectionDirection(value: "forward" | "backward" | "none" | null) {
+    this.elements.input.selectionDirection = value ?? "none";
   }
   /**
    * set input selection
@@ -492,27 +492,42 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   static get observedAttributes() {
     return [...JBInputWebComponent.observedAttributes, ...JBDateInputWebComponent.dateInputObservedAttributes];
   }
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    if (oldValue === newValue) {
+      return;
+    }
     if (JBDateInputWebComponent.dateInputObservedAttributes.includes(name)) {
       this.#onAttributeChange(name, newValue);
     } else if (JBInputWebComponent.observedAttributes.includes(name)) {
-      this.elements.input.setAttribute(name, newValue);
+      if (newValue === null) {
+        this.elements.input.removeAttribute(name);
+      } else {
+        this.elements.input.setAttribute(name, newValue);
+      }
     }
     // do something when an attribute has changed
   }
-  #onAttributeChange(name: string, value: string) {
+  #onAttributeChange(name: string, value: string | null) {
     switch (name) {
       case 'value':
         this.value = value;
         break;
       case 'name':
-        this.elements.input.setAttribute('name', value);
+        if (value === null) {
+          this.elements.input.removeAttribute('name');
+        } else {
+          this.elements.input.setAttribute('name', value);
+        }
         break;
       case 'value-type':
-        this.valueType = value as ValueTypes;
+        if (value !== null) {
+          this.valueType = value as ValueTypes;
+        }
         break;
       case 'format':
-        this.setFormat(value);
+        if (value !== null) {
+          this.setFormat(value);
+        }
         break;
       case 'min':
         this.#setMinDate(value);
@@ -521,31 +536,29 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         this.#setMaxDate(value);
         break;
       case 'required':
-        if (value === "" || value == "true") {
-          this.required = true;
-        } else {
-          this.required = false;
-        }
+        this.required = parseBooleanAttribute(value, false);
         break;
       case 'input-type':
-        this.inputType = value as InputTypes;
+        if (value !== null) {
+          this.inputType = value as InputTypes;
+        }
 
         break;
       case 'direction':
-        this.elements.calendar.setAttribute('direction', value);
+        if (value === null) {
+          this.elements.calendar.removeAttribute('direction');
+        } else {
+          this.elements.calendar.setAttribute('direction', value);
+        }
         break;
       case 'show-persian-number':
-        if (value == 'true' || value === '') {
-          this.showPersianNumber = true;
-        } else if (value == 'false' || value == null) {
-          this.showPersianNumber = false;
-        }
+        this.showPersianNumber = parseBooleanAttribute(value, false);
         break;
       case 'placeholder':
         this.placeholder = value;
         break;
       case 'disabled':
-        this.disabled = value === "" || value == "true";
+        this.disabled = parseBooleanAttribute(value, false);
         break;
       case 'error':
         this.reportValidity();
@@ -570,10 +583,17 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       this.#setMaxDate(maxDate);
     }
   }
-  setMinDate(minDate: string | Date) {
+  setMinDate(minDate: string | Date | null) {
     this.#setMinDate(minDate);
   }
-  #setMinDate(dateInput: string | Date) {
+  #setMinDate(dateInput: string | Date | null) {
+    if (dateInput === null) {
+      this.dateRestrictions.min = null;
+      if (this.elements.calendar.dateRestrictions) {
+        this.elements.calendar.dateRestrictions.min = null;
+      }
+      return;
+    }
     let minDate: Date | null = null;
     //create min date base on input value type
     if (typeof dateInput == "string") {
@@ -591,10 +611,17 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
 
   }
-  setMaxDate(maxDate: string | Date) {
+  setMaxDate(maxDate: string | Date | null) {
     this.#setMaxDate(maxDate);
   }
-  #setMaxDate(dateInput: string | Date) {
+  #setMaxDate(dateInput: string | Date | null) {
+    if (dateInput === null) {
+      this.dateRestrictions.max = null;
+      if (this.elements.calendar.dateRestrictions) {
+        this.elements.calendar.dateRestrictions.max = null;
+      }
+      return;
+    }
     let maxDate: Date | null = null;
     //create max date base on input value type
     if (typeof dateInput == "string") {
@@ -650,8 +677,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       showPersianNumber: this.showPersianNumber,
       value: this.#inputValue,
       selection: {
-        start: target.selectionStart,
-        end: target.selectionEnd,
+        start: target.selectionStart ?? 0,
+        end: target.selectionEnd ?? target.selectionStart ?? 0,
       },
       event: {
         data: e.data,
@@ -923,12 +950,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         this.elements.input.setSelectionRange(newCaretPos, newCaretPos);
       }
     }
-    const caretPos = newCaretPos ?? this.elements.input.selectionStart
+    const caretPos = newCaretPos ?? this.elements.input.selectionStart ?? 0
     const selectionPart = getSelectionPart(caretPos)
     if (selectionPart) {
       this.elements.calendar.activeSection = selectionPart;
     }
   }
+  #onDocumentSelectionChange = () => this.#handleCaretPosOnInputFocus();
   #lastInputStringValue = emptyInputValueString;
   /**
    * check if there is no update from last time then if change we update. remember to call returned update.
@@ -948,7 +976,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.#lastInputStringValue = this.#sInputValue;
     this.focus();
     //dont add once:true here because we need to detect every caret pos change during the type and then r r input on blur
-    document.addEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
+    document.addEventListener('selectionchange', this.#onDocumentSelectionChange);
     this.#dispatchFocusEvent(e);
   }
   #dispatchFocusEvent(e: FocusEvent) {
@@ -957,7 +985,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.dispatchEvent(event);
   }
   #onInputBlur(e: FocusEvent) {
-    document.removeEventListener('selectionchange', this.#handleCaretPosOnInputFocus.bind(this));
+    document.removeEventListener('selectionchange', this.#onDocumentSelectionChange);
     const focusedElement = e.relatedTarget;
     if (focusedElement !== this.elements.calendar && focusedElement !== this.elements.calendarTriggerButton) {
       this.showCalendar = false;
