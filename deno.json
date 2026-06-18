@@ -8,12 +8,12 @@
     "version": "0.0.5",
     "exports": "./mod.ts",
     "imports": {
-      "jb-calendar": "npm:jb-calendar@4.1.5",
+      "jb-calendar": "npm:jb-calendar@5.0.2",
       "jb-validation": "npm:jb-validation@0.4.0",
       "jb-input": "npm:jb-input@3.8.0",
       "date-fns": "npm:date-fns@4.1.0",
-      "jb-popover":"npm:jb-popover@1.1.0",
-      "jb-core":"npm:jb-core@0.4.0",
+      "jb-popover":"npm:jb-popover@1.12.0",
+      "jb-core":"npm:jb-core@0.28.0",
       "date-fns-jalali": "npm:date-fns-jalali@4.1.0-0",
       "react":"npm:react@18.2.0",
       "tslib":"npm:tslib@^2.8.1"

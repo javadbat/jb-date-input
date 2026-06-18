@@ -1,3 +1,1 @@
-export function test(){
-    console.log("test");
-}
+export * from './lib/jb-date-input.ts';
