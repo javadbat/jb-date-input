@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useRef } from "react";
-import { JBDateInput, type Props, useJBDateInput } from "jb-date-input/react";
+import { JBDateInput, useJBDateInput } from "jb-date-input/react";
 //@ts-ignore
 import './styles/themes.css';
 import { useState } from 'react';
@@ -11,14 +11,14 @@ import { useEffect } from 'react';
 import type { ValidationValue } from 'jb-form';
 import type { JBDateInputEventType } from '../dist/types';
 import { JBButton } from 'jb-button/react';
-const meta: Meta<Props> = {
+const meta = {
   title: "Components/form elements/Inputs/JBDateInput",
   component: JBDateInput,
   //we create custom docs for this stories so we don't need them in display
   // excludeStories:['Headless','WithInlineSections','WithCustomIcon', 'Jalali', 'Gregorian','JalaliWithPersianSetup']
-};
+} satisfies Meta<typeof JBDateInput>;
 export default meta;
-type Story = StoryObj<typeof JBDateInput>;
+type Story = StoryObj<typeof meta>;
 
 export const Normal: Story = {
   args: {
