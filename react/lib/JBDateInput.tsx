@@ -10,26 +10,10 @@ import {type EventProps, useEvents} from './events-hook.js';
 import { type JBDateInputAttributes, useJBDateInputAttribute } from './attributes-hooks.js';
 import type { SizeVariants } from 'jb-input';
 import type { JBElementStandardProps } from 'jb-core/react';
+import './module-declaration.js';
 // re-export imported types for easier use for user
 export type {JBDateInputValueObject, ValidationItem, ValidationValue, InputType };
 export {useJBDateInput} from './utils.js';
-declare module "react" {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      'jb-date-input': JBDateInputType;
-    }
-    interface JBDateInputType extends React.DetailedHTMLProps<React.HTMLAttributes<JBDateInputWebComponent>, JBDateInputWebComponent> {
-      class?: string,
-      label?: string,
-      name?: string,
-      size?:SizeVariants,
-      "value-type"?: string,
-      "input-type"?: string,
-      ref:React.RefObject<JBDateInputWebComponent | null>,
-    }
-  }
-}
 
 type JBDateInputProps = EventProps & JBDateInputAttributes & {
   label?: string,
