@@ -256,26 +256,29 @@ export const ValueTypeTest: Story = {
         </JBDateInput>
         <div>
           <table style={{ margin: '1rem' }}>
-            <tr>
-              <td>valueType is</td>
-              <td>{args.valueType}</td>
-            </tr>
-            <tr>
-              <td>inputType is</td>
-              <td>{args.inputType}</td>
-            </tr>
-            <tr>
-              <td>Min date is:</td>
-              <td>{args.min ? args.min.toString() : "Unlimited"}</td>
-            </tr>
-            <tr>
-              <td>Max date is:</td>
-              <td>{args.max ? args.max.toString() : "Unlimited"}</td>
-            </tr>
-            <tr>
-              <td>Your chosen date is:</td>
-              <td>{value}</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td>valueType is</td>
+                <td>{args.valueType}</td>
+              </tr>
+              <tr>
+                <td>inputType is</td>
+                <td>{args.inputType}</td>
+              </tr>
+              <tr>
+                <td>Min date is:</td>
+                <td>{args.min ? args.min.toString() : "Unlimited"}</td>
+              </tr>
+              <tr>
+                <td>Max date is:</td>
+                <td>{args.max ? args.max.toString() : "Unlimited"}</td>
+              </tr>
+              <tr>
+                <td>Your chosen date is:</td>
+                <td>{value}</td>
+              </tr>
+            </tbody>
+
           </table>
         </div>
       </div>
