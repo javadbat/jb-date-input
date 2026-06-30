@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 import type { ValidationValue } from 'jb-form';
-import type { JBDateInputEventType } from '../dist/types';
+import type { JBDateInputEventType } from 'jb-date-input';
 import { JBButton } from 'jb-button/react';
 const meta = {
   title: "Components/form elements/Inputs/JBDateInput",
