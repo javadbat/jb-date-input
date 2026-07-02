@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { JBDateInput, useJBDateInput } from "jb-date-input/react";
-//@ts-ignore
 import './styles/themes.css';
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
@@ -11,6 +10,8 @@ import { useEffect } from 'react';
 import type { ValidationValue } from 'jb-form';
 import type { JBDateInputEventType } from 'jb-date-input';
 import { JBButton } from 'jb-button/react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { getCalendar, getCalendarDay, getCalendarMonthNames, getCalendarShadow, getDateInput, getMessageText, getNativeInput, hasPersianDigits } from './test-utils';
 const meta = {
   title: "Components/form elements/Inputs/JBDateInput",
   component: JBDateInput,
@@ -29,12 +30,39 @@ export const Jalali: Story = {
   args: {
     label: "jalali date",
     inputType: "JALALI",
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const input = getNativeInput(dateInput);
+
+    await userEvent.click(input);
+    await userEvent.type(input, '1402/05/12');
+
+    await waitFor(() => {
+      expect(dateInput.showCalendar).toBe(true);
+      expect(getCalendar(dateInput).inputType).toBe('JALALI');
+      expect(dateInput.inputValue).toBe('1402/05/12');
+      expect(dateInput.valueInDate).toBeTruthy();
+    });
   }
 };
 export const Gregorian: Story = {
   args: {
     label: "gregorian date",
     inputType: "GREGORIAN",
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const input = getNativeInput(dateInput);
+
+    await userEvent.click(input);
+    await userEvent.type(input, '2024/02/29');
+
+    await waitFor(() => {
+      expect(dateInput.showCalendar).toBe(true);
+      expect(getCalendar(dateInput).inputType).toBe('GREGORIAN');
+      expect(dateInput.inputValue).toBe('2024/02/29');
+    });
   }
 };
 export const SizeVariants: Story = {
@@ -73,6 +101,21 @@ export const JalaliWithPersianSetup: Story = {
     direction: 'rtl',
     showPersianNumber: true,
     message: "تاریخ جلالی با اعداد فارسی و به صورت راست به چپ"
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const input = getNativeInput(dateInput);
+    const calendar = getCalendar(dateInput);
+
+    await userEvent.click(input);
+    await userEvent.type(input, '1402/05/12');
+
+    await waitFor(() => {
+      expect(dateInput.showPersianNumber).toBe(true);
+      expect(calendar.showPersianNumber).toBe(true);
+      expect(hasPersianDigits(dateInput.inputValue)).toBe(true);
+      expect(hasPersianDigits(getCalendarShadow(calendar).querySelector('.navigator-title .year')?.textContent ?? '')).toBe(true);
+    });
   }
 }
 export const CustomFormat: Story = {
@@ -92,6 +135,15 @@ export const CustomFormat: Story = {
   },
   args: {
     format: "YYYY/MM/DD",
+  },
+  play: async ({ canvasElement, args }) => {
+    const dateInput = getDateInput(canvasElement);
+    dateInput.value = '2023/08/03';
+
+    await waitFor(() => {
+      expect(dateInput.value).toMatch(/^\d{4}\/\d{2}\/\d{2}$/);
+      expect(args.format).toBe('YYYY/MM/DD');
+    });
   }
 };
 
@@ -111,6 +163,18 @@ export const WithDefaultCalendarDate: Story = {
     format: "YYYY/MM/DD",
     direction: "ltr",
     calendarDefaultDateView: { year: 1360, month: 5 },
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const calendar = getCalendar(dateInput);
+
+    dateInput.showCalendar = true;
+
+    await waitFor(() => {
+      expect(calendar.data.selectedYear).toBe(1360);
+      expect(calendar.data.selectedMonth).toBe(5);
+      expect(calendar.activeSection).toBe('DAY');
+    });
   }
 };
 export const PersianNumber: Story = {
@@ -122,6 +186,19 @@ export const PersianNumber: Story = {
     direction: "ltr",
     showPersianNumber: true,
     calendarDefaultDateView: { year: 1360, month: 5 },
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const calendar = getCalendar(dateInput);
+
+    dateInput.value = '1360/05/12';
+    dateInput.showCalendar = true;
+
+    await waitFor(() => {
+      expect(dateInput.showPersianNumber).toBe(true);
+      expect(hasPersianDigits(dateInput.inputValue)).toBe(true);
+      expect(hasPersianDigits(getCalendarShadow(calendar).querySelector('.navigator-title .year')?.textContent ?? '')).toBe(true);
+    });
   }
 }
 export const CustomMonthName: Story = {
@@ -143,6 +220,18 @@ export const CustomMonthName: Story = {
       "دَلو",
       "حوت",
     ],
+  },
+  play: async ({ canvasElement, args }) => {
+    const dateInput = getDateInput(canvasElement);
+    const calendar = getCalendar(dateInput);
+    const shadow = getCalendarShadow(calendar);
+
+    dateInput.showCalendar = true;
+    await userEvent.click(shadow.querySelector<HTMLElement>('.navigator-title .month')!);
+
+    await waitFor(() => {
+      expect(getCalendarMonthNames(calendar)).toEqual(args.jalaliMonthList);
+    });
   }
 }
 export const Required: Story = {
@@ -151,7 +240,7 @@ export const Required: Story = {
     message: "please focus and then unfocus the input to see require validation message",
     required: true,
     direction: "ltr",
-  }
+  },
 };
 
 export const WithOverflowHandler: Story = {
@@ -194,6 +283,21 @@ export const withError: Story = {
     label: "with default error",
     error: 'error message',
     message: 'default message'
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+
+    await waitFor(() => {
+      expect(getMessageText(dateInput)).toBe('error message');
+      expect(dateInput.reportValidity()).toBe(false);
+    });
+
+    dateInput.removeAttribute('error');
+    dateInput.reportValidity();
+
+    await waitFor(() => {
+      expect(getMessageText(dateInput)).toBe('default message');
+    });
   }
 };
 
@@ -206,6 +310,18 @@ export const ValueSetGet: Story = {
         <JBButton onClick={() => setValue(new Date())}>set value to Today</JBButton>
       </div>
     )
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const dateInput = getDateInput(canvasElement);
+
+    await userEvent.click(canvas.getByText('set value to Today'));
+
+    await waitFor(() => {
+      expect(dateInput.value).not.toBe('');
+      expect(dateInput.inputValue).not.toBe('');
+      expect(getCalendar(dateInput).value.year).toBeTruthy();
+    });
   }
 }
 export const sizeTest: Story = {
@@ -238,6 +354,16 @@ export const sizeTest: Story = {
         <JBDateInput style={({ "--jb-input-height": "70px" } as any)}></JBDateInput>
       </>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const dateInputs = Array.from(canvasElement.querySelectorAll<HTMLElement>('jb-date-input'));
+
+    await waitFor(() => {
+      expect(dateInputs[1].getBoundingClientRect().width).toBeCloseTo(dateInputs[1].parentElement!.getBoundingClientRect().width, -1);
+      expect(dateInputs[2].getBoundingClientRect().width).toBeCloseTo(300, -1);
+      expect(dateInputs[5].getBoundingClientRect().width).toBeCloseTo(300, -1);
+      expect(dateInputs[6].getBoundingClientRect().height).toBeGreaterThanOrEqual(70);
+    });
   }
 };
 
@@ -290,7 +416,8 @@ export const ValueTypeTest: Story = {
     min: "",
     max: ""
   },
-  //TODO add arg types so control in Value doc works better for test
+  //TODO: add arg types so control in Value doc works better for test
+  
 };
 
 export const GregorianMinMaxTest: Story = {
@@ -304,6 +431,7 @@ export const GregorianMinMaxTest: Story = {
   }
 };
 
+//TODO: break this into multiple story in different or combine scenario (dont duplicate if exact functionality test is already exist)
 export const JalaliTest: Story = {
   render: (args) => {
     const [value, valueSetter] = useState("");
@@ -323,7 +451,7 @@ export const JalaliTest: Story = {
     return (
       <div>
         <JBDateInput name="first-date-input" value={value} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
-        <JBDateInput name="first-date-input" showPersianNumber={true} value={value} label={args.label + ' با اعداد فارسی '} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
+        <JBDateInput name="first-date-input" showPersianNumber={true} value={value} label={`${args.label} با اعداد فارسی `} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
         <div>
           <br /><br />valueType is {args.valueType}
           <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
@@ -357,6 +485,30 @@ export const JalaliMinMaxTest: Story = {
     valueType: "JALALI",
     min: "1399-05-01T12:05:39.530Z",
     max: "1400-08-01T12:05:39.530Z",
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const calendar = getCalendar(dateInput);
+
+    calendar.inputType = 'JALALI';
+    calendar.data.selectedYear = 1399;
+    calendar.data.selectedMonth = 4;
+
+    await waitFor(() => {
+      expect(getCalendarDay(calendar, 30).classList.contains('--disable')).toBe(true);
+    });
+
+    const valueBeforeDisabledClick = dateInput.value;
+    await userEvent.click(getCalendarDay(calendar, 30));
+
+    expect(dateInput.value).toBe(valueBeforeDisabledClick);
+
+    dateInput.value = '1399-04-30T12:05:39.530Z';
+    dateInput.reportValidity();
+
+    await waitFor(() => {
+      expect(dateInput.checkValidity()).toBe(false);
+    });
   }
 };
 
@@ -376,7 +528,7 @@ export const TimeStampTest: Story = {
     const [setValue, setValueSetter] = useState<string | null>(null);
     const valueInDate = useMemo(() => {
       if (setValue) {
-        return new Date(parseInt(setValue)).toString();
+        return new Date(Number(setValue)).toString();
       } else {
         return null;
       }
@@ -401,6 +553,19 @@ export const TimeStampTest: Story = {
   args: {
     label: "date",
     valueType: "TIME_STAMP",
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const calendar = getCalendar(dateInput);
+
+    calendar.data.selectedYear = 1402;
+    calendar.data.selectedMonth = 5;
+    await userEvent.click(getCalendarDay(calendar, 12));
+
+    await waitFor(() => {
+      expect(dateInput.value).toMatch(/^\d+$/);
+      expect(Number(dateInput.value)).toBeGreaterThan(0);
+    });
   }
 }
 export const TimeStampMinMaxTest: Story = {
@@ -410,6 +575,16 @@ export const TimeStampMinMaxTest: Story = {
     valueType: "TIME_STAMP",
     min: "1596291030322",
     max: "1696291030322",
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+
+    dateInput.value = '1577836800000';
+    dateInput.reportValidity();
+
+    await waitFor(() => {
+      expect(dateInput.checkValidity()).toBe(false);
+    });
   }
 };
 
@@ -418,6 +593,17 @@ export const GregorianInputTest: Story = {
     label: "date",
     valueType: "GREGORIAN",
     inputType: "GREGORIAN",
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    dateInput.value = '2024-02-29T00:00:00.000Z';
+
+    await waitFor(() => {
+      expect(dateInput.inputType).toBe('GREGORIAN');
+      expect(dateInput.valueType).toBe('GREGORIAN');
+      expect(dateInput.value).toContain('2024');
+      expect(dateInput.valueInDate).toBeTruthy();
+    });
   }
 };
 
@@ -438,6 +624,25 @@ export const Headless: Story = {
   name: 'headless sample',
   args: {
 
+  },
+  play: async ({ canvasElement }) => {
+    const input = canvasElement.querySelector<HTMLInputElement>('input');
+    expect(input).toBeTruthy();
+
+    await userEvent.click(input!);
+    await userEvent.type(input!, '1402/13/45');
+
+    await waitFor(() => {
+      expect(input!.value).not.toContain('13');
+      expect(input!.selectionStart).toBe(input!.selectionEnd);
+    });
+
+    await userEvent.keyboard('{Control>}a{/Control}{Backspace}');
+    await userEvent.type(input!, '1402/05/12');
+
+    await waitFor(() => {
+      expect(input!.value).toBe('1402/05/12');
+    });
   }
 };
 export const WithCustomIcon: Story = {
@@ -533,23 +738,72 @@ export const InFormTest: Story = {
       </div>
     );
   },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const form = canvasElement.querySelector<HTMLFormElement>('form');
+
+    expect(form).toBeTruthy();
+    dateInput.value = '2024-02-29T00:00:00.000Z';
+
+    await waitFor(() => {
+      expect(new FormData(form!).get('birthdate')).toBe(dateInput.value);
+    });
+  }
 }
 
 export const EventTest: Story = {
   args: {
     label: "event test:",
     message: "check the console",
-    onChange: (e) => { console.log("onChange", e); },
-    onLoad: (e) => { console.log("onLoad", e); },
-    onInit: (e) => { console.log("onInit", e); },
-    onInvalid: (e) => { console.log("onInvalid", e); },
-    onBeforeInput: (e) => { console.log("onBeforeInput", e); },
-    onInput: (e) => { console.log("onInput", e); },
-    onKeyUp: (e) => { console.log("onKeyUp", e.composedPath()); },
-    onKeyDown: (e) => { console.log("onKeyDown", e); },
-    onKeyPress: (e) => { console.log("onKeyPress", e); },
-    onSelect: (e) => { console.log("onSelect", e); },
-    onFocus: (e) => { console.log("onFocus", e); },
-    onBlur: (e) => { console.log("onBlur", e); },
+    onChange: fn(),
+    onLoad: fn(),
+    onInit: fn(),
+    onInvalid: fn(),
+    onBeforeInput: fn(),
+    onInput: fn(),
+    onKeyUp: fn(),
+    onKeyDown: fn(),
+    onKeyPress: fn(),
+    onSelect: fn(),
+    onFocus: fn(),
+    onBlur: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const dateInput = getDateInput(canvasElement);
+    const input = getNativeInput(dateInput);
+
+    await waitFor(() => {
+      dateInput.dispatchEvent(new CustomEvent('load'));
+      expect(args.onLoad).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      dateInput.dispatchEvent(new CustomEvent('init'));
+      expect(args.onInit).toHaveBeenCalled();
+    });
+
+    await userEvent.click(input);
+    await userEvent.type(input, '1402/05/12');
+
+    const calendar = getCalendar(dateInput);
+    calendar.data.selectedYear = 1402;
+    calendar.data.selectedMonth = 5;
+    await userEvent.click(getCalendarDay(calendar, 13));
+
+    dateInput.setAttribute('error', 'forced error');
+    dateInput.reportValidity();
+    input.blur();
+
+    await waitFor(() => {
+      expect(args.onFocus).toHaveBeenCalled();
+      expect(args.onBeforeInput).toHaveBeenCalled();
+      expect(args.onInput).toHaveBeenCalled();
+      expect(args.onKeyDown).toHaveBeenCalled();
+      expect(args.onKeyPress).toHaveBeenCalled();
+      expect(args.onKeyUp).toHaveBeenCalled();
+      expect(args.onChange).toHaveBeenCalled();
+      expect(args.onSelect).toHaveBeenCalled();
+      expect(args.onInvalid).toHaveBeenCalled();
+      expect(args.onBlur).toHaveBeenCalled();
+    });
   }
 };
