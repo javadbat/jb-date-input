@@ -34,6 +34,12 @@ import { JBDateInput } from 'jb-date-input/react';
 <JBDateInput label="Date" />;
 ```
 
+## When to use
+
+Use `JBDateInput` when a React form needs a date field with typed entry, a calendar popover, Jalali/Gregorian conversion, validation, min/max restrictions, and form value support.
+
+Use `JBCalendar` from `jb-calendar/react` when you need only an inline calendar picker without the input field.
+
 ## Props
 
 `JBDateInput` accepts standard React element props plus these component props:
@@ -298,6 +304,14 @@ The React component uses the same CSS variables and parts as the web component.
 ```
 
 For the full list, see [`jb-date-input` CSS parts and variables](https://github.com/javadbat/jb-date-input#css-parts-and-variables).
+
+## CSS parts and variables
+
+Use the same CSS parts and variables as the web component. The `Styling` section above shows the React class-based pattern.
+
+## Accessibility notes
+
+Set `label` for the accessible field name. If you render a custom calendar trigger icon, keep it decorative or provide its own accessible text outside the icon.
 
 ## Headless usage
 
