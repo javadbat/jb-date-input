@@ -294,12 +294,12 @@ The React component uses the same CSS variables and parts as the web component.
 
 ```css
 .date-field {
-  --jb-date-input-margin: 16px 0;
+  --jb-date-input-margin: 1rem 0;
   --jb-date-input-calendar-icon-color: #2563eb;
 }
 
 .date-field::part(input) {
-  --jb-input-border-radius: 8px;
+  --jb-input-border-radius: 0.5rem;
 }
 ```
 

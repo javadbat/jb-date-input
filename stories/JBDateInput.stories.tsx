@@ -336,7 +336,7 @@ export const sizeTest: Story = {
           <h3>parent percent width</h3>
           <JBDateInput></JBDateInput>
         </div>
-        <div style={{ width: '300px' }}>
+        <div style={{ width: '18.75rem' }}>
           <h3>parent pixel width</h3>
           <JBDateInput></JBDateInput>
         </div>
@@ -348,10 +348,10 @@ export const sizeTest: Story = {
         <JBDateInput style={{ width: '50%' }}></JBDateInput>
 
         <h3>self pixel width</h3>
-        <JBDateInput style={{ width: '300px' }}></JBDateInput>
+        <JBDateInput style={{ width: '18.75rem' }}></JBDateInput>
 
         <h3>self pixel height</h3>
-        <JBDateInput style={({ "--jb-input-height": "70px" } as any)}></JBDateInput>
+        <JBDateInput style={({ "--jb-input-height": "4.375rem" } as any)}></JBDateInput>
       </>
     );
   },

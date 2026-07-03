@@ -392,12 +392,12 @@ Internal `jb-input`, `jb-calendar`, and `jb-popover` CSS variables also apply.
 
 ```css
 jb-date-input {
-  --jb-date-input-margin: 16px 0;
+  --jb-date-input-margin: 1rem 0;
   --jb-date-input-calendar-icon-color: #2563eb;
 }
 
 jb-date-input::part(input) {
-  --jb-input-border-radius: 8px;
+  --jb-input-border-radius: 0.5rem;
 }
 
 jb-date-input:state(invalid)::part(input) {
