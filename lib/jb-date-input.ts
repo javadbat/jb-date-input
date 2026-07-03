@@ -143,7 +143,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return this.#required;
   }
   #valueObject: JBDateInputValueObject = getEmptyValueObject();
-  get name():string{ return this.getAttribute('name') || ''; }
+  get name(): string { return this.getAttribute('name') || ''; }
   set name(value: string | null | undefined) {
     if (value) {
       this.setAttribute('name', value)
@@ -416,7 +416,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const shadowRoot = this.attachShadow({
       mode: 'open',
       delegatesFocus: true,
-      serializable:true,
+      serializable: true,
       clonable: true,
     });
     registerDefaultVariables();
@@ -746,7 +746,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay,hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
+    this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay, hour ?? undefined, minute ?? undefined, second ?? undefined, millisecond ?? undefined);
     this.#updateInputTextFromValue();
   }
   #addMonth(interval: number) {
@@ -754,7 +754,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
+    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour ?? undefined, minute ?? undefined, second ?? undefined, millisecond ?? undefined);
     this.#updateInputTextFromValue();
   }
   #addDay(interval: number) {
@@ -762,7 +762,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth, currentDay + interval, hour??undefined, minute??undefined, second??undefined, millisecond??undefined);
+    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth, currentDay + interval, hour ?? undefined, minute ?? undefined, second ?? undefined, millisecond ?? undefined);
     this.#updateInputTextFromValue();
   }
   /**
@@ -775,7 +775,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    * @description when user change value this function called and update inner value object base on user value
    */
   #setDateValue(value: string | Date | null) {
-    if(value === null){this.#setValueObjNull();}
+    if (value === null) { this.#setValueObjNull(); }
     if (typeof value == "string") {
       switch (this.#dateFactory.valueType) {
         case "GREGORIAN":
@@ -816,7 +816,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
    */
   #setDateValueFromDate(value: Date | null) {
     let valueObject = getEmptyValueObject();
-    if(value){
+    if (value) {
       valueObject = this.#dateFactory.getDateObjectValueFromDateValue(value);
     }
     this.#valueObject = valueObject;
@@ -1037,7 +1037,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #getInsideValidations() {
     const validationList: ValidationItem<ValidationValue>[] = [];
-    if (this.getAttribute("error") !== null && (this.getAttribute("error")??"").trim().length > 0) {
+    if (this.getAttribute("error") !== null && (this.getAttribute("error") ?? "").trim().length > 0) {
       validationList.push({
         validator: undefined,
         message: this.getAttribute("error")!,
@@ -1167,6 +1167,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #checkValidity(showError: boolean) {
     if (!this.isAutoValidationDisabled) {
+      if (this.#internals?.states.has("invalid")) {
+        // if we currently showing error to user it make sure error get updated (when failed validation changed of function return different string as an error) 
+        showError = true;
+      }
       return this.#validation.checkValidity({ showError });
     }
   }
@@ -1213,7 +1217,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
           } else {
             states["customError"] = true;
           }
-          if (message == '') { message = res.message??""; }
+          if (message == '') { message = res.message ?? ""; }
 
         }
       });
