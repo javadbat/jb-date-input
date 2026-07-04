@@ -1,5 +1,11 @@
 # Changelog  
 
+## Unreleased
+
+### Changed
+
+- Updated docs and stories to use renamed `jb-input` and `jb-calendar` CSS variables.
+
 ## [6.2.1] - 2026-05-11
 ### fixed:
 - fix popover position problem
