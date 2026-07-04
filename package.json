@@ -38,21 +38,21 @@
   "files": [
     "LICENSE",
     "README.md",
-    "custom-elements.json",
-    "lib/",
-    "dist/",
+    "web-component/custom-elements.json",
+    "web-component/lib/",
+    "web-component/dist/",
     "react/",
     "react/dist/"
   ],
   "main": "index.js",
   "module": "index.js",
-  "customElements": "custom-elements.json",
+  "customElements": "web-component/custom-elements.json",
   "homepage": "https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput",
   "repository": {
     "type": "git",
     "url": "https://github.com/javadbat/jb-date-input"
   },
-  "types": "./dist/jb-date-input.d.ts",
+  "types": "./web-component/dist/jb-date-input.d.ts",
   "dependencies": {
     "date-fns": "^4.1.0",
     "date-fns-jalali": "^4.1.0-0",
