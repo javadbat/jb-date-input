@@ -163,6 +163,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   //set an empty date value as a default initial value
   initialValue: string | null = null;
+  formResetCallback() {
+    this.value = this.initialValue;
+    this.#validation.reset();
+    this.elements.input.validation.reset();
+    this.#internals?.setValidity({}, '');
+  }
   get isDirty() {
     //when initial value is null mean we calculate and build value string base on format, value type , etc on every check to make sure is dirty works well on empty value in every scenario
     return this.value !== (this.initialValue ?? this.#dateFactory.getDateValueStringFromValueObject(getEmptyValueObject(), this.valueType));
@@ -1073,10 +1079,12 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   showValidationError(error: ShowValidationErrorParameters) {
     this.elements.input.showValidationError(error);
     this.#internals?.states?.add("invalid");
+    if (this.#internals) this.#internals.ariaInvalid = "true";
   }
   clearValidationError() {
     this.elements.input.clearValidationError();
     this.#internals?.states?.delete("invalid");
+    if (this.#internals) this.#internals.ariaInvalid = "false";
 
   }
   #onCalendarElementInitiated() {

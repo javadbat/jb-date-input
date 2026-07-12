@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added the standard `formResetCallback()` to restore `initialValue` and clear validation state.
 - Added the `Custom Style` story, styling MDX guide, and 12 style recipes for shared design-token examples.
 - Added composed styling examples for the internal `jb-input` and `jb-calendar` parts.
 - Added `--jb-date-input-popover-z-index` to control the calendar popover layer.
@@ -11,6 +12,7 @@
 
 ### Changed
 
+- Standardized `invalid` custom-state and `ariaInvalid` updates in validation display and cleanup callbacks.
 - Added the React `initialValue` prop and forwarded `value` and `initialValue` directly as React 19 custom-element properties.
 - Updated docs and stories to use renamed `jb-input` and `jb-calendar` CSS variables.
 - Removed child theme-class injection from stories and standardized recipes on the date-input host plus exported parts.
