@@ -133,6 +133,11 @@ export const Gallery: Story = {
     </div>
   ) };
 
+export const Default: Story = {
+  name: "Default",
+  render: () => <DateInputStyleSample className="" />,
+};
+
 export const Carbon: Story = {
   name: "Carbon",
   render: () => <DateInputStyleSample className="carbon-style" /> };
