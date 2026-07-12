@@ -481,8 +481,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   }
   #initProp() {
     this.#waitForComponentsLoad().then(() => {
+      const valueAttribute = this.getAttribute('value');
+      const valueToInitialize = valueAttribute !== null ? valueAttribute : this.value;
       this.#setValueObjNull();
-      this.value = this.getAttribute('value') || '';
+      this.value = valueToInitialize;
       this.#callOnInitEvent();
     });
   }

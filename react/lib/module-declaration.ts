@@ -14,6 +14,8 @@ declare module "react" {
       size?:SizeVariants,
       "value-type"?: string,
       "input-type"?: string,
+      value?: string | Date | null,
+      initialValue?: string | null,
       ref:React.RefObject<JBDateInputWebComponent | null>,
     }
   }

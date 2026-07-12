@@ -11,9 +11,14 @@
 
 ### Changed
 
+- Added the React `initialValue` prop and forwarded `value` and `initialValue` directly as React 19 custom-element properties.
 - Updated docs and stories to use renamed `jb-input` and `jb-calendar` CSS variables.
 - Removed child theme-class injection from stories and standardized recipes on the date-input host plus exported parts.
 - Refined Aurora popover elevation to use the shared popover shadow API.
+
+### Fixed
+
+- Preserved property-assigned values while asynchronous child components initialize when no `value` attribute is present.
 
 ## [6.2.1] - 2026-05-11
 ### fixed:

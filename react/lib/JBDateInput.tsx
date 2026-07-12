@@ -20,6 +20,8 @@ type JBDateInputProps = EventProps & JBDateInputAttributes & {
   size?:SizeVariants,
   valueType?: 'GREGORIAN' | 'JALALI' | 'TIME_STAMP',
   inputType?: 'GREGORIAN' | 'JALALI',
+  value?: string | Date | null,
+  initialValue?: string | null,
 }
 
 export type Props = PropsWithChildren<JBDateInputProps> & JBElementStandardProps<JBDateInputWebComponent,keyof JBDateInputProps>;
@@ -31,11 +33,11 @@ export const JBDateInput = forwardRef((props: Props, ref) => {
     () => (element.current??undefined),
     [element],
   );
-  const {size, label, inputType, valueType,calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList,value, onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect, ...otherProps} = props;
-  useJBDateInputAttribute(element,{calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList,value});
+  const {size, label, inputType, valueType,calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,initialValue,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList,value, onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect, ...otherProps} = props;
+  useJBDateInputAttribute(element,{calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList});
   useEvents(element,{onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect});
   return (
-    <jb-date-input  size={size} label={label} value-type={valueType ? valueType : 'GREGORIAN'} ref={element} input-type={inputType ? inputType : 'JALALI'} {...otherProps}>
+    <jb-date-input value={value ?? null} initialValue={initialValue ?? null} size={size} label={label} value-type={valueType ? valueType : 'GREGORIAN'} ref={element} input-type={inputType ? inputType : 'JALALI'} {...otherProps}>
       {props.children}
     </jb-date-input>
   );

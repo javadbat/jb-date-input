@@ -9,7 +9,6 @@ export type JBDateInputAttributes = {
   name?: string,
   format?: string,
   direction?: 'ltr' | 'rtl',
-  value?: string | Date | null | undefined,
   validationList?: ValidationItem<ValidationValue>[],
   required?: boolean,
   calendarDefaultDateView?: { year: number, month: number, dateType?: InputType },
@@ -71,12 +70,6 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
       }
     }
   }, [props.min]);
-
-  useEffect(() => {
-    if (element.current) {
-      element.current.value = props.value??null;
-    }
-  }, [props.value]);
 
   useEffect(() => {
     if (element.current) {
