@@ -1,7 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useRef } from "react";
 import { JBDateInput, useJBDateInput } from "jb-date-input/react";
 import './styles/themes.css';
+import '../../jb-input/stories/styles/style-forest.css';
+import '../../jb-calendar/stories/styles/style-forest.css';
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
@@ -20,6 +22,10 @@ const meta = {
 } satisfies Meta<typeof JBDateInput>;
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+function DarkModeDateInput() {
+  return <JBDateInput className="dark-theme-date-input forest-style" />;
+}
 
 export const Normal: Story = {
   args: {
@@ -272,7 +278,7 @@ export const DarkMode: Story = {
     return (
       <div className="dark-theme">
         <h1>dark mode test</h1>
-        <JBDateInput></JBDateInput>
+        <DarkModeDateInput />
       </div>
     );
   }

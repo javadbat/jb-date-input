@@ -1,0 +1,14 @@
+jb-date-input.carbon-style {
+    display: block;
+    width: 100%;
+    --jb-date-input-calendar-icon-color: #8d8d8d;
+    --jb-date-input-calendar-icon-color-active: var(--jb-primary);
+}
+
+jb-date-input.carbon-style::part(popover) {
+    --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-surface));
+    --jb-popover-border-radius: 0;
+    --jb-popover-padding: 1.25rem;
+    --jb-popover-z-index: 1000;
+    filter: drop-shadow(0 0.75rem 1.5rem oklch(0% 0 0 / 0.26));
+}

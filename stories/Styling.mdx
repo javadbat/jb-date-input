@@ -1,0 +1,469 @@
+import { Meta, Source, Story, Title } from '@storybook/addon-docs/blocks';
+import * as StyleStories from './Styles.stories';
+import antDesignThemeCss from '../../../docs/styles/ant-design.css?raw';
+import auroraThemeCss from '../../../docs/styles/aurora.css?raw';
+import bootstrapThemeCss from '../../../docs/styles/bootstrap.css?raw';
+import candyThemeCss from '../../../docs/styles/candy.css?raw';
+import carbonThemeCss from '../../../docs/styles/carbon.css?raw';
+import cupertinoThemeCss from '../../../docs/styles/cupertino.css?raw';
+import fluentThemeCss from '../../../docs/styles/fluent.css?raw';
+import forestThemeCss from '../../../docs/styles/forest.css?raw';
+import materialThemeCss from '../../../docs/styles/material.css?raw';
+import porcelainThemeCss from '../../../docs/styles/porcelain.css?raw';
+import sunsetThemeCss from '../../../docs/styles/sunset.css?raw';
+import terminalThemeCss from '../../../docs/styles/terminal.css?raw';
+import antDesignInputCss from '../../jb-input/stories/styles/style-ant-design.css?raw';
+import auroraInputCss from '../../jb-input/stories/styles/style-aurora.css?raw';
+import bootstrapInputCss from '../../jb-input/stories/styles/style-bootstrap.css?raw';
+import candyInputCss from '../../jb-input/stories/styles/style-candy.css?raw';
+import carbonInputCss from '../../jb-input/stories/styles/style-carbon.css?raw';
+import cupertinoInputCss from '../../jb-input/stories/styles/style-cupertino.css?raw';
+import fluentInputCss from '../../jb-input/stories/styles/style-fluent.css?raw';
+import forestInputCss from '../../jb-input/stories/styles/style-forest.css?raw';
+import materialInputCss from '../../jb-input/stories/styles/style-material.css?raw';
+import porcelainInputCss from '../../jb-input/stories/styles/style-porcelain.css?raw';
+import sunsetInputCss from '../../jb-input/stories/styles/style-sunset.css?raw';
+import terminalInputCss from '../../jb-input/stories/styles/style-terminal.css?raw';
+import antDesignCalendarCss from '../../jb-calendar/stories/styles/style-ant-design.css?raw';
+import auroraCalendarCss from '../../jb-calendar/stories/styles/style-aurora.css?raw';
+import bootstrapCalendarCss from '../../jb-calendar/stories/styles/style-bootstrap.css?raw';
+import candyCalendarCss from '../../jb-calendar/stories/styles/style-candy.css?raw';
+import carbonCalendarCss from '../../jb-calendar/stories/styles/style-carbon.css?raw';
+import cupertinoCalendarCss from '../../jb-calendar/stories/styles/style-cupertino.css?raw';
+import fluentCalendarCss from '../../jb-calendar/stories/styles/style-fluent.css?raw';
+import forestCalendarCss from '../../jb-calendar/stories/styles/style-forest.css?raw';
+import materialCalendarCss from '../../jb-calendar/stories/styles/style-material.css?raw';
+import porcelainCalendarCss from '../../jb-calendar/stories/styles/style-porcelain.css?raw';
+import sunsetCalendarCss from '../../jb-calendar/stories/styles/style-sunset.css?raw';
+import terminalCalendarCss from '../../jb-calendar/stories/styles/style-terminal.css?raw';
+import antDesignDateInputCss from './styles/style-ant-design.css?raw';
+import auroraDateInputCss from './styles/style-aurora.css?raw';
+import bootstrapDateInputCss from './styles/style-bootstrap.css?raw';
+import candyDateInputCss from './styles/style-candy.css?raw';
+import carbonDateInputCss from './styles/style-carbon.css?raw';
+import cupertinoDateInputCss from './styles/style-cupertino.css?raw';
+import fluentDateInputCss from './styles/style-fluent.css?raw';
+import forestDateInputCss from './styles/style-forest.css?raw';
+import materialDateInputCss from './styles/style-material.css?raw';
+import porcelainDateInputCss from './styles/style-porcelain.css?raw';
+import sunsetDateInputCss from './styles/style-sunset.css?raw';
+import terminalDateInputCss from './styles/style-terminal.css?raw';
+
+<Meta title="Components/form elements/Inputs/JBDateInput/Styling" />
+
+<Title>Styling</Title>
+
+`JBDateInput` is a composed component. The date input host owns the calendar trigger and popover shell variables, while the inner `JBInput` and `JBCalendar` keep their own reusable styling recipes and APIs.
+
+## Live Gallery
+
+<Story of={StyleStories.Gallery} />
+
+<Source of={StyleStories.Gallery} />
+
+## Common Design Tokens
+
+Use the core theme docs as the source of truth for shared design-system variables:
+
+- [Theme Colors](../../jb-core/theme/stories/colors.mdx) explains the general color palette variables, default colors, customization approaches, and color generation helpers.
+- [Theme Sizes](../../jb-core/theme/stories/sizes.mdx) explains shared size and radius variables.
+- [Theme Custom Galleries](https://javadbat.github.io/design-system/?path=/docs/theme-custom-material--docs) gathers the shared custom style recipes across components.
+
+Date-input recipes should use those common tokens where possible, then compose the existing `JBInput` and `JBCalendar` recipes instead of copying their variable blocks.
+
+## Styling Model
+
+Use four layers when styling date-input examples:
+
+- Common design tokens are documented in [Theme Colors](../../jb-core/theme/stories/colors.mdx) and [Theme Sizes](../../jb-core/theme/stories/sizes.mdx).
+- Reusable example theme packs live in [`docs/styles`](https://github.com/javadbat/design-system/tree/main/docs/styles) and can be shared across components.
+- Component recipe files live in [`modules/jb-date-input/stories/styles`](https://github.com/javadbat/design-system/tree/main/modules/jb-date-input/stories/styles).
+- Input recipes are reused from [`modules/jb-input/stories/styles`](https://github.com/javadbat/design-system/tree/main/modules/jb-input/stories/styles).
+- Calendar recipes are reused from [`modules/jb-calendar/stories/styles`](https://github.com/javadbat/design-system/tree/main/modules/jb-calendar/stories/styles).
+- Public date-input variables use `--jb-date-input-*` on the host and `--jb-popover-*` on `::part(popover)`. Use [JBInput Styling](../../jb-input/stories/Styling.mdx) and [JBCalendar Styling](../../jb-calendar/stories/Styling.mdx) as the source of truth for child component variables.
+
+Each example uses one shared example theme pack from [`docs/styles`](https://github.com/javadbat/design-system/tree/main/docs/styles), one existing `JBInput` recipe, one existing `JBCalendar` recipe, and one small date-input-specific popover shell recipe. The style story applies the child recipe classes to the internal `jb-input` and `jb-calendar` instances for the demo.
+
+## Recommended Customization Path
+
+1. Use `--jb-date-input-*` variables first for the host margin and calendar trigger icon.
+2. Reuse an existing `JBInput` recipe for the text-field layer. See [JBInput Styling](../../jb-input/stories/Styling.mdx) for the full input API.
+3. Style the picker shell by setting `--jb-popover-*` variables on `jb-date-input::part(popover)`.
+4. Reuse an existing `JBCalendar` recipe for the picker content. See [JBCalendar Styling](../../jb-calendar/stories/Styling.mdx) for the full calendar API.
+5. Use common theme variables from [Theme Colors](../../jb-core/theme/stories/colors.mdx) and [Theme Sizes](../../jb-core/theme/stories/sizes.mdx) when the style should align with the design system.
+6. Put reusable theme-pack values in [`docs/styles`](https://github.com/javadbat/design-system/tree/main/docs/styles) only when they should be shared by multiple component demos.
+7. Add a new date-input variable only when a needed internal surface cannot be customized with current public variables or official parts.
+
+## Parts And States
+
+<table>
+  <thead>
+    <tr>
+      <th>Part</th>
+      <th>Element</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>input</code></td><td>Internal <code>jb-input</code></td><td>Use this part for targeted overrides. Prefer reusable recipes and the API in <a href="../../jb-input/stories/Styling.mdx">JBInput Styling</a> for label, field, helper message, border, radius, and input states.</td></tr>
+    <tr><td><code>popover</code></td><td>Internal <code>jb-popover</code></td><td>Use for the exposed picker popover surface when the overlay shell needs targeted styling.</td></tr>
+    <tr><td><code>calendar</code></td><td>Internal <code>jb-calendar</code></td><td>Use this part for targeted picker overrides. Prefer reusable recipes and the API in <a href="../../jb-calendar/stories/Styling.mdx">JBCalendar Styling</a> for layout, navigation, selected day, today, and disabled days.</td></tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Custom State</th>
+      <th>Meaning</th>
+      <th>Example Selector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>disabled</code></td><td>Applied when the date input is disabled.</td><td><code>jb-date-input:state(disabled)::part(input)</code></td></tr>
+    <tr><td><code>invalid</code></td><td>Applied while validation error text is visible.</td><td><code>jb-date-input:state(invalid)::part(input)</code></td></tr>
+  </tbody>
+</table>
+
+## CSS Variables
+
+These variables belong to `JBDateInput` itself. The text field and calendar picker keep their own single source of truth in [JBInput Styling](../../jb-input/stories/Styling.mdx) and [JBCalendar Styling](../../jb-calendar/stories/Styling.mdx).
+
+<table>
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Category</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--jb-date-input-calendar-trigger-width</code></td><td>Size</td><td>Calendar trigger icon slot width.</td></tr>
+    <tr><td><code>--jb-date-input-calendar-trigger-height</code></td><td>Size</td><td>Calendar trigger icon slot height.</td></tr>
+    <tr><td><code>--jb-date-input-calendar-icon-color</code></td><td>Theme/Color</td><td>Calendar trigger icon color.</td></tr>
+    <tr><td><code>--jb-date-input-calendar-icon-color-active</code></td><td>Theme/Color</td><td>Calendar trigger icon color while the picker is open.</td></tr>
+    <tr><td><code>--jb-date-input-margin</code></td><td>Other</td><td>Host component margin.</td></tr>
+    <tr><td><code>--jb-date-input-calendar-trigger-display</code></td><td>Other</td><td>Calendar trigger display value.</td></tr>
+    <tr><td><code>--jb-date-input-popover-z-index</code></td><td>Other</td><td>Z-index used by the internal calendar popover.</td></tr>
+  </tbody>
+</table>
+
+## Starter Recipe
+
+Use this minimal recipe when a product only needs brand alignment across the date-input host and popover shell. Use the linked child component styling pages for the inner input and calendar.
+
+```css
+jb-date-input.brand-date-input {
+  --jb-date-input-calendar-icon-color: #2563eb;
+  --jb-date-input-calendar-icon-color-active: #1d4ed8;
+}
+
+jb-date-input.brand-date-input::part(popover) {
+  --jb-popover-bg-color: #ffffff;
+  --jb-popover-border-radius: 1rem;
+  --jb-popover-padding: 1rem;
+  --jb-popover-z-index: 1000;
+}
+```
+
+## Style Recipes
+
+### Carbon
+
+<Story of={StyleStories.Carbon} />
+
+<Source of={StyleStories.Carbon} />
+
+#### Shared Tokens
+
+<Source code={carbonThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={carbonInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={carbonCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={carbonDateInputCss} language="css" />
+
+### Aurora
+
+<Story of={StyleStories.Aurora} />
+
+<Source of={StyleStories.Aurora} />
+
+#### Shared Tokens
+
+<Source code={auroraThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={auroraInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={auroraCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={auroraDateInputCss} language="css" />
+
+### Forest
+
+<Story of={StyleStories.Forest} />
+
+<Source of={StyleStories.Forest} />
+
+#### Shared Tokens
+
+<Source code={forestThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={forestInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={forestCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={forestDateInputCss} language="css" />
+
+### Sunset
+
+<Story of={StyleStories.Sunset} />
+
+<Source of={StyleStories.Sunset} />
+
+#### Shared Tokens
+
+<Source code={sunsetThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={sunsetInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={sunsetCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={sunsetDateInputCss} language="css" />
+
+### Porcelain
+
+<Story of={StyleStories.Porcelain} />
+
+<Source of={StyleStories.Porcelain} />
+
+#### Shared Tokens
+
+<Source code={porcelainThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={porcelainInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={porcelainCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={porcelainDateInputCss} language="css" />
+
+### Candy
+
+<Story of={StyleStories.Candy} />
+
+<Source of={StyleStories.Candy} />
+
+#### Shared Tokens
+
+<Source code={candyThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={candyInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={candyCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={candyDateInputCss} language="css" />
+
+### Terminal
+
+<Story of={StyleStories.Terminal} />
+
+<Source of={StyleStories.Terminal} />
+
+#### Shared Tokens
+
+<Source code={terminalThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={terminalInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={terminalCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={terminalDateInputCss} language="css" />
+
+### Material
+
+<Story of={StyleStories.Material} />
+
+<Source of={StyleStories.Material} />
+
+#### Shared Tokens
+
+<Source code={materialThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={materialInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={materialCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={materialDateInputCss} language="css" />
+
+### Fluent
+
+<Story of={StyleStories.Fluent} />
+
+<Source of={StyleStories.Fluent} />
+
+#### Shared Tokens
+
+<Source code={fluentThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={fluentInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={fluentCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={fluentDateInputCss} language="css" />
+
+### Bootstrap
+
+<Story of={StyleStories.Bootstrap} />
+
+<Source of={StyleStories.Bootstrap} />
+
+#### Shared Tokens
+
+<Source code={bootstrapThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={bootstrapInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={bootstrapCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={bootstrapDateInputCss} language="css" />
+
+### Cupertino
+
+<Story of={StyleStories.Cupertino} />
+
+<Source of={StyleStories.Cupertino} />
+
+#### Shared Tokens
+
+<Source code={cupertinoThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={cupertinoInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={cupertinoCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={cupertinoDateInputCss} language="css" />
+
+### Ant Design
+
+<Story of={StyleStories.AntDesign} />
+
+<Source of={StyleStories.AntDesign} />
+
+#### Shared Tokens
+
+<Source code={antDesignThemeCss} language="css" />
+
+#### JBInput CSS
+
+<Source code={antDesignInputCss} language="css" />
+
+#### JBCalendar CSS
+
+<Source code={antDesignCalendarCss} language="css" />
+
+#### Date Input Shell CSS
+
+<Source code={antDesignDateInputCss} language="css" />
+
+## Theme File Pattern
+
+Use [Theme Colors](../../jb-core/theme/stories/colors.mdx) and [Theme Sizes](../../jb-core/theme/stories/sizes.mdx) as the common design-token guides. Theme-pack files should keep reusable demo variables in [`docs/styles`](https://github.com/javadbat/design-system/tree/main/docs/styles). Composed components should reuse child component recipes instead of copying their variables into the parent recipe.
+
+```css
+/* https://github.com/javadbat/design-system/blob/main/docs/styles/carbon.css */
+.theme-name-style {
+  /* shared design-system variables */
+}
+
+/* https://github.com/javadbat/design-system/blob/main/modules/jb-input/stories/styles/style-carbon.css */
+.theme-name-input {
+  /* reusable jb-input recipe */
+}
+
+/* https://github.com/javadbat/design-system/blob/main/modules/jb-calendar/stories/styles/style-carbon.css */
+.theme-name-calendar {
+  /* reusable jb-calendar recipe */
+}
+
+/* https://github.com/javadbat/design-system/blob/main/modules/jb-date-input/stories/styles/style-carbon.css */
+.theme-name-date-input {
+  /* date-input host variables */
+}
+
+.theme-name-date-input::part(popover) {
+  /* jb-popover background, radius, padding, and shell treatment */
+}
+
+.theme-name-date-input::part(calendar) {
+  /* surface reset when the popover owns background and shadow */
+}
+```
+
+This keeps common theme tokens reusable, keeps child component recipes as the source of truth, and leaves `JBDateInput` responsible only for the host trigger and popover shell.

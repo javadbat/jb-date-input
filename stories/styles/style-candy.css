@@ -1,0 +1,14 @@
+jb-date-input.candy-style {
+    display: block;
+    width: 100%;
+    --jb-date-input-calendar-icon-color: var(--jb-text-secondary);
+    --jb-date-input-calendar-icon-color-active: var(--jb-focus-color);
+}
+
+jb-date-input.candy-style::part(popover) {
+    --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-background));
+    --jb-popover-border-radius: 2rem;
+    --jb-popover-padding: 1.25rem;
+    --jb-popover-z-index: 1000;
+    filter: drop-shadow(0 1rem 2rem oklch(70% 0.18 345 / 0.22));
+}

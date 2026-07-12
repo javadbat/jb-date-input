@@ -1,0 +1,14 @@
+jb-date-input.sunset-style {
+    display: block;
+    width: 100%;
+    --jb-date-input-calendar-icon-color: var(--jb-text-secondary);
+    --jb-date-input-calendar-icon-color-active: var(--jb-focus-color);
+}
+
+jb-date-input.sunset-style::part(popover) {
+    --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-surface));
+    --jb-popover-border-radius: 1.6rem;
+    --jb-popover-padding: 1.25rem;
+    --jb-popover-z-index: 1000;
+    filter: drop-shadow(0 1rem 2.25rem oklch(25% 0.1 330 / 0.24));
+}

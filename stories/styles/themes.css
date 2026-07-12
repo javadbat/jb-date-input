@@ -1,10 +1,22 @@
-.dark-theme{
+.dark-theme {
+  color: #c4c2d6;
+}
+
+.dark-theme-date-input {
+  --jb-date-input-calendar-icon-color: #c4c2d6;
+  --jb-date-input-calendar-icon-color-active: #ff9900;
+}
+
+.dark-theme-date-input::part(popover) {
   --jb-popover-bg-color: rgb(53, 46, 46);
-  --jb-input-border-radius:0.375rem;
-  --jb-input-bg-color:#0E1418;
-  --jb-input-border-bottom-width:1px;
-  --jb-input-value-color:#C4C2D6;
-  --jb-calendar-color:#C4C2D6;
-  --jb-calendar-arrow-fill-color:#FF9900;
-  --jb-calendar-arrow-button-bg-color:rgb(53, 46, 46);
+  --jb-popover-border-radius: 1.25rem;
+  --jb-popover-padding: 1.25rem;
+  filter: drop-shadow(0 0.75rem 2rem oklch(0% 0 0 / 0.28));
+}
+
+.dark-theme-date-input::part(calendar) {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: inherit;
 }

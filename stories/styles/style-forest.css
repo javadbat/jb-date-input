@@ -1,0 +1,14 @@
+jb-date-input.forest-style {
+    display: block;
+    width: 100%;
+    --jb-date-input-calendar-icon-color: var(--jb-text-secondary);
+    --jb-date-input-calendar-icon-color-active: var(--jb-focus-color);
+}
+
+jb-date-input.forest-style::part(popover) {
+    --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-surface));
+    --jb-popover-border-radius: 1.25rem;
+    --jb-popover-padding: 1.25rem;
+    --jb-popover-z-index: 1000;
+    filter: drop-shadow(0 0.75rem 2rem oklch(10% 0.04 150 / 0.22));
+}

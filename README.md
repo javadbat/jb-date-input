@@ -368,6 +368,8 @@ dateInput.elements.popover.overflowDom = document.querySelector('.modal-body');
 
 ## CSS parts and variables
 
+For complete styling guidance, live examples, and copyable style recipes, see [Styling](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-styling).
+
 | part | description |
 | --- | --- |
 | `input` | Internal `jb-input`. |
@@ -379,17 +381,6 @@ dateInput.elements.popover.overflowDom = document.querySelector('.modal-body');
 | `disabled` | Applied when `disabled` is true. |
 | `invalid` | Applied while a validation error is visible. |
 
-| CSS variable name | description |
-| --- | --- |
-| `--jb-date-input-margin` | Host component margin. |
-| `--jb-date-input-calendar-trigger-display` | Calendar trigger display value. |
-| `--jb-date-input-calendar-trigger-width` | Calendar trigger width. |
-| `--jb-date-input-calendar-trigger-height` | Calendar trigger height. |
-| `--jb-date-input-calendar-icon-color` | Calendar icon color. |
-| `--jb-date-input-calendar-icon-color-active` | Calendar icon color while calendar is open. |
-
-Internal `jb-input`, `jb-calendar`, and `jb-popover` CSS variables also apply.
-
 ```css
 jb-date-input {
   --jb-date-input-margin: 1rem 0;
@@ -398,6 +389,18 @@ jb-date-input {
 
 jb-date-input::part(input) {
   --jb-input-border-radius: 0.5rem;
+}
+
+jb-date-input::part(popover) {
+  --jb-popover-bg-color: #ffffff;
+  --jb-popover-border-radius: 1rem;
+  --jb-popover-padding: 1rem;
+  --jb-popover-z-index: 1000;
+}
+
+jb-date-input::part(calendar) {
+  --jb-calendar-day-bg-color-selected: #2563eb;
+  --jb-calendar-day-color-selected: #ffffff;
 }
 
 jb-date-input:state(invalid)::part(input) {

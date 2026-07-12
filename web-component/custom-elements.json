@@ -654,6 +654,10 @@
             {
               "name": "--jb-date-input-calendar-icon-color-active",
               "description": "Calendar icon color while the calendar is open."
+            },
+            {
+              "name": "--jb-date-input-popover-z-index",
+              "description": "Z-index used by the internal calendar popover."
             }
           ],
           "cssStates": [

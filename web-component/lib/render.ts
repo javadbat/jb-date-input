@@ -1,13 +1,13 @@
 export function renderHTML(): string {
   return /* html */ `
     <div class="jb-date-input-web-component">
-        <jb-input disable-auto-validation part="input">
+        <jb-input disable-auto-validation part="jb-input" exportparts="label, input-box, input, message">
             <div slot="start-section">
                 <slot name="inline-start-section"></slot>
             </div>
             <div class="date-input-end-section" slot="end-section">
                 <div class="calendar-trigger" tabindex="0" >
-                    <slot name="calendar-trigger-icon">
+                    <slot name="calendar-trigger-icon" >
                         <svg xmlns="http://www.w3.org/2000/svg" id="CalendarIcon" viewBox="0 0 44.97 44.46">
                             <defs>
                                 <style></style>
@@ -22,8 +22,8 @@ export function renderHTML(): string {
                 <slot name="inline-end-section"></slot>
             </div>
         </jb-input>
-        <jb-popover part="popover">
-            <jb-calendar tabindex="0" part="calendar"></jb-calendar>
+        <jb-popover part="popover" exportparts="content: popover-content">
+            <jb-calendar tabindex="0" part="calendar" exportparts="root: calendar-root, navigator, arrow-button, prev-button, navigator-title, navigator-month, navigator-year, navigator-year-range, next-button, calendar: calendar-calendar, day-section, week-day-wrapper, week-day, month-day-container, month-day-wrapper, prev-month-day-wrapper, empty-day, day, status-point, day-button, day-number, today-day, current-month-day-wrapper, next-month-day-wrapper, month-section, month, month-name, year-section, years-wrapper, prev-years-wrapper, year, year-number, current-years-wrapper, next-years-wrapper, swipe-up, swipe-up-icon, swipe-up-text"/>
         </jb-popover>
     </div>
   `;

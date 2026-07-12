@@ -1,0 +1,15 @@
+jb-date-input.cupertino-style {
+    display: block;
+    width: 100%;
+    --jb-date-input-calendar-icon-color: #8e8e93;
+    --jb-date-input-calendar-icon-color-active: var(--jb-focus-color);
+}
+
+jb-date-input.cupertino-style::part(popover) {
+    --jb-popover-bg-color: var(--jb-calendar-surface-bg, oklch(99% 0.01 250 / 0.95));
+    --jb-popover-border-radius: 1.25rem;
+    --jb-popover-padding: 1.25rem;
+    --jb-popover-z-index: 1000;
+    filter: drop-shadow(0 1rem 2rem oklch(0% 0 0 / 0.16));
+    backdrop-filter: blur(0.75rem);
+}
