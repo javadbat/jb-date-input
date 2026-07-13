@@ -2,19 +2,11 @@
     display: block;
 }
 
-:host(:focus),
-:host(:focus-visible) {
-    outline: none;
-}
-
 .jb-date-input-web-component {
     width: 100%;
     margin: var(--margin);
     position: relative;
 
-    &:focus-visible {
-        outline: none;
-    }
     [slot="start-section"]{
         display: contents;
     }
@@ -27,6 +19,11 @@
             height: var(--calendar-trigger-height);
             cursor: pointer;
             object-fit: contain;
+
+            &:focus-visible {
+                outline: 2px solid var(--jb-date-input-focus-ring-color, Highlight);
+                outline-offset: 2px;
+            }
 
             &.--active {
                 svg {

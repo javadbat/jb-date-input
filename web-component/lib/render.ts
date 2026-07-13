@@ -1,3 +1,6 @@
+import { i18n } from "jb-core/i18n";
+import { dictionary } from "./i18n";
+
 export function renderHTML(): string {
   return /* html */ `
     <div class="jb-date-input-web-component">
@@ -6,9 +9,9 @@ export function renderHTML(): string {
                 <slot name="inline-start-section"></slot>
             </div>
             <div class="date-input-end-section" slot="end-section">
-                <div class="calendar-trigger" tabindex="0" >
+                <div class="calendar-trigger" tabindex="0" role="button" aria-label="${dictionary.get(i18n, "openCalendar")}" aria-haspopup="dialog" aria-expanded="false">
                     <slot name="calendar-trigger-icon" >
-                        <svg xmlns="http://www.w3.org/2000/svg" id="CalendarIcon" viewBox="0 0 44.97 44.46">
+                        <svg xmlns="http://www.w3.org/2000/svg" id="CalendarIcon" viewBox="0 0 44.97 44.46" aria-hidden="true">
                             <defs>
                                 <style></style>
                             </defs>

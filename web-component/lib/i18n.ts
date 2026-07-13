@@ -2,7 +2,8 @@ import {JBDictionary} from 'jb-core/i18n';
 export type JBDateInputDictionary = {
   minRangeViolation:string,
   maxRangeViolation:string,
-  required:string
+  required:string,
+  openCalendar:string
 }
 
 /**
@@ -21,10 +22,12 @@ export const dictionary = new JBDictionary<JBDateInputDictionary>({
     minRangeViolation: 'تاریخ انتخابی کمتر از بازه مجاز است',
     maxRangeViolation: 'تاریخ انتخابی بیشتر از بازه مجاز است',
     required:'لطفا مقدار تاریخ را کامل وارد کنید',
+    openCalendar:'باز کردن تقویم',
   },
   "en":{
     minRangeViolation:"Your selected date is before valid date range",
     maxRangeViolation:"Your selected date is after valid date range",
-    required:"Please fill date completely"
+    required:"Please fill date completely",
+    openCalendar:"Open calendar"
   }
 });

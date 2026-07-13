@@ -239,9 +239,13 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
       this.elements.calendar.setupStyleBaseOnCssDirection();
       this.elements.popover.open();
       this.elements.calendarTriggerButton.classList.add('--active');
+      this.elements.calendarTriggerButton.setAttribute("aria-expanded", "true");
+      if (this.#internals) this.#internals.ariaExpanded = "true";
     } else {
       this.elements.popover.close();
       this.elements.calendarTriggerButton.classList.remove('--active');
+      this.elements.calendarTriggerButton.setAttribute("aria-expanded", "false");
+      if (this.#internals) this.#internals.ariaExpanded = "false";
       // will reset calendar value to seated value of date-input
       this.#updateCalendarView();
     }
@@ -401,6 +405,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (typeof this.attachInternals == "function") {
       //some browser dont support attachInternals
       this.#internals = this.attachInternals();
+      this.#internals.role = "combobox";
+      this.#internals.ariaHasPopup = "dialog";
+      this.#internals.ariaExpanded = "false";
     }
     this.#initWebComponent();
     // js standard input element to more associate it with form element
