@@ -9,7 +9,7 @@ export function renderHTML(): string {
                 <slot name="inline-start-section"></slot>
             </div>
             <div class="date-input-end-section" slot="end-section">
-                <div class="calendar-trigger" tabindex="0" role="button" aria-label="${dictionary.get(i18n, "openCalendar")}" aria-haspopup="dialog" aria-expanded="false">
+                <button class="calendar-trigger" type="button" aria-label="${dictionary.get(i18n, "openCalendar")}" aria-haspopup="dialog" aria-expanded="false">
                     <slot name="calendar-trigger-icon" >
                         <svg xmlns="http://www.w3.org/2000/svg" id="CalendarIcon" viewBox="0 0 44.97 44.46" aria-hidden="true">
                             <defs>
@@ -21,7 +21,7 @@ export function renderHTML(): string {
                             </g>
                         </svg>
                     </slot>
-                </div>
+                </button>
                 <slot name="inline-end-section"></slot>
             </div>
         </jb-input>

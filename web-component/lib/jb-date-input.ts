@@ -77,6 +77,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   set disabled(value: boolean) {
     this.#disabled = value;
     this.elements.input.disabled = value;
+    this.elements.calendarTriggerButton.disabled = value;
     if (value) {
       this.#internals?.states?.add("disabled");
       this.#internals!.ariaDisabled = "true";

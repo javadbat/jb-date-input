@@ -14,10 +14,16 @@
         display: flex;
         gap:0.5rem;
         .calendar-trigger {
+            all: unset;
+            box-sizing: border-box;
             display: var(--calendar-trigger-display, block);
             width: var(--calendar-trigger-width);
             height: var(--calendar-trigger-height);
             cursor: pointer;
+
+            &:disabled {
+                cursor: default;
+            }
             object-fit: contain;
 
             &:focus-visible {

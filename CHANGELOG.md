@@ -12,6 +12,7 @@
 
 ### Changed
 
+- The calendar trigger now uses a native button and follows the date input's disabled state.
 - Standardized `invalid` custom-state and `ariaInvalid` updates in validation display and cleanup callbacks.
 - Added the React `initialValue` prop and forwarded `value` and `initialValue` directly as React 19 custom-element properties.
 - Updated docs and stories to use renamed `jb-input` and `jb-calendar` CSS variables.
