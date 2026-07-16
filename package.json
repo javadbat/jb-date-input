@@ -41,6 +41,8 @@
     "web-component/custom-elements.json",
     "web-component/lib/",
     "web-component/dist/",
+    "module/",
+    "module/dist/",
     "react/",
     "react/dist/"
   ],
@@ -53,6 +55,21 @@
     "url": "https://github.com/javadbat/jb-date-input"
   },
   "types": "./web-component/dist/jb-date-input.d.ts",
+  "exports": {
+    ".": {
+      "types": "./web-component/dist/jb-date-input.d.ts",
+      "default": "./index.js"
+    },
+    "./module": {
+      "types": "./module/dist/index.d.ts",
+      "default": "./module/main.js"
+    },
+    "./react": {
+      "types": "./react/dist/JBDateInput.d.ts",
+      "default": "./react/main.js"
+    },
+    "./*": "./*"
+  },
   "dependencies": {
     "date-fns": "^4.1.0",
     "date-fns-jalali": "^4.1.0-0",
