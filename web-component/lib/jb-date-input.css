@@ -51,7 +51,6 @@
         }
     }
     jb-popover{
-        --jb-popover-top: 4rem;
         --jb-popover-z-index: var(--calendar-popover-z-index);
         position: relative;
         z-index: var(--calendar-popover-z-index);

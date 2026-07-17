@@ -227,7 +227,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return this.elements.input.value;
   }
   set #inputValue(value: string) {
-    this.elements.input.value = value;
+    // it may be called before input is even initialized.
+    if(this.elements.input.value !== undefined){
+      this.elements.input.value = value;
+    }
   }
   get showCalendar() {
     return this.#showCalendar;
@@ -496,9 +499,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #initProp() {
     this.#waitForComponentsLoad().then(() => {
       const valueAttribute = this.getAttribute('value');
-      const valueToInitialize = valueAttribute !== null ? valueAttribute : this.value;
       this.#setValueObjNull();
-      this.value = valueToInitialize;
+      if(valueAttribute){
+        this.value = valueAttribute;
+      }
       this.#callOnInitEvent();
     });
   }
@@ -674,6 +678,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return event.defaultPrevented;
   }
   #onInputBeforeInput(e: InputEvent) {
+
     const isPrevented = this.#dispatchBeforeInputEvent(e);
     if (isPrevented) {
       return;
@@ -1028,10 +1033,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.dispatchEvent(event);
   }
   #onCalendarBlur(e: FocusEvent) {
-    const focusedElement = e.relatedTarget;
-    if (focusedElement !== this.elements.input && focusedElement !== this.elements.calendarTriggerButton) {
+    const focusedElements = e.composedPath();
+    if (!focusedElements.includes(this.elements.input) && !focusedElements.includes(this.elements.calendarTriggerButton) && !focusedElements.includes(this.elements.calendar)) {
       this.showCalendar = false;
-
     }
   }
   #onPopoverClose() {

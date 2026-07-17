@@ -120,6 +120,7 @@ export class DateFactory {
    * @description use when user want component value and convert valueObject to user formatted value string base on format and value type
    */
   getDateValueStringFromValueObject(valueObject: JBDateInputValueObject, type = this.valueType): string {
+    //TODO: handle null value
     //this function convert inputted date to expected format base on valueType
     const emptyYearString = '0000';
     const emptyMonthString = '00';
