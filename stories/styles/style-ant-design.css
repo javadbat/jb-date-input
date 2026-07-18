@@ -7,8 +7,8 @@ jb-date-input.ant-design-style {
 
 jb-date-input.ant-design-style::part(popover) {
     --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-surface));
-    --jb-popover-border-radius: 0.75rem;
-    --jb-popover-padding: 1rem;
+    --jb-popover-border-radius: 0.5rem;
+    --jb-popover-padding: 0;
     --jb-popover-z-index: 1000;
     filter: drop-shadow(0 0.375rem 1rem oklch(0% 0 0 / 0.12));
 }

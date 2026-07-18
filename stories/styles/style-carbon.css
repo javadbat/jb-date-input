@@ -8,7 +8,14 @@ jb-date-input.carbon-style {
 jb-date-input.carbon-style::part(popover) {
     --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-surface));
     --jb-popover-border-radius: 0;
-    --jb-popover-padding: 1.25rem;
+    --jb-popover-padding: 1rem;
+    --jb-popover-margin-top: 0.5rem;
+    --jb-popover-back-bg-color: rgb(0 0 0 / 0.58);
     --jb-popover-z-index: 1000;
-    filter: drop-shadow(0 0.75rem 1.5rem oklch(0% 0 0 / 0.26));
+    --jb-popover-box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 0.28);
+}
+
+jb-date-input.carbon-style::part(popover-content) {
+    overflow: hidden;
+    border: 1px solid var(--jb-border-color);
 }
