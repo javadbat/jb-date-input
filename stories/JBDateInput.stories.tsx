@@ -273,17 +273,6 @@ export const OverflowWithinParent: Story = {
   }
 };
 
-export const DarkMode: Story = {
-  render: () => {
-    return (
-      <div className="dark-theme">
-        <h1>dark mode test</h1>
-        <DarkModeDateInput />
-      </div>
-    );
-  }
-};
-
 export const withError: Story = {
   args: {
     label: "with default error",
@@ -464,6 +453,7 @@ export const JalaliTest: Story = {
           <br /><br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
           <br /><br />Your chosen date is: {value}
           <br /><JBButton onClick={() => { valueSetter("1400-06-18T00:00:00.000Z"); }}>set value to 1400-06-18T00:00:00.000Z</JBButton>
+          <br /><JBButton onClick={() => { valueSetter("1399/08/09"); }}>set value to 1399/08/09</JBButton>
         </div>
         <h3>Center Aligned</h3>
         <div style={({ '--jb-date-input-text-align': 'center' } as any)}>
@@ -654,7 +644,7 @@ export const Headless: Story = {
 export const WithCustomIcon: Story = {
   render: (args) => (
     <JBDateInput {...args}>
-      <div slot="calendar-trigger-icon">
+      <div slot="calendar-trigger-icon" style={{height:'100%', "aspectRatio":"1"}}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           version="1.1"

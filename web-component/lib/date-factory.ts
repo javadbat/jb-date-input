@@ -530,8 +530,9 @@ export class DateFactory {
     }
     return DateFactory.getDateFromGregorian(year, month, day, hour,minute,second,millisecond);
   }
-  static getDateFromGregorian(year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number): Date {
-    return new Date(year, month - 1, day, hour, minute, second, millisecond);
+  static getDateFromGregorian(year: number, month: number, day: number, hour: number = 0, minute: number = 0, second: number = 0, millisecond: number = 0): Date {
+    const date = new Date(year, month - 1, day, hour, minute, second, millisecond);
+    return date
   }
   static getDateFromJalali(year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number): Date {
     const date = newDate(year, month - 1, day, hour, minute, second, millisecond);
