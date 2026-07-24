@@ -36,7 +36,7 @@
     --jb-input-value-color:#434343;
     --jb-input-value-font-size:1.3em;
     --jb-popover-border-radius:0;
-    --jb-calendar-arrow-button-border-radius:0;
+    --jb-button-border-radius:0;
   }
   .ltr-dir{
     direction: ltr;
