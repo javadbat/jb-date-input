@@ -73,17 +73,17 @@
   "dependencies": {
     "date-fns": "^4.1.0",
     "date-fns-jalali": "^4.1.0-0",
-    "jb-calendar": ">=5.0.2",
-    "jb-popover":">=1.13.0",
-    "jb-validation":">=1.0.0",
-    "jb-input":">=3.17.0",
+    "jb-calendar": "^5.0.2",
+    "jb-popover":"^1.13.0",
+    "jb-validation":"^1.0.0",
+    "jb-input":"^3.17.0",
     "jb-core":"0.30.0"
   },
   "devDependencies": {
-    "jb-form":">=0.11.0"
+    "jb-form":"^0.11.0"
   },
   "peerDependencies": {
     "tslib": "^2.8.1",
-    "react":">=19.0.0"
+    "react":"^19.0.0"
   }
 }

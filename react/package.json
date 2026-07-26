@@ -37,7 +37,7 @@
     "url": "https://github.com/javadbat/jb-date-input-react"
   },
   "dependencies": {
-    "jb-date-input": ">=5.1.0",
-    "jb-core":">=0.4.0"
+    "jb-date-input": "^5.1.0",
+    "jb-core":"^0.4.0"
   }
 }
