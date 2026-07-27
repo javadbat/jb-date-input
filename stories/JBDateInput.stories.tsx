@@ -32,6 +32,165 @@ export const Normal: Story = {
     label: "date",
   }
 };
+export const InitialValue: Story = {
+  render: (args) => {
+    const formRef = useRef<HTMLFormElement>(null);
+    return (
+      <form ref={formRef}>
+        <JBDateInput {...args} />
+        <JBButton onClick={() => formRef.current?.reset()}>Reset</JBButton>
+      </form>
+    );
+  },
+  args: {
+    label: 'initialValueTest',
+    message: 'An initial value should be set by default',
+    initialValue: '2024-02-29T00:00:00.000Z',
+    inputType: 'GREGORIAN',
+  },
+  play: async ({ canvasElement, args }) => {
+    const dateInput = getDateInput(canvasElement);
+    const input = getNativeInput(dateInput);
+    const resetButton = canvasElement.querySelector('jb-button')?.shadowRoot?.querySelector<HTMLButtonElement>('button');
+
+    expect(resetButton).toBeTruthy();
+
+    await waitFor(() => {
+      expect(dateInput.initialValue).toBe(args.initialValue);
+      expect(dateInput.value).toBe(args.initialValue);
+      expect(input.value).not.toBe('');
+      expect(dateInput.isDirty).toBe(false);
+    });
+
+    const calendar = getCalendar(dateInput);
+    dateInput.addEventListener('change', (event) => event.preventDefault(), { once: true });
+    calendar.data.selectedYear = 2024;
+    calendar.data.selectedMonth = 3;
+    await userEvent.click(getCalendarDay(calendar, 2));
+
+    await waitFor(() => {
+      // A canceled calendar selection restores both date and the internal
+      // assignment latch, leaving later baseline updates effective.
+      expect(dateInput.value).toBe(args.initialValue);
+      expect(dateInput.isDirty).toBe(false);
+    });
+
+    dateInput.initialValue = '2024-03-01T00:00:00.000Z';
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe('2024-03-01T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(false);
+    });
+
+    // Invalid Date objects follow a separate validation path from strings.
+    dateInput.value = new Date(Number.NaN);
+
+    // Rejected date strings must leave the clean initialization state intact.
+    dateInput.value = 'invalid-date';
+    dateInput.initialValue = '2024-03-03T00:00:00.000Z';
+
+    await waitFor(() => {
+      expect(dateInput.initialValue).toBe('2024-03-03T00:00:00.000Z');
+      expect(dateInput.value).toBe('2024-03-03T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(false);
+    });
+
+    dateInput.value = '2024-03-02T00:00:00.000Z';
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe('2024-03-02T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(true);
+    });
+
+    dateInput.initialValue = null;
+
+    await waitFor(() => {
+      expect(dateInput.initialValue).toBeNull();
+      expect(dateInput.value).toBe('2024-03-02T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(true);
+    });
+
+    await userEvent.click(resetButton!);
+
+    await waitFor(() => {
+      // The date component serializes its empty GREGORIAN value canonically.
+      expect(dateInput.value).toBe('0000-00-00T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(false);
+    });
+
+    dateInput.value = '2025-03-20T00:00:00.000Z';
+    dateInput.initialValue = '2026-03-20T00:00:00.000Z';
+
+    await waitFor(() => {
+      expect(dateInput.initialValue).toBe('2026-03-20T00:00:00.000Z');
+      expect(dateInput.value).toBe('2025-03-20T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(true);
+    });
+
+    await userEvent.click(resetButton!);
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe('2026-03-20T00:00:00.000Z');
+      expect(dateInput.initialValue).toBe(dateInput.value);
+      expect(dateInput.isDirty).toBe(false);
+    });
+  },
+};
+export const InitialValueDoesNotOverrideValue: Story = {
+  args: {
+    initialValue: '2024-02-29T00:00:00.000Z',
+    value: '2025-03-20T00:00:00.000Z',
+    inputType: 'GREGORIAN',
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe('2025-03-20T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(true);
+    });
+  },
+};
+export const ExplicitNullValueDoesNotFallBackToInitialValue: Story = {
+  args: {
+    initialValue: '2024-02-29T00:00:00.000Z',
+    value: null,
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe('0000-00-00T00:00:00.000Z');
+      expect(dateInput.isDirty).toBe(true);
+    });
+  },
+};
+export const RejectedTimestampDoesNotBlockInitialValue: Story = {
+  args: {
+    valueType: 'TIME_STAMP',
+    inputType: 'GREGORIAN',
+    initialValue: '1709164800000',
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe('1709164800000');
+      expect(dateInput.isDirty).toBe(false);
+    });
+
+    dateInput.value = 'not-a-timestamp';
+    dateInput.initialValue = '1709251200000';
+
+    await waitFor(() => {
+      // A non-finite timestamp is rejected as a live assignment and therefore
+      // cannot block the next initialValue from seeding the input.
+      expect(dateInput.initialValue).toBe('1709251200000');
+      expect(dateInput.value).toBe('1709251200000');
+      expect(dateInput.isDirty).toBe(false);
+    });
+  },
+};
 export const Jalali: Story = {
   args: {
     label: "jalali date",
@@ -68,6 +227,13 @@ export const Gregorian: Story = {
       expect(dateInput.showCalendar).toBe(true);
       expect(getCalendar(dateInput).inputType).toBe('GREGORIAN');
       expect(dateInput.inputValue).toBe('2024/02/29');
+    });
+
+    const typedValue = dateInput.value;
+    dateInput.initialValue = '2025-03-20T00:00:00.000Z';
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe(typedValue);
     });
   }
 };
@@ -561,6 +727,13 @@ export const TimeStampTest: Story = {
     await waitFor(() => {
       expect(dateInput.value).toMatch(/^\d+$/);
       expect(Number(dateInput.value)).toBeGreaterThan(0);
+    });
+
+    const selectedValue = dateInput.value;
+    dateInput.initialValue = '0';
+
+    await waitFor(() => {
+      expect(dateInput.value).toBe(selectedValue);
     });
   }
 }

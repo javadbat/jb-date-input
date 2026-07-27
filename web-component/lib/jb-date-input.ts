@@ -159,13 +159,46 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return value;
   }
   set value(value: string | Date | null) {
+    // Parsing failures leave the live date unchanged, so they must not prevent
+    // a later initialValue from initializing this still-clean component.
+    if (this.#isAcceptedDateValue(value)) {
+      this.#isDirty = true;
+    }
     this.#setDateValue(value);
     this.#updateInputTextFromValue();
   }
+  #isAcceptedDateValue(value: string | Date | null): boolean {
+    if (value === null || value === "") {
+      return true;
+    }
+    if (value instanceof Date) {
+      return !Number.isNaN(value.getTime());
+    }
+    if (this.#dateFactory.valueType === "TIME_STAMP") {
+      return Number.isFinite(Number(value));
+    }
+    const parsedValue = this.#dateFactory.getDateObjectValueBaseOnFormat(value);
+    return Boolean(parsedValue.year && parsedValue.month && parsedValue.day);
+  }
   //set an empty date value as a default initial value
-  initialValue: string | null = null;
+  #initialValue: string | null = null;
+  // Tracks whether the live value has been explicitly set. This is separate
+  // from the public isDirty comparison against initialValue.
+  #isDirty = false;
+  get initialValue() {
+    return this.#initialValue;
+  }
+  set initialValue(value: string | null) {
+    this.#initialValue = value ?? null;
+    if (!this.#isDirty) {
+      this.#setDateValue(this.#initialValue);
+      this.#updateInputTextFromValue();
+    }
+  }
   formResetCallback() {
-    this.value = this.initialValue;
+    this.#isDirty = false;
+    this.#setDateValue(this.initialValue);
+    this.#updateInputTextFromValue();
     this.#validation.reset();
     this.elements.input.validation.reset();
     this.#internals?.setValidity({}, '');
@@ -499,8 +532,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   #initProp() {
     this.#waitForComponentsLoad().then(() => {
       const valueAttribute = this.getAttribute('value');
-      this.#setValueObjNull();
-      if(valueAttribute){
+      if(valueAttribute !== null){
         this.value = valueAttribute;
       }
       this.#callOnInitEvent();
@@ -685,6 +717,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     }
 
     const target = e.target as JBInputWebComponent;
+    const previousInputValue = this.#sInputValue;
     //check if we are in placeholder mode we update or input text to standard mode
     if (e.data) {
       if (this.placeholder && target.value === "") {
@@ -713,6 +746,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (this.placeholder && target.value == emptyInputValueString) {
       this.#inputValue = "";
     }
+    if (this.#sInputValue !== previousInputValue) {
+      this.#isDirty = true;
+    }
     //because we preventDefault before input input will never be called so have to call it after we manually input all chars
     //TODO: make it cancellable
     this.#onInputInput(e);
@@ -740,6 +776,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const target = (e.target as JBInputWebComponent);
     if (e.keyCode == 38 || e.keyCode == 40) {
       //up and down button
+      this.#isDirty = true;
       const caretPos = target.selectionStart!;
       if (caretPos < 5) {
         e.keyCode == 38 ? this.#addYear(1) : this.#addYear(-1);
@@ -1146,6 +1183,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     const { year, month, day } = target.value;
     if (year && month && day) {
       const prevValueDate = structuredClone(this.valueInDate);
+      const wasDirty = this.#isDirty;
+      this.#isDirty = true;
       const { hour, minute, millisecond, second } = this.#valueObject.time;
       this.#setDateValueFromNumberBaseOnInputType(year, month, day, hour, minute, second, millisecond);
       this.#updateInputTextFromValue();
@@ -1157,6 +1196,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         e.preventDefault();
         this.#setDateValueFromDate(prevValueDate);
         this.#updateInputTextFromValue();
+        this.#isDirty = wasDirty;
       }
     }
 

@@ -36,8 +36,9 @@ export const JBDateInput = forwardRef((props: Props, ref) => {
   const {size, label, inputType, valueType,calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,initialValue,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList,value, onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect, ...otherProps} = props;
   useJBDateInputAttribute(element,{calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList});
   useEvents(element,{onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect});
+  const valueProps = value === undefined ? {} : { value: value ?? null };
   return (
-    <jb-date-input value={value ?? null} initialValue={initialValue ?? null} size={size} label={label} value-type={valueType ? valueType : 'GREGORIAN'} ref={element} input-type={inputType ? inputType : 'JALALI'} {...otherProps}>
+    <jb-date-input value-type={valueType ? valueType : 'GREGORIAN'} input-type={inputType ? inputType : 'JALALI'} initialValue={initialValue ?? null} {...valueProps} size={size} label={label} ref={element} {...otherProps}>
       {props.children}
     </jb-date-input>
   );

@@ -96,6 +96,7 @@ import 'jb-date-input';
 | name | type | readonly | description |
 | --- | --- | --- | --- |
 | `value` | `string` | no | Canonical value submitted with forms. Set with `string`, `Date`, or `null`. |
+| `initialValue` | `string \| null` | no | Default and reset value. It initializes `value` until the live value is explicitly set. |
 | `valueInDate` | `Date \| null` | yes | Current complete value as a JavaScript `Date`, or `null` when empty/incomplete. |
 | `inputValue` | `string` | yes | Visible typed text in `YYYY/MM/DD` display format. |
 | `inputType` | `'GREGORIAN' \| 'JALALI'` | no | Date system used by the input UI and calendar. |
