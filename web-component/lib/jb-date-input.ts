@@ -203,6 +203,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.elements.input.validation.reset();
     this.#internals?.setValidity({}, '');
   }
+  formDisabledCallback(disabled: boolean) {
+    this.disabled = disabled;
+  }
   get isDirty() {
     //when initial value is null mean we calculate and build value string base on format, value type , etc on every check to make sure is dirty works well on empty value in every scenario
     return this.value !== (this.initialValue ?? this.#dateFactory.getDateValueStringFromValueObject(getEmptyValueObject(), this.valueType));

@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added the standard `formDisabledCallback()` to synchronize the component disabled state with disabled forms and fieldsets.
 - Added Storybook interaction coverage for initial-value initialization, live-value precedence, explicit `null`, and native form reset.
 
 ### Changed
