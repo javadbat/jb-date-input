@@ -245,9 +245,9 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     this.#placeholder = value;
     this.#internals!.ariaPlaceholder = value;
     if (value !== null) {
-      this.elements.input.elements.input.placeholder = value;
+      this.elements.input.setAttribute("placeholder",value);
     } else {
-      this.elements.input.elements.input.placeholder = "";
+      this.elements.input.removeAttribute("placeholder")
     }
     this.#updateInputTextFromValue();
   }
