@@ -1134,7 +1134,7 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     if (this.#internals) this.#internals.ariaInvalid = "true";
   }
   clearValidationError() {
-    this.elements.input.clearValidationError();
+    this.elements.input?.clearValidationError?.();
     this.#internals?.states?.delete("invalid");
     if (this.#internals) this.#internals.ariaInvalid = "false";
 

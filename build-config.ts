@@ -8,7 +8,7 @@ export const webComponentList: WebComponentBuildConfig[] = [
     umdName: "JBDateInputModule",
     external: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core", "jb-core/theme","jb-core/i18n"],
     //because date-fns dont have any umd module export i have to do this so it doesn't exclude in umd build
-    umdIncludes: ["date-fns", "date-fns-jalali", "jb-validation", "jb-core", "jb-core/theme","jb-core/i18n"],
+    umdIncludes: ["date-fns", "date-fns-jalali"],
     dir:"./module",
     
   },
@@ -19,8 +19,17 @@ export const webComponentList: WebComponentBuildConfig[] = [
     tsConfigPath: "./web-component/tsconfig.json",
     umdName: "JBDateInput",
     external: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation", "jb-core", "jb-core/theme", "jb-core/i18n"],
+    globals:{
+      "jb-calendar":"JBCalendar",
+      "jb-input":"JBInput",
+      "jb-popover":"JBPopover",
+      "jb-validation":"JBValidation",
+      "jb-core":"JBCore",
+      "jb-core/theme":"JBCoreTheme",
+      "jb-core/i18n":"JBCoreI18n"
+    },
     //because date-fns dont have any umd module export i have to do this so it doesn't exclude in umd build
-    umdIncludes: ["date-fns", "date-fns-jalali", "jb-calendar", "jb-input", "jb-popover", "jb-validation", "jb-core", "jb-core/i18n", "jb-core/theme"],
+    umdIncludes: ["date-fns", "date-fns-jalali"],
   },
 ];
 export const reactComponentList: ReactComponentBuildConfig[] = [
