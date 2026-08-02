@@ -32,6 +32,54 @@ export const Normal: Story = {
     label: "date",
   }
 };
+
+export const ImperativeMethods: Story = {
+  args: {
+    label: "Imperative API",
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    const input = getNativeInput(dateInput);
+    const calendar = getCalendar(dateInput);
+
+    await waitFor(() => expect(dateInput.elements.input).toBeTruthy());
+
+    dateInput.setFormat('YYYY/MM/DD');
+    dateInput.value = '2024/01/15';
+    dateInput.setMinDate('2024/01/01');
+    dateInput.setMaxDate('2024/12/31');
+
+    expect(dateInput.valueFormat).toBe('YYYY/MM/DD');
+    expect(dateInput.value).toBe('2024/01/15');
+    expect(dateInput.dateRestrictions.min).toBeInstanceOf(Date);
+    expect(dateInput.dateRestrictions.max).toBeInstanceOf(Date);
+    expect(dateInput.getDateValue('GREGORIAN')).toBe('2024/01/15');
+
+    dateInput.setMonthList('JALALI', Array.from({ length: 12 }, (_, index) => `Month ${index + 1}`));
+    dateInput.setSelectionRange(0, 4);
+    expect(input.selectionStart).toBe(0);
+    expect(input.selectionEnd).toBe(4);
+
+    dateInput.value = '';
+    dateInput.inputType = 'JALALI';
+    dateInput.setCalendarDefaultDateView(1360, 5, 'JALALI');
+    dateInput.showCalendar = true;
+    await waitFor(() => {
+      expect(calendar.data.selectedYear).toBe(1360);
+      expect(calendar.data.selectedMonth).toBe(5);
+    });
+
+    dateInput.required = true;
+    dateInput.value = '';
+    expect(dateInput.checkValidity()).toBe(false);
+    expect(dateInput.reportValidity()).toBe(false);
+    expect(dateInput.triggerInputValidation(false)).toBeDefined();
+    dateInput.clearValidationError();
+    dateInput.focus();
+    expect(document.activeElement).toBe(dateInput);
+  },
+};
+
 export const InitialValue: Story = {
   render: (args) => {
     const formRef = useRef<HTMLFormElement>(null);
@@ -412,6 +460,20 @@ export const Required: Story = {
     message: "please focus and then unfocus the input to see require validation message",
     required: true,
     direction: "ltr",
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    label: "disabled field",
+    disabled: true,
+  },
+  play: async ({ canvasElement }) => {
+    const dateInput = getDateInput(canvasElement);
+    await waitFor(() => {
+      expect(dateInput.disabled).toBe(true);
+      expect(getNativeInput(dateInput).disabled).toBe(true);
+    });
   },
 };
 

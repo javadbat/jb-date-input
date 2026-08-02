@@ -36,11 +36,11 @@ Use [`jb-calendar`](https://github.com/javadbat/jb-calendar) when you need only 
 
 - [GitHub Pages](https://javadbat.github.io/jb-date-input/)
 - [CodePen](https://codepen.io/javadbat/pen/qBRyYKY)
-- [Storybook](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput)
+- [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--overview)
 
 ## Using With JS Frameworks
 
-<a href="https://github.com/javadbat/jb-date-input/tree/main/react" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/React.js-jb--date--input%2Freact-000.svg?logo=react&logoColor=%2361DAFB" height="30" /></a>
+<a href="https://github.com/javadbat/jb-date-input/tree/main/react" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/React.js-jb--date--input%2Freact-000.svg?logo=react&logoColor=%2361DAFB" height="30" /></a> See the [React documentation](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput-react-readme--docs).
 
 Other integrations: <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#angular" target="_blank" rel="noopener noreferrer">Angular</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#vue" target="_blank" rel="noopener noreferrer">Vue</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#nuxt" target="_blank" rel="noopener noreferrer">Nuxt</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#svelte" target="_blank" rel="noopener noreferrer">Svelte</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#sveltekit" target="_blank" rel="noopener noreferrer">SvelteKit</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#solidjs" target="_blank" rel="noopener noreferrer">SolidJS</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#lit" target="_blank" rel="noopener noreferrer">Lit</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#nextjs" target="_blank" rel="noopener noreferrer">Next.js</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#astro" target="_blank" rel="noopener noreferrer">Astro</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#blazor" target="_blank" rel="noopener noreferrer">Blazor</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#server-rendered-templates" target="_blank" rel="noopener noreferrer">Server-rendered templates</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#wordpress" target="_blank" rel="noopener noreferrer">WordPress</a> · <a href="https://javadbat.github.io/design-system/?path=/docs/getting-started-framework-integration--docs#alpinejs-and-htmx" target="_blank" rel="noopener noreferrer">Alpine.js and HTMX</a>
 
@@ -72,88 +72,88 @@ import 'jb-date-input';
 
 | name | type | default | description |
 | --- | --- | --- | --- |
-| `value` | `string` | empty date value | Date value in the configured `value-type` and `format`. |
-| `value-type` | `'GREGORIAN' \| 'JALALI' \| 'TIME_STAMP'` | `GREGORIAN` | Controls the canonical `.value` returned by the component. |
-| `input-type` | `'GREGORIAN' \| 'JALALI'` | locale based | Controls what date system users type and see in the calendar. |
-| `format` | `string` | `YYYY-MM-DDTHH:mm:ss.SSS[Z]` | Format used for `.value`, `min`, and `max` when `value-type` is `GREGORIAN` or `JALALI`. |
-| `min` | `string` | none | Minimum accepted date. Must use the configured `value-type` and `format`. |
-| `max` | `string` | none | Maximum accepted date. Must use the configured `value-type` and `format`. |
-| `name` | `string` | `""` | Form field name. |
-| `label` | `string` | `""` | Label forwarded to the internal `jb-input`. |
-| `message` | `string` | `""` | Helper message forwarded to the internal `jb-input`. |
-| `placeholder` | `string` | `null` | Placeholder shown while the date value is empty. |
-| `required` | `boolean` | `false` | Enables required validation. Empty attribute and `"true"` mean true. |
-| `disabled` | `boolean` | `false` | Disables the internal input and sets the disabled custom state. |
-| `error` | `string` | `""` | External validation error message. |
-| `direction` | `'ltr' \| 'rtl'` | inherited | Direction forwarded to the internal calendar. |
-| `show-persian-number` | `boolean` | locale based | Displays Persian digits while `.value` remains English digits. |
-| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `md` style defaults | Visual size forwarded to the internal `jb-input`. |
-| `autocomplete` | `string` | browser default | Forwarded to the internal `jb-input`. |
-| `readonly` | `boolean` | device based | Forwarded to the internal `jb-input`; mobile devices become readonly to favor the picker. |
+| `value` | `string` | empty date value | Date value in the configured `value-type` and `format`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-set-get) |
+| `value-type` | `'GREGORIAN' \| 'JALALI' \| 'TIME_STAMP'` | `GREGORIAN` | Controls the canonical `.value` returned by the component. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-type-test) |
+| `input-type` | `'GREGORIAN' \| 'JALALI'` | locale based | Controls what date system users type and see in the calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--jalali) |
+| `format` | `string` | `YYYY-MM-DDTHH:mm:ss.SSS[Z]` | Format used for `.value`, `min`, and `max` when `value-type` is `GREGORIAN` or `JALALI`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--custom-format) |
+| `min` | `string` | none | Minimum accepted date. Must use the configured `value-type` and `format`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--gregorian-min-max-test) |
+| `max` | `string` | none | Maximum accepted date. Must use the configured `value-type` and `format`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--gregorian-min-max-test) |
+| `name` | `string` | `""` | Form field name. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--in-form-test) |
+| `label` | `string` | `""` | Label forwarded to the internal `jb-input`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--normal) |
+| `message` | `string` | `""` | Helper message forwarded to the internal `jb-input`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--normal) |
+| `placeholder` | `string` | `null` | Placeholder shown while the date value is empty. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--placeholder) |
+| `required` | `boolean` | `false` | Enables required validation. Empty attribute and `"true"` mean true. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--required) |
+| `disabled` | `boolean` | `false` | Disables the internal input and sets the disabled custom state. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--disabled) |
+| `error` | `string` | `""` | External validation error message. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-error) |
+| `direction` | `'ltr' \| 'rtl'` | inherited | Direction forwarded to the internal calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--right-to-left-test) |
+| `show-persian-number` | `boolean` | locale based | Displays Persian digits while `.value` remains English digits. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--persian-number) |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `md` style defaults | Visual size forwarded to the internal `jb-input`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--size-variants) |
+| `autocomplete` | `string` | browser default | Forwarded to the internal `jb-input`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--normal) |
+| `readonly` | `boolean` | device based | Forwarded to the internal `jb-input`; mobile devices become readonly to favor the picker. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--headless) |
 
 ### Properties
 
 | name | type | readonly | description |
 | --- | --- | --- | --- |
-| `value` | `string` | no | Canonical value submitted with forms. Set with `string`, `Date`, or `null`. |
-| `initialValue` | `string \| null` | no | Default and reset value. It initializes `value` until the live value is explicitly set. |
-| `valueInDate` | `Date \| null` | yes | Current complete value as a JavaScript `Date`, or `null` when empty/incomplete. |
-| `inputValue` | `string` | yes | Visible typed text in `YYYY/MM/DD` display format. |
-| `inputType` | `'GREGORIAN' \| 'JALALI'` | no | Date system used by the input UI and calendar. |
-| `valueType` | `'GREGORIAN' \| 'JALALI' \| 'TIME_STAMP'` | no | Date system or timestamp mode used for `.value`. |
-| `valueFormat` | `string` | yes | Current value format. Change it with `setFormat()`. |
-| `dateRestrictions` | `{ min: Date \| null; max: Date \| null }` | no | Runtime min/max restrictions used by validation and calendar. |
-| `validation` | `ValidationHelper<ValidationValue>` | yes | Validation helper from `jb-validation`; set `validation.list` for custom rules. |
-| `isAutoValidationDisabled` | `boolean` | no | Disables automatic validation when true. |
-| `required` | `boolean` | no | Enables required validation. |
-| `disabled` | `boolean` | no | Enables or disables the internal input. |
-| `showPersianNumber` | `boolean` | no | Displays Persian digits while `.value` remains English digits. |
-| `showCalendar` | `boolean` | no | Opens or closes the internal calendar popover. |
+| `value` | `string` | no | Canonical value submitted with forms. Set with `string`, `Date`, or `null`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-set-get) |
+| `initialValue` | `string \| null` | no | Default and reset value. It initializes `value` until the live value is explicitly set. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--initial-value) |
+| `valueInDate` | `Date \| null` | yes | Current complete value as a JavaScript `Date`, or `null` when empty/incomplete. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-set-get) |
+| `inputValue` | `string` | yes | Visible typed text in `YYYY/MM/DD` display format. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--custom-format) |
+| `inputType` | `'GREGORIAN' \| 'JALALI'` | no | Date system used by the input UI and calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--jalali) |
+| `valueType` | `'GREGORIAN' \| 'JALALI' \| 'TIME_STAMP'` | no | Date system or timestamp mode used for `.value`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-type-test) |
+| `valueFormat` | `string` | yes | Current value format. Change it with `setFormat()`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--custom-format) |
+| `dateRestrictions` | `{ min: Date \| null; max: Date \| null }` | no | Runtime min/max restrictions used by validation and calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--gregorian-min-max-test) |
+| `validation` | `ValidationHelper<ValidationValue>` | yes | Validation helper from `jb-validation`; set `validation.list` for custom rules. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--jalali-test) |
+| `isAutoValidationDisabled` | `boolean` | no | Disables automatic validation when true. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `required` | `boolean` | no | Enables required validation. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--required) |
+| `disabled` | `boolean` | no | Enables or disables the internal input. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--disabled) |
+| `showPersianNumber` | `boolean` | no | Displays Persian digits while `.value` remains English digits. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--persian-number) |
+| `showCalendar` | `boolean` | no | Opens or closes the internal calendar popover. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
 | `placeholder` | `string \| null` | no | Placeholder shown while empty. |
-| `form` | `HTMLFormElement \| null` | yes | Associated form from `ElementInternals`. |
-| `isDirty` | `boolean` | yes | `true` when current `.value` differs from `initialValue`. |
-| `validationMessage` | `string` | yes | Current validation message from `ElementInternals`. |
-| `yearValue` / `monthValue` / `dayValue` | `number \| null` | yes | Date parts in the configured `valueType`. |
-| `yearDisplayValue` / `monthDisplayValue` / `dayDisplayValue` | `number \| null` | yes | Date parts in the configured `inputType`. |
-| `elements` | `ElementsObject` | no | Internal `input`, `calendar`, `popover`, and `calendarTriggerButton` for advanced integrations. |
+| `form` | `HTMLFormElement \| null` | yes | Associated form from `ElementInternals`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--in-form-test) |
+| `isDirty` | `boolean` | yes | `true` when current `.value` differs from `initialValue`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--initial-value) |
+| `validationMessage` | `string` | yes | Current validation message from `ElementInternals`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--required) |
+| `yearValue` / `monthValue` / `dayValue` | `number \| null` | yes | Date parts in the configured `valueType`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-type-test) |
+| `yearDisplayValue` / `monthDisplayValue` / `dayDisplayValue` | `number \| null` | yes | Date parts in the configured `inputType`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--jalali) |
+| `elements` | `ElementsObject` | no | Internal `input`, `calendar`, `popover`, and `calendarTriggerButton` for advanced integrations. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-overflow-handler) |
 
 ### Methods
 
 | name | returns | description |
 | --- | --- | --- |
-| `setFormat(newFormat)` | `void` | Sets the value format used for `.value`, `min`, and `max`. |
-| `setMinDate(minDate)` | `void` | Sets or clears the minimum accepted date. Accepts `string`, `Date`, or `null`. |
-| `setMaxDate(maxDate)` | `void` | Sets or clears the maximum accepted date. Accepts `string`, `Date`, or `null`. |
-| `setMonthList(inputType, monthName)` | `void` | Overrides month labels for `GREGORIAN` or `JALALI`. |
-| `setCalendarDefaultDateView(year, month, dateType?)` | `void` | Sets the year/month shown when the value is empty. |
-| `getDateValue(type?)` | `string` | Returns current value in `GREGORIAN`, `JALALI`, or `TIME_STAMP` mode. |
-| `focus()` | `void` | Focuses the internal input and opens the calendar. |
-| `setSelectionRange(start, end, direction?)` | `void` | Forwards selection range to the internal input. |
-| `checkValidity()` | `boolean` | Runs validation without showing the error message. Dispatches `invalid` when invalid. |
-| `reportValidity()` | `boolean` | Runs validation and shows the first error message. Dispatches `invalid` when invalid. |
-| `clearValidationError()` | `void` | Clears the visible validation error. |
-| `triggerInputValidation(showError?)` | `ValidationResult \| undefined` | Deprecated; use `checkValidity()`, `reportValidity()`, or `validation.checkValidity()`. |
+| `setFormat(newFormat)` | `void` | Sets the value format used for `.value`, `min`, and `max`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `setMinDate(minDate)` | `void` | Sets or clears the minimum accepted date. Accepts `string`, `Date`, or `null`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `setMaxDate(maxDate)` | `void` | Sets or clears the maximum accepted date. Accepts `string`, `Date`, or `null`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `setMonthList(inputType, monthName)` | `void` | Overrides month labels for `GREGORIAN` or `JALALI`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--custom-month-name) |
+| `setCalendarDefaultDateView(year, month, dateType?)` | `void` | Sets the year/month shown when the value is empty. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `getDateValue(type?)` | `string` | Returns current value in `GREGORIAN`, `JALALI`, or `TIME_STAMP` mode. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-type-test) |
+| `focus()` | `void` | Focuses the internal input and opens the calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `setSelectionRange(start, end, direction?)` | `void` | Forwards selection range to the internal input. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `checkValidity()` | `boolean` | Runs validation without showing the error message. Dispatches `invalid` when invalid. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `reportValidity()` | `boolean` | Runs validation and shows the first error message. Dispatches `invalid` when invalid. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `clearValidationError()` | `void` | Clears the visible validation error. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
+| `triggerInputValidation(showError?)` | `ValidationResult \| undefined` | Deprecated; use `checkValidity()`, `reportValidity()`, or `validation.checkValidity()`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--imperative-methods) |
 
 ### Events
 
 | event | description |
 | --- | --- |
-| `load` | Dispatched from `connectedCallback` before property initialization. |
-| `init` | Dispatched after internal components are defined and the initial value is applied. |
-| `beforeinput` | Cancelable event dispatched before typed input is applied. |
-| `input` | Dispatched after user typing changes the visible input text. |
-| `change` | Dispatched when the committed date value changes after blur or calendar selection. Canceling it reverts the date. |
-| `select` | Dispatched when the user selects a date from the calendar. |
-| `focus` | Re-dispatched when the internal input receives focus. |
-| `blur` | Re-dispatched when the internal input loses focus. |
-| `keydown` | Re-dispatched from the internal input. ArrowUp/ArrowDown change the selected date part. |
-| `keyup` | Re-dispatched from the internal input after the value object is updated. |
-| `keypress` | Re-dispatched from the internal input. |
-| `invalid` | Dispatched when `checkValidity()` or `reportValidity()` fails. |
+| `load` | Dispatched from `connectedCallback` before property initialization. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `init` | Dispatched after internal components are defined and the initial value is applied. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `beforeinput` | Cancelable event dispatched before typed input is applied. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `input` | Dispatched after user typing changes the visible input text. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `change` | Dispatched when the committed date value changes after blur or calendar selection. Canceling it reverts the date. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `select` | Dispatched when the user selects a date from the calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `focus` | Re-dispatched when the internal input receives focus. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `blur` | Re-dispatched when the internal input loses focus. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `keydown` | Re-dispatched from the internal input. ArrowUp/ArrowDown change the selected date part. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `keyup` | Re-dispatched from the internal input after the value object is updated. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `keypress` | Re-dispatched from the internal input. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
+| `invalid` | Dispatched when `checkValidity()` or `reportValidity()` fails. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--event-test) |
 
 ## Value type and input type
 
-`input-type` controls what users see and edit. `value-type` controls what developers receive from `.value`.
+`input-type` controls what users see and edit. `value-type` controls what developers receive from `.value`; compare the [Jalali and Gregorian demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--jalali) and [value-type demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-type-test).
 
 ```html
 <!-- User sees Jalali, developer receives Gregorian ISO-like value. -->
@@ -175,7 +175,7 @@ dateInput.valueType = 'GREGORIAN';
 
 ## Value
 
-Get and set value like a native input.
+Get and set value like a native input in the [value demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--value-set-get).
 
 ```js
 const dateInput = document.querySelector('jb-date-input');
@@ -192,7 +192,7 @@ Empty values are represented with an empty date in the configured format, for ex
 
 ## Format
 
-The default format is compatible with `Date.prototype.toISOString()`:
+The default format is compatible with `Date.prototype.toISOString()`; see the [custom format demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--custom-format):
 
 ```html
 <jb-date-input value="2024-01-15T00:00:00.000Z"></jb-date-input>
@@ -213,7 +213,7 @@ Use `format` when your backend needs a different string.
 
 ## Min and max
 
-Set date limits with attributes:
+Set date limits with attributes in the [Gregorian min/max demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--gregorian-min-max-test):
 
 ```html
 <jb-date-input
@@ -239,7 +239,7 @@ dateInput.setMaxDate(null);
 
 ## Validation
 
-`jb-date-input` uses [`jb-validation`](https://github.com/javadbat/jb-validation). Built-in validation handles `required`, `error`, `min`, and `max`. Use `validation.list` for custom rules.
+`jb-date-input` uses [`jb-validation`](https://github.com/javadbat/jb-validation). Built-in validation handles `required`, `error`, `min`, and `max`; see the [required](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--required) and [external error](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-error) demos. Use `validation.list` for custom rules in the [custom validation demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--jalali-test).
 
 ```js
 const dateInput = document.querySelector('jb-date-input');
@@ -273,7 +273,7 @@ Custom validators receive:
 
 ## Calendar default date
 
-When the input is empty, the calendar opens on the current month. Use `setCalendarDefaultDateView()` to change that view.
+When the input is empty, the calendar opens on the current month. Use `setCalendarDefaultDateView()` to change that view in the [default calendar date demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-default-calendar-date).
 
 ```js
 const dateInput = document.querySelector('jb-date-input');
@@ -295,11 +295,13 @@ dateInput.setCalendarDefaultDateView(1360, 5, 'JALALI');
 document.querySelector('jb-date-input').showPersianNumber = true;
 ```
 
-This affects display only. `.value` remains English digits.
+This affects display only. `.value` remains English digits; see the [Persian number demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--persian-number).
 
 For app-wide locale, calendar, and numbering-system setup, configure [`jb-core/i18n`](https://github.com/javadbat/jb-core/tree/main/i18n).
 
 ## Slots
+
+Use the `inline-start-section` and `inline-end-section` slots in the [inline sections demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-inline-sections), and customize `calendar-trigger-icon` in the [custom icon demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-custom-icon).
 
 | slot | description |
 | --- | --- |
@@ -322,7 +324,7 @@ For app-wide locale, calendar, and numbering-system setup, configure [`jb-core/i
 
 ## Month names
 
-Override calendar month labels when your product needs custom locale names.
+Override calendar month labels when your product needs custom locale names in the [custom month name demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--custom-month-name).
 
 ```js
 const dateInput = document.querySelector('jb-date-input');
@@ -360,7 +362,7 @@ dateInput.setMonthList('GREGORIAN', [
 
 ## Overflow handler
 
-When the calendar opens near the edge of a scroll area, configure the internal popover.
+When the calendar opens near the edge of a scroll area, configure the internal popover; compare the [overflow handler](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-overflow-handler) and [constrained parent](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--overflow-within-parent) demos.
 
 ```js
 const dateInput = document.querySelector('jb-date-input');
@@ -371,7 +373,7 @@ dateInput.elements.popover.overflowDom = document.querySelector('.modal-body');
 
 ## CSS parts and variables
 
-For complete styling guidance, live examples, and copyable style recipes, see [Styling](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-styling).
+For complete styling guidance, live examples, and copyable style recipes, see the [Styling docs](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput-styling--docs) and [style gallery](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput-style--gallery).
 
 | part | description |
 | --- | --- |
@@ -429,9 +431,11 @@ For React, use the headless hook:
 import { useJBDateInput } from 'jb-date-input/react';
 ```
 
-See the [Headless Storybook docs](https://javadbat.github.io/design-system/?path=/docs/components-form-elements-inputs-jbdateinput-headless--docs) for a complete example.
+See the [Headless demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--headless) and [headless documentation](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput-headless--docs) for complete examples.
 
 ## Accessibility notes
+
+The [standard input demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--normal) shows the labeled field used by assistive technologies.
 
 - The component is form-associated and submits `.value`.
 - The shadow root delegates focus to the internal `jb-input`.
