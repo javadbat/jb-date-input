@@ -6,7 +6,7 @@ jb-date-input.carbon-style {
 }
 
 jb-date-input.carbon-style::part(popover) {
-    --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-surface));
+    --jb-popover-bg-color: var(--jb-calendar-surface-bg, var(--jb-surface-primary));
     --jb-popover-border-radius: 0;
     --jb-popover-padding: 1rem;
     --jb-popover-margin-top: 0.5rem;

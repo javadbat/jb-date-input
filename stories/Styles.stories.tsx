@@ -118,7 +118,7 @@ export const Gallery: Story = {
         >
           <div style={{
             width: "100%",
-            color: "var(--jb-text-primary, #334155)",
+            color: "var(--jb-content-primary, #334155)",
             fontSize: "0.875rem",
             fontWeight: 700,
             lineHeight: 1.4,
