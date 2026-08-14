@@ -38,7 +38,7 @@ export const JBDateInput = forwardRef((props: Props, ref) => {
   useEvents(element,{onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect});
   const valueProps = value === undefined ? {} : { value: value ?? null };
   return (
-    <jb-date-input value-type={valueType ? valueType : 'GREGORIAN'} input-type={inputType ? inputType : 'JALALI'} initialValue={initialValue ?? null} {...valueProps} size={size} label={label} ref={element} {...otherProps}>
+    <jb-date-input value-type={valueType ? valueType : 'GREGORIAN'} input-type={inputType} initialValue={initialValue ?? null} {...valueProps} size={size} label={label} ref={element} {...otherProps}>
       {props.children}
     </jb-date-input>
   );

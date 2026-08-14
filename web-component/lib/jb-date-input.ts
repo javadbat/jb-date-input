@@ -294,15 +294,18 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
   get inputType(): InputType {
     return this.#dateFactory.inputType;
   }
+  #hasInputTypeOverride = false;
   set inputType(value: InputType) {
-
+    this.#hasInputTypeOverride = true;
+    this.#setInputType(value);
+  }
+  #setInputType(value: InputType) {
     if (Object.values(InputTypes).includes(value as InputTypes)) {
       this.#dateFactory.setInputType(value);
       this.onInputTypeChange();
     } else {
       console.error(`${value} is not a valid input type`);
     }
-
   }
   get valueType() {
     return this.#dateFactory.valueType;
@@ -432,10 +435,16 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return this.#dateFactory.valueFormat;
   }
   #showPersianNumber = i18n.locale.numberingSystem == "arabext";
+  #hasShowPersianNumberOverride = false;
+  #unsubscribeLocaleChange: VoidFunction | null = null;
   get showPersianNumber() {
     return this.#showPersianNumber;
   }
   set showPersianNumber(value) {
+    this.#hasShowPersianNumberOverride = true;
+    this.#setShowPersianNumber(value);
+  }
+  #setShowPersianNumber(value: boolean) {
     this.#showPersianNumber = value;
     this.elements.calendar.showPersianNumber = value;
     this.#updateInputTextFromValue();
@@ -456,6 +465,10 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     // standard web component event that called when all of dom is bounded
     this.#callOnLoadEvent();
     this.#initProp();
+  }
+  disconnectedCallback() {
+    this.#unsubscribeLocaleChange?.();
+    this.#unsubscribeLocaleChange = null;
   }
   #callOnLoadEvent() {
     const event = new CustomEvent('load', { bubbles: true, composed: false });
@@ -533,6 +546,15 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return Promise.resolve();
   }
   #initProp() {
+    this.#unsubscribeLocaleChange?.();
+    if (this.hasAttribute("input-type")) this.#hasInputTypeOverride = true;
+    if (this.hasAttribute("show-persian-number")) this.#hasShowPersianNumberOverride = true;
+    if (!this.#hasInputTypeOverride) this.#setInputType(i18n.locale.calendar === "persian" ? InputTypes.jalali : InputTypes.gregorian);
+    if (!this.#hasShowPersianNumberOverride) this.#setShowPersianNumber(i18n.locale.numberingSystem === "arabext");
+    this.#unsubscribeLocaleChange = i18n.subscribe(() => {
+      if (!this.#hasInputTypeOverride) this.#setInputType(i18n.locale.calendar === "persian" ? InputTypes.jalali : InputTypes.gregorian);
+      if (!this.#hasShowPersianNumberOverride) this.#setShowPersianNumber(i18n.locale.numberingSystem === "arabext");
+    });
     this.#waitForComponentsLoad().then(() => {
       const valueAttribute = this.getAttribute('value');
       if(valueAttribute !== null){
@@ -594,10 +616,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         this.required = parseBooleanAttribute(value, false);
         break;
       case 'input-type':
-        if (value !== null) {
-          this.inputType = value as InputTypes;
-        }
-
+        this.#hasInputTypeOverride = value !== null;
+        this.#setInputType(value === null ? (i18n.locale.calendar === "persian" ? InputTypes.jalali : InputTypes.gregorian) : value as InputTypes);
         break;
       case 'direction':
         if (value === null) {
@@ -607,7 +627,8 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
         }
         break;
       case 'show-persian-number':
-        this.showPersianNumber = parseBooleanAttribute(value, false);
+        this.#hasShowPersianNumberOverride = value !== null;
+        this.#setShowPersianNumber(parseBooleanAttribute(value, i18n.locale.numberingSystem === "arabext"));
         break;
       case 'placeholder':
         this.placeholder = value;

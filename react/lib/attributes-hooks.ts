@@ -136,10 +136,10 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
   }, [props.calendarDefaultDateView]);
   
   useEffect(() => {
-    if (props.showPersianNumber) {
-      element.current?.setAttribute('show-persian-number', 'true');
-    } else {
+    if (props.showPersianNumber === undefined) {
       element.current?.removeAttribute('show-persian-number');
+    } else {
+      element.current?.setAttribute('show-persian-number', String(props.showPersianNumber));
     }
   }, [props.showPersianNumber]);
   //
@@ -163,4 +163,3 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
     }
   },[props.isAutoValidationDisabled])
 }
-
