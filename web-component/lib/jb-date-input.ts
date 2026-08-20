@@ -1,3 +1,4 @@
+import { defineWebComponent, JBBaseComponent, createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits, parseBooleanAttribute } from "jb-core";
 import CSS from './jb-date-input.css';
 import VariablesCSS from './variables.css';
 import 'jb-calendar';
@@ -8,7 +9,6 @@ import type { InputType, JBCalendarWebComponent } from 'jb-calendar';
 import type { JBFormInputStandards } from 'jb-form';
 import { JBInputWebComponent } from 'jb-input';
 import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
-import { createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits, parseBooleanAttribute } from 'jb-core';
 import { registerDefaultVariables } from 'jb-core/theme';
 import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from './types.js';
 import { DateFactory } from './date-factory.js';
@@ -23,13 +23,9 @@ export * from "./types.js";
 //headless usage exports
 export { handleBeforeInput, emptyInputValueString, getFixedCaretPos, InputTypes, type JBDateInputValueObject, type InputType, dictionary }
 
-if (HTMLElement == undefined) {
-  //in case of server render or old browser
-  console.error('you cant render web component on a server side. try to load this component as a client side component');
-}
 //TODO: refactor date-input to use Temporal value as a core value so date object could be filled even with incomplete value
 //TODO: add showPicker method for html standard https://web-platform-dx.github.io/web-features-explorer/features/show-picker-input/
-export class JBDateInputWebComponent extends HTMLElement implements WithValidation<ValidationValue>, JBFormInputStandards<string | null> {
+export class JBDateInputWebComponent extends JBBaseComponent implements WithValidation<ValidationValue>, JBFormInputStandards<string | null> {
   static formAssociated = true;
   #internals?: ElementInternals;
   elements!: ElementsObject;
@@ -1314,8 +1310,4 @@ export class JBDateInputWebComponent extends HTMLElement implements WithValidati
     return this.#internals!.validationMessage;
   }
 }
-//register component in document custom element registry
-const myElementNotExists = !customElements.get('jb-date-input');
-if (myElementNotExists) {
-  window.customElements.define('jb-date-input', JBDateInputWebComponent);
-}
+defineWebComponent('jb-date-input', JBDateInputWebComponent);
