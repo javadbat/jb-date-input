@@ -1311,3 +1311,9 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
 }
 defineWebComponent('jb-date-input', JBDateInputWebComponent);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "jb-date-input": JBDateInputWebComponent;
+  }
+}
