@@ -34,7 +34,7 @@
   "types": "./dist/JBDateInput.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/javadbat/jb-date-input-react"
+    "url": "https://github.com/javadbat/jb-date-input-react.git"
   },
   "dependencies": {
     "jb-date-input": "^5.1.0",

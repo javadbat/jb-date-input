@@ -22,7 +22,7 @@
   "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/javadbat/jb-date-input"
+    "url": "https://github.com/javadbat/jb-date-input.git"
   },
   "dependencies": {
     "jb-date-input": "^5.10.0",
