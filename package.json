@@ -80,7 +80,7 @@
     "jb-core":"^0.35.0"
   },
   "devDependencies": {
-    "jb-form":"^0.12.0"
+    "jb-form":"0.13.0"
   },
   "peerDependencies": {
     "tslib": "^2.8.1",
