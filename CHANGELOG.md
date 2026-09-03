@@ -1,5 +1,17 @@
-# Changelog  
+# Changelog
 
+## [7.0.0] - 2026-09-03
+
+### Changed
+
+- Standardized private DOM event handlers on the `#on<Target><Event>()` naming convention.
+- Standardized private value helpers on `#updateFormValue()` for form synchronization and `#clearValue()` for the empty value transition.
+- Breaking: renamed `valueInDate` to `valueAsDate` and `inputValue` to `displayValue`; old names are removed.
+- Added the standard public `reset()` method; native form reset delegates to the same behavior.
+- Breaking: renamed `showCalendar` to `isOpen` and added `open()`/`close()` picker methods.
+- Breaking: removed `triggerInputValidation()`; use `checkValidity()`, `reportValidity()`, or `validation.checkValidity()`.
+- Breaking: renamed directional slots to `inline-start`/`inline-end` and forwarded input part `input-box` to `control`.
+- Breaking: removed the custom `direction` API in favor of the native `dir` attribute/property.
 
 ## [6.5.0] - 2026-08-22
 
@@ -277,4 +289,3 @@
 ### changed
  - refactor date based function and move them to date factory
  - change date restrictions from `DayJs` format to `Date`
-

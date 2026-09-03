@@ -13,7 +13,7 @@ Get/Set value in `jb-date-input` is quite simple like this:
   const value = document.querySelector('jb-date-input').value // will return '0000-00-00T00:00:00.000Z' on empty value   
 
   // return javascript Date value (or null)
-  const dateValue = document.querySelector('jb-date-input').valueInDate // will return null when date-input is empty and Date() when it have value
+  const dateValue = document.querySelector('jb-date-input').valueAsDate // returns null when date-input is empty and Date when it has a value
 
 ```
 ## Set Value
@@ -76,4 +76,3 @@ Here change the format and see effect on above date-input
 <Controls of={DateInputStories.CustomFormat} />
 Here is above example code in ReactJS
 <Source of={DateInputStories.CustomFormat} />
-

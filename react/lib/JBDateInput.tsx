@@ -33,8 +33,8 @@ export const JBDateInput = forwardRef((props: Props, ref) => {
     () => (element.current??undefined),
     [element],
   );
-  const {size, label, inputType, valueType,calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,initialValue,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList,value, onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect, ...otherProps} = props;
-  useJBDateInputAttribute(element,{calendarDefaultDateView,direction,disabled,error,format,gregorianMonthList,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList});
+  const {size, label, inputType, valueType,calendarDefaultDateView,disabled,error,format,gregorianMonthList,initialValue,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList,value, onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect, ...otherProps} = props;
+  useJBDateInputAttribute(element,{calendarDefaultDateView,disabled,error,format,gregorianMonthList,isAutoValidationDisabled,jalaliMonthList,max,message,min,name,overflowHandler,overflowRef,placeholder,required,showPersianNumber,validationList});
   useEvents(element,{onBeforeInput,onBlur,onChange,onEnter,onFocus,onInit,onInput,onInvalid,onKeyDown,onKeyPress,onKeyUp,onLoad,onSelect});
   const valueProps = value === undefined ? {} : { value: value ?? null };
   return (

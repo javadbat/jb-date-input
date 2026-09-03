@@ -60,7 +60,7 @@ Use `JBCalendar` from `jb-calendar/react` when you need only an inline calendar 
 | `disabled` | `boolean` | Disables the date input. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--disabled) |
 | `error` | `string` | External validation error message. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-error) |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | Visual size forwarded to the internal `jb-input`. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--size-variants) |
-| `direction` | `'ltr' \| 'rtl'` | Direction forwarded to the internal calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--right-to-left-test) |
+| `dir` | `'ltr' \| 'rtl'` | Native layout direction inherited by the input and calendar. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--right-to-left-test) |
 | `showPersianNumber` | `boolean` | Displays Persian digits while the canonical value remains English digits. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--persian-number) |
 | `validationList` | `ValidationItem<ValidationValue>[]` | Custom validation rules. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--jalali-test) |
 | `calendarDefaultDateView` | `{ year: number; month: number; dateType?: InputType }` | Calendar year/month shown when the value is empty. [Demo](https://javadbat.github.io/design-system/?path=/story/components-form-elements-inputs-jbdateinput--with-default-calendar-date) |
@@ -110,7 +110,7 @@ const [value, setValue] = useState<Date | string | null>(new Date());
 
 <JBDateInput
   value={value}
-  onChange={(event) => setValue(event.target.valueInDate)}
+  onChange={(event) => setValue(event.target.valueAsDate)}
 />;
 ```
 
@@ -208,7 +208,7 @@ All wrapper event props are exercised in the [events demo](https://javadbat.gith
 <JBDateInput
   onSelect={(event) => console.log(event.target.value)}
   onChange={(event) => console.log(event.target.value)}
-  onInput={(event) => console.log(event.target.inputValue)}
+  onInput={(event) => console.log(event.target.displayValue)}
 />
 ```
 
@@ -249,8 +249,8 @@ Pass slotted children with the same slot names as the web component.
 
 ```jsx
 <JBDateInput label="Birthday">
-  <span slot="inline-start-section">Birthday</span>
-  <span slot="inline-end-section">optional</span>
+  <span slot="inline-start">Birthday</span>
+  <span slot="inline-end">optional</span>
 </JBDateInput>
 ```
 
@@ -369,8 +369,8 @@ For web-component behavior, events, slots, validation, form association, CSS var
 
 - Import `JBDateInput` from `jb-date-input/react`; the wrapper imports and registers the underlying `jb-date-input` web component.
 - Use React prop names such as `valueType`, `inputType`, `showPersianNumber`, `validationList`, and `calendarDefaultDateView`.
-- Use `event.target.value` for the canonical value and `event.target.valueInDate` for a JavaScript `Date`.
+- Use `event.target.value` for the canonical value and `event.target.valueAsDate` for a JavaScript `Date`.
 - Use `onInput` for typed edits and `onChange` for committed date changes.
 - Set `format` before string `value`, `min`, or `max`.
-- Slot names are `inline-start-section`, `inline-end-section`, and `calendar-trigger-icon`.
+- Slot names are `inline-start`, `inline-end`, and `calendar-trigger-icon`.
 - The wrapper currently exposes an `onEnter` prop type, but the underlying web component does not dispatch an `enter` event.

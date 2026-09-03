@@ -7,10 +7,10 @@
     margin: var(--margin);
     position: relative;
 
-    [slot="start-section"]{
+    [slot="inline-start"]{
         display: contents;
     }
-    .date-input-end-section {
+    .date-input-inline-end {
         display: flex;
         gap:0.5rem;
         .calendar-trigger {

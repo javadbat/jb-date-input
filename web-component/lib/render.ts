@@ -3,12 +3,12 @@ import { dictionary } from "./i18n";
 
 export function renderHTML(): string {
   return /* html */ `
-    <div class="jb-date-input-web-component">
-        <jb-input disable-auto-validation part="jb-input" exportparts="label, input-box, input, message">
-            <div slot="start-section">
-                <slot name="inline-start-section"></slot>
+    <div class="jb-date-input-web-component" part="root">
+        <jb-input disable-auto-validation part="jb-input" exportparts="label, control, input, message">
+            <div slot="inline-start">
+                <slot name="inline-start"></slot>
             </div>
-            <div class="date-input-end-section" slot="end-section">
+            <div class="date-input-inline-end" slot="inline-end">
                 <button class="calendar-trigger" type="button" aria-label="${dictionary.get(i18n, "openCalendar")}" aria-haspopup="dialog" aria-expanded="false">
                     <slot name="calendar-trigger-icon" >
                         <svg xmlns="http://www.w3.org/2000/svg" id="CalendarIcon" viewBox="0 0 44.97 44.46" aria-hidden="true">
@@ -22,7 +22,7 @@ export function renderHTML(): string {
                         </svg>
                     </slot>
                 </button>
-                <slot name="inline-end-section"></slot>
+                <slot name="inline-end"></slot>
             </div>
         </jb-input>
         <jb-popover part="popover" exportparts="content: popover-content">

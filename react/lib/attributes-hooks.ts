@@ -8,7 +8,6 @@ export type JBDateInputAttributes = {
   message?: string,
   name?: string,
   format?: string,
-  direction?: 'ltr' | 'rtl',
   validationList?: ValidationItem<ValidationValue>[],
   required?: boolean,
   calendarDefaultDateView?: { year: number, month: number, dateType?: InputType },
@@ -112,12 +111,6 @@ export function useJBDateInputAttribute(element: RefObject<JBDateInputWebCompone
       element.current.validation.list = props.validationList;
     }
   }, [props.validationList,element]);
-
-  useEffect(() => {
-    if (element.current && props.direction) {
-      element.current.setAttribute('direction', props.direction);
-    }
-  }, [props.direction]);
 
   useEffect(() => {
     if (element.current) {

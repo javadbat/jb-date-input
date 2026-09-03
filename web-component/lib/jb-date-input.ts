@@ -52,7 +52,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.#isAutoValidationDisabled = value;
   }
   #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("input-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
-  #showCalendar = false;
+  #isOpen = false;
   /**
    * jb date input internal validation mechanism works with 
    */
@@ -191,13 +191,16 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       this.#updateInputTextFromValue();
     }
   }
-  formResetCallback() {
+  reset() {
     this.#isDirty = false;
     this.#setDateValue(this.initialValue);
     this.#updateInputTextFromValue();
     this.#validation.reset();
     this.elements.input.validation.reset();
     this.#internals?.setValidity({}, '');
+  }
+  formResetCallback() {
+    this.reset();
   }
   formDisabledCallback(disabled: boolean) {
     this.disabled = disabled;
@@ -218,7 +221,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   setMonthList(inputType: InputType, monthName: string[]) {
     this.elements.calendar.setMonthList(inputType, monthName);
   }
-  #updateFormAssociatedValue(): void {
+  #updateFormValue(): void {
     //in html form we need to get date input value in native way this function update and set value of the input so form can get it when needed
     if (this.#internals && typeof this.#internals.setFormValue == "function") {
       this.#internals.setFormValue(this.value);
@@ -227,10 +230,10 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   /**
    * @description return date value if value valid and return null if inputted value is not valid
    */
-  get valueInDate(): Date | null {
+  get valueAsDate(): Date | null {
     return this.#dateFactory.getDateValueFromValueObject(this.#valueObject);
   }
-  get inputValue() {
+  get displayValue() {
     return this.#inputValue;
   }
   #placeholder: string | null = null;
@@ -264,15 +267,25 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       this.elements.input.value = value;
     }
   }
-  get showCalendar() {
-    return this.#showCalendar;
+  get isOpen(): boolean {
+    return this.#isOpen;
   }
 
-  set showCalendar(value) {
-    this.#showCalendar = value;
+  #refreshCalendarDirection() {
+    if (typeof this.elements.calendar.refreshDirection === "function") {
+      this.elements.calendar.refreshDirection();
+      return;
+    }
+    void customElements.whenDefined("jb-calendar").then(() => {
+      this.elements.calendar.refreshDirection();
+    });
+  }
+
+  set isOpen(value: boolean) {
+    this.#isOpen = value;
     if (value == true) {
-      //we have to do it because js dont tell us when dir change so we have to check and set it every time we open calendar
-      this.elements.calendar.setupStyleBaseOnCssDirection();
+      // Re-read inherited/CSS direction each time the picker opens.
+      this.#refreshCalendarDirection();
       this.elements.popover.open();
       this.elements.calendarTriggerButton.classList.add('--active');
       this.elements.calendarTriggerButton.setAttribute("aria-expanded", "true");
@@ -285,6 +298,14 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       // will reset calendar value to seated value of date-input
       this.#updateCalendarView();
     }
+  }
+
+  open(): void {
+    this.isOpen = true;
+  }
+
+  close(): void {
+    this.isOpen = false;
   }
 
   get inputType(): InputType {
@@ -410,13 +431,13 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     }
   }
   get typedYear(): string {
-    return getYear(this.inputValue)
+    return getYear(this.displayValue)
   }
   get typedMonth(): string {
-    return getMonth(this.inputValue);
+    return getMonth(this.displayValue);
   }
   get typedDay(): string {
-    return getDay(this.inputValue);
+    return getDay(this.displayValue);
   }
   get sTypedYear(): string {
     return getYear(this.#sInputValue);
@@ -513,11 +534,11 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     listenAndSilentEvent(this.elements.input, 'focus', this.#onInputFocus.bind(this), { passive: true });
     listenAndSilentEvent(this.elements.input, 'blur', this.#onInputBlur.bind(this), { passive: true });
     listenAndSilentEvent(this.elements.input, 'keypress', this.#onInputKeyPress.bind(this));
-    listenAndSilentEvent(this.elements.input, 'keyup', this.#onInputKeyup.bind(this));
-    listenAndSilentEvent(this.elements.input, 'keydown', this.#onInputKeydown.bind(this));
+    listenAndSilentEvent(this.elements.input, 'keyup', this.#onInputKeyUp.bind(this));
+    listenAndSilentEvent(this.elements.input, 'keydown', this.#onInputKeyDown.bind(this));
 
     //
-    this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocused.bind(this));
+    this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocus.bind(this));
     this.elements.calendarTriggerButton.addEventListener('blur', this.#onCalendarButtonBlur.bind(this));
     this.elements.calendarTriggerButton.addEventListener('click', this.#onCalendarButtonClick.bind(this));
     //
@@ -560,7 +581,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     });
   }
   static get dateInputObservedAttributes() {
-    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'direction', 'show-persian-number', 'placeholder', 'disabled', 'error'];
+    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'dir', 'show-persian-number', 'placeholder', 'disabled', 'error'];
   }
   static get observedAttributes() {
     return [...JBInputWebComponent.observedAttributes, ...JBDateInputWebComponent.dateInputObservedAttributes];
@@ -615,12 +636,8 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
         this.#hasInputTypeOverride = value !== null;
         this.#setInputType(value === null ? (i18n.locale.calendar === "persian" ? InputTypes.jalali : InputTypes.gregorian) : value as InputTypes);
         break;
-      case 'direction':
-        if (value === null) {
-          this.elements.calendar.removeAttribute('direction');
-        } else {
-          this.elements.calendar.setAttribute('direction', value);
-        }
+      case 'dir':
+        this.#refreshCalendarDirection();
         break;
       case 'show-persian-number':
         this.#hasShowPersianNumberOverride = value !== null;
@@ -778,7 +795,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const keyPressEvent = createKeyboardEvent('keypress', e, { cancelable: false });
     this.dispatchEvent(keyPressEvent);
   }
-  #onInputKeyup(e: KeyboardEvent) {
+  #onInputKeyUp(e: KeyboardEvent) {
     this.#updateValueFromInputString(this.#sInputValue);
     this.#dispatchOnInputKeyup(e);
   }
@@ -787,7 +804,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const event = createKeyboardEvent("keyup", e, { cancelable: false });
     this.dispatchEvent(event);
   }
-  #onInputKeydown(e: KeyboardEvent) {
+  #onInputKeyDown(e: KeyboardEvent) {
     const notCancelled = this.#dispatchKeyDownEvent(e);
     if (!notCancelled) {
       e.preventDefault();
@@ -853,7 +870,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
    * @description when user change value this function called and update inner value object base on user value
    */
   #setDateValue(value: string | Date | null) {
-    if (value === null) { this.#setValueObjNull(); }
+    if (value === null) { this.#clearValue(); }
     if (typeof value == "string") {
       switch (this.#dateFactory.valueType) {
         case "GREGORIAN":
@@ -867,9 +884,9 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     } else if (value instanceof Date) {
       this.#setDateValueFromDate(value);
     }
-    this.#updateFormAssociatedValue();
+    this.#updateFormValue();
   }
-  #setValueObjNull() {
+  #clearValue() {
     // mean we reset calendar value and set it to null
     this.#valueObject = getEmptyValueObject();
   }
@@ -921,7 +938,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       if (value !== null && value !== undefined && value !== '') {
         console.error('your inputted Date doest match default or your specified Format');
       } else {
-        this.#setValueObjNull();
+        this.#clearValue();
       }
     }
   }
@@ -948,7 +965,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const result: JBDateInputValueObject = this.#dateFactory.getDateValueObjectBaseOnInputType(year, month, day, prevYear, prevMonth, hour, minute, second, millisecond);
     this.#valueObject = result;
     this.#updateCalendarView();
-    this.#updateFormAssociatedValue();
+    this.#updateFormValue();
   }
   #updateInputTextFromValue() {
     const { year, month, day } = this.inputType == InputTypes.jalali ? this.#valueObject.jalali : this.#valueObject.gregorian;
@@ -1019,10 +1036,10 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   focus() {
     //public
     this.elements.input.focus();
-    this.showCalendar = true;
+    this.isOpen = true;
   }
   #handleCaretPosOnInputFocus() {
-    const newCaretPos = getFixedCaretPos({ inputValue: this.inputValue, selectionStart: this.elements.input.selectionStart })
+    const newCaretPos = getFixedCaretPos({ inputValue: this.displayValue, selectionStart: this.elements.input.selectionStart })
     if (newCaretPos !== null) {
       if (newCaretPos !== this.elements.input.selectionStart) {
         this.elements.input.setSelectionRange(newCaretPos, newCaretPos);
@@ -1066,7 +1083,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     document.removeEventListener('selectionchange', this.#onDocumentSelectionChange);
     const focusedElement = e.relatedTarget;
     if (focusedElement !== this.elements.calendar && focusedElement !== this.elements.calendarTriggerButton) {
-      this.showCalendar = false;
+      this.isOpen = false;
     }
     const inputText = this.#sInputValue;
     //check if there is no update from last time then if change we update
@@ -1092,25 +1109,17 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   #onCalendarBlur(e: FocusEvent) {
     const focusedElements = e.composedPath();
     if (!focusedElements.includes(this.elements.input) && !focusedElements.includes(this.elements.calendarTriggerButton) && !focusedElements.includes(this.elements.calendar)) {
-      this.showCalendar = false;
+      this.isOpen = false;
     }
   }
   #onPopoverClose() {
-    this.showCalendar = false;
+    this.isOpen = false;
     this.elements.input.blur();
   }
   #dispatchOnChangeEvent() {
     const event = new Event('change', { composed: true, bubbles: true, cancelable: true });
     this.dispatchEvent(event);
     return event;
-  }
-  /**
-   * @deprecated use dom.validation.checkValidity instead
-   */
-  triggerInputValidation(showError = true) {
-    // this method is for use out of component  for example if user click on submit button and developer want to check if all fields are valid
-    //takeAction determine if we want to show user error in web component default Manner or developer will handle it by himself
-    return this.#checkValidity(showError);
   }
   #getInsideValidations() {
     const validationList: ValidationItem<ValidationValue>[] = [];
@@ -1172,29 +1181,29 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.#updateCalendarView();
   }
   #isCalendarButtonClickEventIsAfterFocusEvent = false;
-  #onCalendarButtonFocused(e: FocusEvent) {
+  #onCalendarButtonFocus(e: FocusEvent) {
     const prevFocused = e.relatedTarget;
-    if (this.showCalendar && prevFocused && [this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(prevFocused)) {
+    if (this.isOpen && prevFocused && [this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(prevFocused)) {
       //if calendar was displayed but user click on icon we hide it here
       (prevFocused as HTMLInputElement).focus();
-      this.showCalendar = false;
+      this.isOpen = false;
     } else {
       // if user focus on calendar button from outside of calendar area we show calendar
       this.#isCalendarButtonClickEventIsAfterFocusEvent = true;
-      this.showCalendar = true;
+      this.isOpen = true;
     }
 
   }
   #onCalendarButtonBlur(e: FocusEvent) {
     if (![this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(e.relatedTarget!)) {
-      this.showCalendar = false;
+      this.isOpen = false;
     }
   }
   #onCalendarButtonClick() {
     const focusedElement = this.shadowRoot?.activeElement;
     if (focusedElement && !this.#isCalendarButtonClickEventIsAfterFocusEvent && focusedElement == this.elements.calendarTriggerButton) {
       //check if this click is event exactly after focus or not if its after focus we just pass but if its not and its a second click we close menu or reopen menu if closed before
-      this.showCalendar = !this.showCalendar;
+      this.isOpen = !this.isOpen;
     }
     this.#isCalendarButtonClickEventIsAfterFocusEvent = false;
   }
@@ -1202,13 +1211,13 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const target = e.target as JBCalendarWebComponent;
     const { year, month, day } = target.value;
     if (year && month && day) {
-      const prevValueDate = structuredClone(this.valueInDate);
+      const prevValueDate = structuredClone(this.valueAsDate);
       const wasDirty = this.#isDirty;
       this.#isDirty = true;
       const { hour, minute, millisecond, second } = this.#valueObject.time;
       this.#setDateValueFromNumberBaseOnInputType(year, month, day, hour, minute, second, millisecond);
       this.#updateInputTextFromValue();
-      this.showCalendar = false;
+      this.isOpen = false;
       this.#callOnDateSelect();
       this.#checkValidity(true);
       const dispatchedEvent = this.#dispatchOnChangeEvent();
@@ -1308,6 +1317,9 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
   get validationMessage() {
     return this.#internals!.validationMessage;
+  }
+  get validity() {
+    return this.#internals?.validity;
   }
 }
 defineWebComponent('jb-date-input', JBDateInputWebComponent);

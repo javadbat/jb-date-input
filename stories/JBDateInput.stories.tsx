@@ -63,7 +63,7 @@ export const ImperativeMethods: Story = {
     dateInput.value = '';
     dateInput.inputType = 'JALALI';
     dateInput.setCalendarDefaultDateView(1360, 5, 'JALALI');
-    dateInput.showCalendar = true;
+    dateInput.isOpen = true;
     await waitFor(() => {
       expect(calendar.data.selectedYear).toBe(1360);
       expect(calendar.data.selectedMonth).toBe(5);
@@ -73,7 +73,6 @@ export const ImperativeMethods: Story = {
     dateInput.value = '';
     expect(dateInput.checkValidity()).toBe(false);
     expect(dateInput.reportValidity()).toBe(false);
-    expect(dateInput.triggerInputValidation(false)).toBeDefined();
     dateInput.clearValidationError();
     dateInput.focus();
     expect(document.activeElement).toBe(dateInput);
@@ -252,10 +251,10 @@ export const Jalali: Story = {
     await userEvent.type(input, '1402/05/12');
 
     await waitFor(() => {
-      expect(dateInput.showCalendar).toBe(true);
+      expect(dateInput.isOpen).toBe(true);
       expect(getCalendar(dateInput).inputType).toBe('JALALI');
-      expect(dateInput.inputValue).toBe('1402/05/12');
-      expect(dateInput.valueInDate).toBeTruthy();
+      expect(dateInput.displayValue).toBe('1402/05/12');
+      expect(dateInput.valueAsDate).toBeTruthy();
     });
   }
 };
@@ -272,9 +271,9 @@ export const Gregorian: Story = {
     await userEvent.type(input, '2024/02/29');
 
     await waitFor(() => {
-      expect(dateInput.showCalendar).toBe(true);
+      expect(dateInput.isOpen).toBe(true);
       expect(getCalendar(dateInput).inputType).toBe('GREGORIAN');
-      expect(dateInput.inputValue).toBe('2024/02/29');
+      expect(dateInput.displayValue).toBe('2024/02/29');
     });
 
     const typedValue = dateInput.value;
@@ -316,11 +315,11 @@ export const JalaliWithPersianSetup: Story = {
     dir: "rtl"
   },
   args: {
-    label: "تاریخ جلالی",
+    label: "ØªØ§Ø±ÛŒØ® Ø¬Ù„Ø§Ù„ÛŒ",
     inputType: "JALALI",
-    direction: 'rtl',
+    dir: 'rtl',
     showPersianNumber: true,
-    message: "تاریخ جلالی با اعداد فارسی و به صورت راست به چپ"
+    message: "ØªØ§Ø±ÛŒØ® Ø¬Ù„Ø§Ù„ÛŒ Ø¨Ø§ Ø§Ø¹Ø¯Ø§Ø¯ ÙØ§Ø±Ø³ÛŒ Ùˆ Ø¨Ù‡ ØµÙˆØ±Øª Ø±Ø§Ø³Øª Ø¨Ù‡ Ú†Ù¾"
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
@@ -333,7 +332,7 @@ export const JalaliWithPersianSetup: Story = {
     await waitFor(() => {
       expect(dateInput.showPersianNumber).toBe(true);
       expect(calendar.showPersianNumber).toBe(true);
-      expect(hasPersianDigits(dateInput.inputValue)).toBe(true);
+      expect(hasPersianDigits(dateInput.displayValue)).toBe(true);
       expect(hasPersianDigits(getCalendarShadow(calendar).querySelector('.navigator-title .year')?.textContent ?? '')).toBe(true);
     });
   }
@@ -371,7 +370,7 @@ export const Placeholder: Story = {
   args: {
     label: "date",
     placeholder: "please enter your date",
-    direction: "ltr",
+    dir: "ltr",
   }
 };
 
@@ -381,14 +380,14 @@ export const WithDefaultCalendarDate: Story = {
     valueType: "GREGORIAN",
     inputType: "JALALI",
     format: "YYYY/MM/DD",
-    direction: "ltr",
+    dir: "ltr",
     calendarDefaultDateView: { year: 1360, month: 5 },
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
     const calendar = getCalendar(dateInput);
 
-    dateInput.showCalendar = true;
+    dateInput.isOpen = true;
 
     await waitFor(() => {
       expect(calendar.data.selectedYear).toBe(1360);
@@ -403,7 +402,7 @@ export const PersianNumber: Story = {
     valueType: "GREGORIAN",
     inputType: "JALALI",
     format: "YYYY/MM/DD",
-    direction: "ltr",
+    dir: "ltr",
     showPersianNumber: true,
     calendarDefaultDateView: { year: 1360, month: 5 },
   },
@@ -412,11 +411,11 @@ export const PersianNumber: Story = {
     const calendar = getCalendar(dateInput);
 
     dateInput.value = '1360/05/12';
-    dateInput.showCalendar = true;
+    dateInput.isOpen = true;
 
     await waitFor(() => {
       expect(dateInput.showPersianNumber).toBe(true);
-      expect(hasPersianDigits(dateInput.inputValue)).toBe(true);
+      expect(hasPersianDigits(dateInput.displayValue)).toBe(true);
       expect(hasPersianDigits(getCalendarShadow(calendar).querySelector('.navigator-title .year')?.textContent ?? '')).toBe(true);
     });
   }
@@ -427,18 +426,18 @@ export const CustomMonthName: Story = {
     valueType: "GREGORIAN",
     inputType: "JALALI",
     jalaliMonthList: [
-      "حَمَل",
-      "ثَور",
-      "جَوزا",
-      "سَرَطان",
-      "اَسَد",
-      "سُنبُله",
-      "میزان",
-      "عَقرَب",
-      "قَوس",
-      "جَدْی",
-      "دَلو",
-      "حوت",
+      "Ø­ÙŽÙ…ÙŽÙ„",
+      "Ø«ÙŽÙˆØ±",
+      "Ø¬ÙŽÙˆØ²Ø§",
+      "Ø³ÙŽØ±ÙŽØ·Ø§Ù†",
+      "Ø§ÙŽØ³ÙŽØ¯",
+      "Ø³ÙÙ†Ø¨ÙÙ„Ù‡",
+      "Ù…ÛŒØ²Ø§Ù†",
+      "Ø¹ÙŽÙ‚Ø±ÙŽØ¨",
+      "Ù‚ÙŽÙˆØ³",
+      "Ø¬ÙŽØ¯Ù’ÛŒ",
+      "Ø¯ÙŽÙ„Ùˆ",
+      "Ø­ÙˆØª",
     ],
   },
   play: async ({ canvasElement, args }) => {
@@ -446,7 +445,7 @@ export const CustomMonthName: Story = {
     const calendar = getCalendar(dateInput);
     const shadow = getCalendarShadow(calendar);
 
-    dateInput.showCalendar = true;
+    dateInput.isOpen = true;
     await userEvent.click(shadow.querySelector<HTMLElement>('.navigator-title .month')!);
 
     await waitFor(() => {
@@ -459,7 +458,7 @@ export const Required: Story = {
     label: "required field",
     message: "please focus and then unfocus the input to see require validation message",
     required: true,
-    direction: "ltr",
+    dir: "ltr",
   },
 };
 
@@ -490,7 +489,7 @@ export const OverflowWithinParent: Story = {
       const ref = useRef<HTMLDivElement>(null);
       return (
         <div ref={ref} style={{ height: "10rem", border: "solid 1px #666", overflow: "hidden" }}>
-          {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
+          {/* ðŸ‘‡ Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
           <JBDateInput {...args} overflowRef={ref} />
         </div>
       );
@@ -542,7 +541,7 @@ export const ValueSetGet: Story = {
 
     await waitFor(() => {
       expect(dateInput.value).not.toBe('');
-      expect(dateInput.inputValue).not.toBe('');
+      expect(dateInput.displayValue).not.toBe('');
       expect(getCalendar(dateInput).value.year).toBeTruthy();
     });
   }
@@ -650,7 +649,7 @@ export const GregorianMinMaxTest: Story = {
     inputType: "GREGORIAN",
     min: "2020-09-05T08:51:23.176Z",
     max: "2020-10-15T08:51:23.176Z",
-    direction: "ltr",
+    dir: "ltr",
   }
 };
 
@@ -674,7 +673,7 @@ export const JalaliTest: Story = {
     return (
       <div>
         <JBDateInput name="first-date-input" value={value} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
-        <JBDateInput name="first-date-input" showPersianNumber={true} value={value} label={`${args.label} با اعداد فارسی `} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
+        <JBDateInput name="first-date-input" showPersianNumber={true} value={value} label={`${args.label} Ø¨Ø§ Ø§Ø¹Ø¯Ø§Ø¯ ÙØ§Ø±Ø³ÛŒ `} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
         <div>
           <br /><br />valueType is {args.valueType}
           <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
@@ -690,7 +689,7 @@ export const JalaliTest: Story = {
         <h3>test custom validation</h3>
         <JBDateInput validationList={validationList} value={value} onChange={e => { valueSetter(e.target.value); }} onSelect={e => { valueSetter(e.target.value); }} {...args}></JBDateInput>
         <h3>test via JS Date type value</h3>
-        <JBDateInput value={dateValue} onChange={(e) => setDateValue(e.target.valueInDate as Date)}></JBDateInput>
+        <JBDateInput value={dateValue} onChange={(e) => setDateValue(e.target.valueAsDate as Date)}></JBDateInput>
       </div>
     );
   },
@@ -750,7 +749,7 @@ export const JalaliMinMaxTestWithCustomFormat: Story = {
 export const TimeStampTest: Story = {
   render: (args) => {
     const [setValue, setValueSetter] = useState<string | null>(null);
-    const valueInDate = useMemo(() => {
+    const valueAsDate = useMemo(() => {
       if (setValue) {
         return new Date(Number(setValue)).toString();
       } else {
@@ -769,7 +768,7 @@ export const TimeStampTest: Story = {
           <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
           <br /><br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
           <br /><br />Your chosen date is: {setValue}
-          <br /><br />Your chosen date in greg is: {valueInDate}
+          <br /><br />Your chosen date in greg is: {valueAsDate}
         </div>
       </div>
     );
@@ -833,15 +832,15 @@ export const GregorianInputTest: Story = {
       expect(dateInput.inputType).toBe('GREGORIAN');
       expect(dateInput.valueType).toBe('GREGORIAN');
       expect(dateInput.value).toContain('2024');
-      expect(dateInput.valueInDate).toBeTruthy();
+      expect(dateInput.valueAsDate).toBeTruthy();
     });
   }
 };
 
 export const RightToLeftTest: Story = {
   args: {
-    label: "راست به چپ",
-    style: { direction: "rtl" }
+    label: "Ø±Ø§Ø³Øª Ø¨Ù‡ Ú†Ù¾",
+    dir: "rtl"
   }
 }
 export const Headless: Story = {
@@ -918,7 +917,7 @@ export const WithoutIcon: Story = {
     label: "date",
     valueType: "GREGORIAN",
     inputType: "JALALI",
-    direction: "ltr",
+    dir: "ltr",
     style: { "--jb-date-input-calendar-trigger-display": "none" } as CSSProperties,
   }
 };
@@ -926,17 +925,17 @@ export const WithoutIcon: Story = {
 export const WithInlineSections: Story = {
   render: (args) => (
     <JBDateInput {...args}>
-      <div slot="inline-start-section" style={{ height: "1.5rem", borderInlineEnd: "2px solid #262626", paddingInline: "0.5rem" }}>
-        🎉Birthday
+      <div slot="inline-start" style={{ height: "1.5rem", borderInlineEnd: "2px solid #262626", paddingInline: "0.5rem" }}>
+        ðŸŽ‰Birthday
       </div>
-      <div slot="inline-end-section">⭐</div>
+      <div slot="inline-end">â­</div>
     </JBDateInput>
   ),
   args: {
     label: "date",
     valueType: "GREGORIAN",
     inputType: "JALALI",
-    direction: "ltr",
+    dir: "ltr",
   }
 };
 

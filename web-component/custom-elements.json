@@ -113,10 +113,10 @@
               }
             },
             {
-              "name": "direction",
-              "description": "Direction forwarded to the internal calendar.",
+              "name": "dir",
+              "description": "Native layout direction inherited by the input and internal calendar.",
               "type": {
-                "text": "'ltr' | 'rtl' | string"
+                "text": "'ltr' | 'rtl'"
               }
             },
             {
@@ -160,7 +160,7 @@
             },
             {
               "kind": "field",
-              "name": "valueInDate",
+              "name": "valueAsDate",
               "description": "Current complete value as a JavaScript Date, or null when the date is empty or incomplete.",
               "type": {
                 "text": "Date | null"
@@ -169,7 +169,7 @@
             },
             {
               "kind": "field",
-              "name": "inputValue",
+              "name": "displayValue",
               "description": "Rendered typed input text in YYYY/MM/DD display format.",
               "type": {
                 "text": "string"
@@ -252,7 +252,7 @@
             },
             {
               "kind": "field",
-              "name": "showCalendar",
+              "name": "isOpen",
               "description": "Opens or closes the internal calendar popover.",
               "type": {
                 "text": "boolean"
@@ -389,6 +389,18 @@
             }
           ],
           "methods": [
+            {
+              "name": "reset",
+              "description": "Restores initialValue and clears displayed validation."
+            },
+            {
+              "name": "open",
+              "description": "Opens the internal calendar popover."
+            },
+            {
+              "name": "close",
+              "description": "Closes the internal calendar popover."
+            },
             {
               "name": "setFormat",
               "description": "Sets the date value format used for value, min, and max string parsing.",
@@ -531,23 +543,6 @@
               }
             },
             {
-              "name": "triggerInputValidation",
-              "description": "Deprecated. Use validation.checkValidity(), checkValidity(), or reportValidity().",
-              "parameters": [
-                {
-                  "name": "showError",
-                  "type": {
-                    "text": "boolean"
-                  }
-                }
-              ],
-              "return": {
-                "type": {
-                  "text": "ValidationResult<ValidationValue> | undefined"
-                }
-              }
-            },
-            {
               "name": "clearValidationError",
               "description": "Clears the visible validation error and invalid custom state."
             }
@@ -604,11 +599,11 @@
           ],
           "slots": [
             {
-              "name": "inline-start-section",
+              "name": "inline-start",
               "description": "Content rendered at the start of the internal jb-input box."
             },
             {
-              "name": "inline-end-section",
+              "name": "inline-end",
               "description": "Content rendered after the calendar trigger inside the internal jb-input end section."
             },
             {
