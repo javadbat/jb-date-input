@@ -38,6 +38,18 @@ import '../../jb-calendar/stories/styles/style-material.css';
 import '../../jb-calendar/stories/styles/style-porcelain.css';
 import '../../jb-calendar/stories/styles/style-sunset.css';
 import '../../jb-calendar/stories/styles/style-terminal.css';
+import '../../jb-button/stories/styles/style-ant-design.css';
+import '../../jb-button/stories/styles/style-aurora.css';
+import '../../jb-button/stories/styles/style-bootstrap.css';
+import '../../jb-button/stories/styles/style-candy.css';
+import '../../jb-button/stories/styles/style-carbon.css';
+import '../../jb-button/stories/styles/style-cupertino.css';
+import '../../jb-button/stories/styles/style-fluent.css';
+import '../../jb-button/stories/styles/style-forest.css';
+import '../../jb-button/stories/styles/style-material.css';
+import '../../jb-button/stories/styles/style-porcelain.css';
+import '../../jb-button/stories/styles/style-sunset.css';
+import '../../jb-button/stories/styles/style-terminal.css';
 import './styles/style-ant-design.css';
 import './styles/style-aurora.css';
 import './styles/style-bootstrap.css';
@@ -110,7 +122,7 @@ export const Gallery: Story = {
             gap: "0.75rem",
             minWidth: 0,
             padding: "1rem",
-            background: "var(--jb-surface, #ffffff)",
+            background: "var(--jb-surface-primary, #ffffff)",
             border: "1px solid var(--jb-border-color, #e5e7eb)",
             borderRadius: "0.75rem",
             boxShadow: "0 0.75rem 1.75rem oklch(0% 0 0 / 0.08)" }}
