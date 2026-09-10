@@ -2,7 +2,7 @@
     "compilerOptions": {
         
         "rootDir": "./lib",
-        "declarationDir": "./dist",
+        "outDir": "./dist",
     },
     "include": [
         "lib/**/*.ts",

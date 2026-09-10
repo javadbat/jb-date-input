@@ -2,7 +2,7 @@
     "compilerOptions": {
         
         "rootDir": "./lib",
-        "declarationDir": "./dist",
+        "outDir": "./dist",
         "skipLibCheck":true,
         "allowJs": false
     },
