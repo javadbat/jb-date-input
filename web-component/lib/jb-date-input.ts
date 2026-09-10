@@ -1,27 +1,51 @@
-import { defineWebComponent, JBBaseComponent, createInputEvent, createKeyboardEvent, createFocusEvent, listenAndSilentEvent, isMobile, enToFaDigits, faToEnDigits, parseBooleanAttribute } from "jb-core";
-import CSS from './jb-date-input.css';
-import VariablesCSS from './variables.css';
-import 'jb-calendar';
-import 'jb-input';
-import 'jb-popover';
+import {
+  defineWebComponent,
+  JBBaseComponent,
+  createInputEvent,
+  createKeyboardEvent,
+  createFocusEvent,
+  listenAndSilentEvent,
+  isMobile,
+  enToFaDigits,
+  faToEnDigits,
+  parseBooleanAttribute,
+} from "jb-core";
+import CSS from "./jb-date-input.css";
+import VariablesCSS from "./variables.css";
+import "jb-calendar";
+import "jb-input";
+import "jb-popover";
 // eslint-disable-next-line no-duplicate-imports
-import type { InputType, JBCalendarWebComponent } from 'jb-calendar';
-import type { JBFormInputStandards } from 'jb-form';
-import { JBInputWebComponent } from 'jb-input';
-import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from 'jb-validation';
-import { registerDefaultVariables } from 'jb-core/theme';
-import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from './types.js';
-import { DateFactory } from './date-factory.js';
-import { checkMaxValidation, checkMinValidation, getDay, getEmptyValueObject, getMonth, getYear, handleBeforeInput, getFixedCaretPos, emptyInputValueString, inputFormat, inputRegex, getSelectionPart } from 'jb-date-input/module';
-import { requiredValidation } from './validations.js';
-import { renderHTML } from './render.js';
-import { InputTypes, type JBDateInputValueObject } from 'jb-date-input/module';
-import { dictionary } from './i18n';
-import { i18n } from 'jb-core/i18n';
+import type { InputType, JBCalendarWebComponent } from "jb-calendar";
+import type { JBFormInputStandards } from "jb-form";
+import { JBInputWebComponent } from "jb-input";
+import { ValidationHelper, type ValidationResult, type ValidationItem, type WithValidation, type ShowValidationErrorParameters } from "jb-validation";
+import { registerDefaultVariables } from "jb-core/theme";
+import { ValueTypes, type ElementsObject, type DateRestrictions, type ValueType, type ValidationValue, type JBCalendarValue } from "./types.js";
+import { DateFactory } from "./date-factory.js";
+import {
+  checkMaxValidation,
+  checkMinValidation,
+  getDay,
+  getEmptyValueObject,
+  getMonth,
+  getYear,
+  handleBeforeInput,
+  getFixedCaretPos,
+  emptyInputValueString,
+  inputFormat,
+  inputRegex,
+  getSelectionPart,
+} from "jb-date-input/module";
+import { requiredValidation } from "./validations.js";
+import { renderHTML } from "./render.js";
+import { InputTypes, type JBDateInputValueObject } from "jb-date-input/module";
+import { dictionary } from "./i18n";
+import { i18n } from "jb-core/i18n";
 
 export * from "./types.js";
 //headless usage exports
-export { handleBeforeInput, emptyInputValueString, getFixedCaretPos, InputTypes, type JBDateInputValueObject, type InputType, dictionary }
+export { handleBeforeInput, emptyInputValueString, getFixedCaretPos, InputTypes, type JBDateInputValueObject, type InputType, dictionary };
 
 //TODO: refactor date-input to use Temporal value as a core value so date object could be filled even with incomplete value
 //TODO: add showPicker method for html standard https://web-platform-dx.github.io/web-features-explorer/features/show-picker-input/
@@ -33,11 +57,10 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     clearValidationError: this.clearValidationError.bind(this),
     getValue: () => this.#validationValue,
     getValidations: this.#getInsideValidations.bind(this),
-    getValueString: (val) => val.text,
+    getValueString: val => val.text,
     setValidationResult: this.#setValidationResult.bind(this),
-    showValidationError: this.showValidationError.bind(this)
-  }
-  )
+    showValidationError: this.showValidationError.bind(this),
+  });
   #isAutoValidationDisabled = false;
   /**
    * component internal validation system will be disabled so you can control validation by yourself
@@ -47,14 +70,14 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
   /**
    * component internal validation system will be disabled so you can control validation by yourself
-  */
+   */
   set isAutoValidationDisabled(value: boolean) {
     this.#isAutoValidationDisabled = value;
   }
-  #dateFactory: DateFactory = new DateFactory({ inputType: (this.getAttribute("input-type") as InputTypes), valueType: this.getAttribute("value-type") as ValueTypes });
+  #dateFactory: DateFactory = new DateFactory({ inputType: this.getAttribute("input-type") as InputTypes, valueType: this.getAttribute("value-type") as ValueTypes });
   #isOpen = false;
   /**
-   * jb date input internal validation mechanism works with 
+   * jb date input internal validation mechanism works with
    */
   get validation() {
     return this.#validation;
@@ -64,7 +87,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
    */
   dateRestrictions: DateRestrictions = {
     min: null,
-    max: null
+    max: null,
   };
   #disabled = false;
   get disabled() {
@@ -84,37 +107,37 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
   /**
    * return start position of the selected text
-  */
+   */
   get selectionStart(): number | null {
     return this.elements.input.selectionStart;
   }
   /**
-  * set start position of the selected text
-  */
+   * set start position of the selected text
+   */
   set selectionStart(value: number | null) {
     this.elements.input.selectionStart = value ?? 0;
   }
   /**
-  * return end position of the selected text
-  */
+   * return end position of the selected text
+   */
   get selectionEnd(): number | null {
     return this.elements.input.selectionEnd;
   }
   /**
-  * set end position of the selected text
-  */
+   * set end position of the selected text
+   */
   set selectionEnd(value: number | null) {
     this.elements.input.selectionEnd = value ?? 0;
   }
   /**
-  * return the user selection direction
-  */
+   * return the user selection direction
+   */
   get selectionDirection(): "forward" | "backward" | "none" | null {
     return this.elements.input.selectionDirection;
   }
   /**
-  * set the user selection direction
-  */
+   * set the user selection direction
+   */
   set selectionDirection(value: "forward" | "backward" | "none" | null) {
     this.elements.input.selectionDirection = value ?? "none";
   }
@@ -140,16 +163,19 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     return this.#required;
   }
   #valueObject: JBDateInputValueObject = getEmptyValueObject();
-  get name(): string { return this.getAttribute('name') || ''; }
+  get name(): string {
+    return this.getAttribute("name") || "";
+  }
   set name(value: string | null | undefined) {
     if (value) {
-      this.setAttribute('name', value)
-    }
-    else {
-      this.removeAttribute('name')
+      this.setAttribute("name", value);
+    } else {
+      this.removeAttribute("name");
     }
   }
-  get form() { return this.#internals!.form; }
+  get form() {
+    return this.#internals!.form;
+  }
   get value(): string {
     const value = this.getDateValue();
     return value;
@@ -197,7 +223,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.#updateInputTextFromValue();
     this.#validation.reset();
     this.elements.input.validation.reset();
-    this.#internals?.setValidity({}, '');
+    this.#internals?.setValidity({}, "");
   }
   formResetCallback() {
     this.reset();
@@ -214,7 +240,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       inputObject: this.#dateFactory.getDateObjectValueBaseOnFormat(this.#sInputValue, inputFormat),
       text: this.#sInputValue,
       valueText: this.value,
-      valueObject: this.#valueObject
+      valueObject: this.#valueObject,
     };
   }
 
@@ -244,9 +270,9 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.#placeholder = value;
     this.#internals!.ariaPlaceholder = value;
     if (value !== null) {
-      this.elements.input.setAttribute("placeholder",value);
+      this.elements.input.setAttribute("placeholder", value);
     } else {
-      this.elements.input.removeAttribute("placeholder")
+      this.elements.input.removeAttribute("placeholder");
     }
     this.#updateInputTextFromValue();
   }
@@ -263,7 +289,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
   set #inputValue(value: string) {
     // it may be called before input is even initialized.
-    if(this.elements.input.value !== undefined){
+    if (this.elements.input.value !== undefined) {
       this.elements.input.value = value;
     }
   }
@@ -286,13 +312,14 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     if (value == true) {
       // Re-read inherited/CSS direction each time the picker opens.
       this.#refreshCalendarDirection();
+      this.#updateCalendarView();
       this.elements.popover.open();
-      this.elements.calendarTriggerButton.classList.add('--active');
+      this.elements.calendarTriggerButton.classList.add("--active");
       this.elements.calendarTriggerButton.setAttribute("aria-expanded", "true");
       if (this.#internals) this.#internals.ariaExpanded = "true";
     } else {
       this.elements.popover.close();
-      this.elements.calendarTriggerButton.classList.remove('--active');
+      this.elements.calendarTriggerButton.classList.remove("--active");
       this.elements.calendarTriggerButton.setAttribute("aria-expanded", "false");
       if (this.#internals) this.#internals.ariaExpanded = "false";
       // will reset calendar value to seated value of date-input
@@ -431,7 +458,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     }
   }
   get typedYear(): string {
-    return getYear(this.displayValue)
+    return getYear(this.displayValue);
   }
   get typedMonth(): string {
     return getMonth(this.displayValue);
@@ -488,30 +515,30 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.#unsubscribeLocaleChange = null;
   }
   #callOnLoadEvent() {
-    const event = new CustomEvent('load', { bubbles: true, composed: false });
+    const event = new CustomEvent("load", { bubbles: true, composed: false });
     this.dispatchEvent(event);
   }
   #callOnInitEvent() {
-    const event = new CustomEvent('init', { bubbles: true, composed: false });
+    const event = new CustomEvent("init", { bubbles: true, composed: false });
     this.dispatchEvent(event);
   }
   #initWebComponent() {
     const shadowRoot = this.attachShadow({
-      mode: 'open',
+      mode: "open",
       delegatesFocus: true,
       serializable: true,
       clonable: true,
     });
     registerDefaultVariables();
     const html = `<style>${CSS} ${VariablesCSS}</style>\n${renderHTML()}`;
-    const element = document.createElement('template');
+    const element = document.createElement("template");
     element.innerHTML = html;
     shadowRoot.appendChild(element.content.cloneNode(true));
     this.elements = {
-      input: shadowRoot.querySelector('jb-input')!,
-      calendarTriggerButton: shadowRoot.querySelector('.calendar-trigger')!,
-      calendar: shadowRoot.querySelector('jb-calendar')!,
-      popover: shadowRoot.querySelector('jb-popover')!,
+      input: shadowRoot.querySelector("jb-input")!,
+      calendarTriggerButton: shadowRoot.querySelector(".calendar-trigger")!,
+      calendar: shadowRoot.querySelector("jb-calendar")!,
+      popover: shadowRoot.querySelector("jb-popover")!,
     };
     this.#registerEventListener();
     this.#initDeviceSpecifics();
@@ -522,30 +549,30 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   #initDeviceSpecifics() {
     if (isMobile()) {
       // on mobile
-      this.elements.input.setAttribute('readonly', 'true');
+      this.elements.input.setAttribute("readonly", "true");
       //TODO: handle back button and prevent back when calendar is open
     } else {
       // on non-mobile
-      this.elements.input.removeAttribute('readonly');
+      this.elements.input.removeAttribute("readonly");
     }
   }
   #registerEventListener() {
-    this.elements.input.addEventListener('beforeinput', this.#onInputBeforeInput.bind(this));
-    listenAndSilentEvent(this.elements.input, 'focus', this.#onInputFocus.bind(this), { passive: true });
-    listenAndSilentEvent(this.elements.input, 'blur', this.#onInputBlur.bind(this), { passive: true });
-    listenAndSilentEvent(this.elements.input, 'keypress', this.#onInputKeyPress.bind(this));
-    listenAndSilentEvent(this.elements.input, 'keyup', this.#onInputKeyUp.bind(this));
-    listenAndSilentEvent(this.elements.input, 'keydown', this.#onInputKeyDown.bind(this));
+    this.elements.input.addEventListener("beforeinput", this.#onInputBeforeInput.bind(this));
+    listenAndSilentEvent(this.elements.input, "focus", this.#onInputFocus.bind(this), { passive: true });
+    listenAndSilentEvent(this.elements.input, "blur", this.#onInputBlur.bind(this), { passive: true });
+    listenAndSilentEvent(this.elements.input, "keypress", this.#onInputKeyPress.bind(this));
+    listenAndSilentEvent(this.elements.input, "keyup", this.#onInputKeyUp.bind(this));
+    listenAndSilentEvent(this.elements.input, "keydown", this.#onInputKeyDown.bind(this));
 
     //
-    this.elements.calendarTriggerButton.addEventListener('focus', this.#onCalendarButtonFocus.bind(this));
-    this.elements.calendarTriggerButton.addEventListener('blur', this.#onCalendarButtonBlur.bind(this));
-    this.elements.calendarTriggerButton.addEventListener('click', this.#onCalendarButtonClick.bind(this));
+    this.elements.calendarTriggerButton.addEventListener("focus", this.#onCalendarButtonFocus.bind(this));
+    this.elements.calendarTriggerButton.addEventListener("blur", this.#onCalendarButtonBlur.bind(this));
+    this.elements.calendarTriggerButton.addEventListener("click", this.#onCalendarButtonClick.bind(this));
     //
-    this.elements.calendar.addEventListener('select', (e) => this.#onCalendarSelect(e as CustomEvent));
-    this.elements.calendar.addEventListener('init', this.#onCalendarElementInitiated.bind(this));
-    this.elements.calendar.addEventListener('blur', this.#onCalendarBlur.bind(this), { passive: true });
-    this.elements.popover.addEventListener('close', this.#onPopoverClose.bind(this), { passive: true });
+    this.elements.calendar.addEventListener("select", e => this.#onCalendarSelect(e as CustomEvent));
+    this.elements.calendar.addEventListener("init", this.#onCalendarElementInitiated.bind(this));
+    this.elements.calendar.addEventListener("blur", this.#onCalendarBlur.bind(this), { passive: true });
+    this.elements.popover.addEventListener("close", this.#onPopoverClose.bind(this), { passive: true });
   }
   //true if all sub component initiated
   #isAllSubComponentInitiated = false;
@@ -573,15 +600,15 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       if (!this.#hasShowPersianNumberOverride) this.#setShowPersianNumber(i18n.locale.numberingSystem === "arabext");
     });
     this.#waitForComponentsLoad().then(() => {
-      const valueAttribute = this.getAttribute('value');
-      if(valueAttribute !== null){
+      const valueAttribute = this.getAttribute("value");
+      if (valueAttribute !== null) {
         this.value = valueAttribute;
       }
       this.#callOnInitEvent();
     });
   }
   static get dateInputObservedAttributes() {
-    return ['value-type', 'value', 'name', 'format', 'min', 'max', 'required', 'input-type', 'dir', 'show-persian-number', 'placeholder', 'disabled', 'error'];
+    return ["value-type", "value", "name", "format", "min", "max", "required", "input-type", "dir", "show-persian-number", "placeholder", "disabled", "error"];
   }
   static get observedAttributes() {
     return [...JBInputWebComponent.observedAttributes, ...JBDateInputWebComponent.dateInputObservedAttributes];
@@ -603,71 +630,70 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
   #onAttributeChange(name: string, value: string | null) {
     switch (name) {
-      case 'value':
+      case "value":
         this.value = value;
         break;
-      case 'name':
+      case "name":
         if (value === null) {
-          this.elements.input.removeAttribute('name');
+          this.elements.input.removeAttribute("name");
         } else {
-          this.elements.input.setAttribute('name', value);
+          this.elements.input.setAttribute("name", value);
         }
         break;
-      case 'value-type':
+      case "value-type":
         if (value !== null) {
           this.valueType = value as ValueTypes;
         }
         break;
-      case 'format':
+      case "format":
         if (value !== null) {
           this.setFormat(value);
         }
         break;
-      case 'min':
+      case "min":
         this.#setMinDate(value);
         break;
-      case 'max':
+      case "max":
         this.#setMaxDate(value);
         break;
-      case 'required':
+      case "required":
         this.required = parseBooleanAttribute(value, false);
         break;
-      case 'input-type':
+      case "input-type":
         this.#hasInputTypeOverride = value !== null;
-        this.#setInputType(value === null ? (i18n.locale.calendar === "persian" ? InputTypes.jalali : InputTypes.gregorian) : value as InputTypes);
+        this.#setInputType(value === null ? (i18n.locale.calendar === "persian" ? InputTypes.jalali : InputTypes.gregorian) : (value as InputTypes));
         break;
-      case 'dir':
+      case "dir":
         this.#refreshCalendarDirection();
         break;
-      case 'show-persian-number':
+      case "show-persian-number":
         this.#hasShowPersianNumberOverride = value !== null;
         this.#setShowPersianNumber(parseBooleanAttribute(value, i18n.locale.numberingSystem === "arabext"));
         break;
-      case 'placeholder':
+      case "placeholder":
         this.placeholder = value;
         break;
-      case 'disabled':
+      case "disabled":
         this.disabled = parseBooleanAttribute(value, false);
         break;
-      case 'error':
+      case "error":
         this.reportValidity();
         break;
     }
-
   }
   /**
    * set the date value string format for parsing and converting.
-   * @param newFormat 
+   * @param newFormat
    */
   setFormat(newFormat: string) {
     //override new format base on user config
     this.#dateFactory.valueFormat = newFormat;
     //if we have min and max  date settled before format set we set them again so it works
-    const minDate = this.getAttribute('min');
+    const minDate = this.getAttribute("min");
     if (minDate) {
       this.#setMinDate(minDate);
     }
-    const maxDate = this.getAttribute('max');
+    const maxDate = this.getAttribute("max");
     if (maxDate) {
       this.#setMaxDate(maxDate);
     }
@@ -696,9 +722,8 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
         this.elements.calendar.dateRestrictions.min = minDate;
       }
     } else {
-      console.error(`min date ${dateInput} is not valid and it will be ignored`, '\n', `please provide min date in format : ${this.#dateFactory.valueFormat}`);
+      console.error(`min date ${dateInput} is not valid and it will be ignored`, "\n", `please provide min date in format : ${this.#dateFactory.valueFormat}`);
     }
-
   }
   setMaxDate(maxDate: string | Date | null) {
     this.#setMaxDate(maxDate);
@@ -724,7 +749,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
         this.elements.calendar.dateRestrictions.max = maxDate;
       }
     } else {
-      console.error(`max date ${dateInput} is not valid and it will be ignored`, '\n', `please provide max date in format : ${this.#dateFactory.valueFormat}`);
+      console.error(`max date ${dateInput} is not valid and it will be ignored`, "\n", `please provide max date in format : ${this.#dateFactory.valueFormat}`);
     }
   }
   /**
@@ -734,12 +759,12 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.#dispatchOnInputEvent(e);
   }
   #dispatchOnInputEvent(e: InputEvent): void {
-    const event = createInputEvent('input', e, { cancelable: false });
+    const event = createInputEvent("input", e, { cancelable: false });
     this.dispatchEvent(event);
   }
   #dispatchBeforeInputEvent(e: InputEvent): boolean {
     e.stopPropagation();
-    const event = createInputEvent('beforeinput', e, { cancelable: true });
+    const event = createInputEvent("beforeinput", e, { cancelable: true });
     this.dispatchEvent(event);
     if (event.defaultPrevented) {
       e.preventDefault();
@@ -747,7 +772,6 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     return event.defaultPrevented;
   }
   #onInputBeforeInput(e: InputEvent) {
-
     const isPrevented = this.#dispatchBeforeInputEvent(e);
     if (isPrevented) {
       return;
@@ -775,13 +799,13 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
         data: e.data,
         inputType: e.inputType,
       },
-    },);
+    });
     e.preventDefault();
     this.#inputValue = beforeInputRes.value;
     target.setSelectionRange(beforeInputRes.selectionStart, beforeInputRes.selectionEnd);
     //show placeholder if input were empty
-    if (this.placeholder && target.value == emptyInputValueString) {
-      this.#inputValue = "";
+    if (target.value == emptyInputValueString) {
+      this.#clearValue();
     }
     if (this.#sInputValue !== previousInputValue) {
       this.#isDirty = true;
@@ -792,7 +816,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
   #onInputKeyPress(e: KeyboardEvent) {
     e.stopPropagation();
-    const keyPressEvent = createKeyboardEvent('keypress', e, { cancelable: false });
+    const keyPressEvent = createKeyboardEvent("keypress", e, { cancelable: false });
     this.dispatchEvent(keyPressEvent);
   }
   #onInputKeyUp(e: KeyboardEvent) {
@@ -810,7 +834,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       e.preventDefault();
       return;
     }
-    const target = (e.target as JBInputWebComponent);
+    const target = e.target as JBInputWebComponent;
     if (e.keyCode == 38 || e.keyCode == 40) {
       //up and down button
       this.#isDirty = true;
@@ -829,7 +853,6 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       }
       e.preventDefault();
     }
-
   }
   #dispatchKeyDownEvent(e: KeyboardEvent) {
     e.stopPropagation();
@@ -841,7 +864,15 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear + interval, currentMonth, currentDay, hour ?? undefined, minute ?? undefined, second ?? undefined, millisecond ?? undefined);
+    this.#setDateValueFromNumberBaseOnInputType(
+      currentYear + interval,
+      currentMonth,
+      currentDay,
+      hour ?? undefined,
+      minute ?? undefined,
+      second ?? undefined,
+      millisecond ?? undefined,
+    );
     this.#updateInputTextFromValue();
   }
   #addMonth(interval: number) {
@@ -849,7 +880,15 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth + interval, currentDay, hour ?? undefined, minute ?? undefined, second ?? undefined, millisecond ?? undefined);
+    this.#setDateValueFromNumberBaseOnInputType(
+      currentYear,
+      currentMonth + interval,
+      currentDay,
+      hour ?? undefined,
+      minute ?? undefined,
+      second ?? undefined,
+      millisecond ?? undefined,
+    );
     this.#updateInputTextFromValue();
   }
   #addDay(interval: number) {
@@ -857,7 +896,15 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const currentMonth = this.monthDisplayValue || 1;
     const currentDay = this.dayDisplayValue || 1;
     const { hour, minute, millisecond, second } = this.#valueObject.time;
-    this.#setDateValueFromNumberBaseOnInputType(currentYear, currentMonth, currentDay + interval, hour ?? undefined, minute ?? undefined, second ?? undefined, millisecond ?? undefined);
+    this.#setDateValueFromNumberBaseOnInputType(
+      currentYear,
+      currentMonth,
+      currentDay + interval,
+      hour ?? undefined,
+      minute ?? undefined,
+      second ?? undefined,
+      millisecond ?? undefined,
+    );
     this.#updateInputTextFromValue();
   }
   /**
@@ -870,8 +917,9 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
    * @description when user change value this function called and update inner value object base on user value
    */
   #setDateValue(value: string | Date | null) {
-    if (value === null) { this.#clearValue(); }
-    if (typeof value == "string") {
+    if (value === null && value === "") {
+      this.#clearValue();
+    }else if (typeof value == "string") {
       switch (this.#dateFactory.valueType) {
         case "GREGORIAN":
         case "JALALI":
@@ -886,9 +934,18 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     }
     this.#updateFormValue();
   }
+  /**
+   * called when we want empty null value (not initial value)
+   */
   #clearValue() {
     // mean we reset calendar value and set it to null
     this.#valueObject = getEmptyValueObject();
+    if (this.elements.calendar.value?.day) {
+      this.elements.calendar.value = null;
+    }
+    if (this.placeholder) {
+      this.#inputValue = "";
+    }
   }
   #updateCalendarView() {
     //update jb-calendar view base on current data
@@ -901,7 +958,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       //if we have all data we update calendar value
       this.elements.calendar.value = value;
     } else if (value.year && value.month) {
-      //if we dont have all data we just set view year and month
+      //if we don't have all data we just set view year and month
       this.elements.calendar.data.selectedYear = value.year;
       this.elements.calendar.data.selectedMonth = value.month;
     }
@@ -932,11 +989,18 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     const dateInObject = this.#dateFactory.getDateObjectValueBaseOnFormat(value);
 
     if (dateInObject.year && dateInObject.month && dateInObject.day) {
-
-      this.#setDateValueFromNumbers(Number(dateInObject.year), Number(dateInObject.month), Number(dateInObject.day), Number(dateInObject.hour ?? '00'), Number(dateInObject.minute ?? '00'), Number(dateInObject.second ?? '00'), Number(dateInObject.millisecond ?? '000'));
+      this.#setDateValueFromNumbers(
+        Number(dateInObject.year),
+        Number(dateInObject.month),
+        Number(dateInObject.day),
+        Number(dateInObject.hour ?? "00"),
+        Number(dateInObject.minute ?? "00"),
+        Number(dateInObject.second ?? "00"),
+        Number(dateInObject.millisecond ?? "000"),
+      );
     } else {
-      if (value !== null && value !== undefined && value !== '') {
-        console.error('your inputted Date doest match default or your specified Format');
+      if (value !== null && value !== undefined && value !== "") {
+        console.error("your inputted Date doest match default or your specified Format");
       } else {
         this.#clearValue();
       }
@@ -954,11 +1018,19 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   }
   /**
    * set value object base on currently inputType (call this function when date is complete)
-   * @param {number} year jalali or gregorian year 
+   * @param {number} year jalali or gregorian year
    * @param {number} month jalali or gregorian month
    * @param {number} day jalali or gregorian day
    */
-  #setDateValueFromNumberBaseOnInputType(year: number, month: number, day: number, hour?: number | null, minute?: number | null, second?: number | null, millisecond?: number | null) {
+  #setDateValueFromNumberBaseOnInputType(
+    year: number,
+    month: number,
+    day: number,
+    hour?: number | null,
+    minute?: number | null,
+    second?: number | null,
+    millisecond?: number | null,
+  ) {
     //TODO: refactor this component to use Temporal value as a core object
     const prevYear = this.yearBaseOnInputType;
     const prevMonth = this.monthBaseOnInputType;
@@ -976,7 +1048,9 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     }
     //
     let str = inputFormat;
-    let yearString = '    ', monthString = '  ', dayString = '  ';
+    let yearString = "    ",
+      monthString = "  ",
+      dayString = "  ";
     if (year != null && !Number.isNaN(year)) {
       if (year < 10) {
         yearString = `000${year}`;
@@ -1008,12 +1082,12 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       monthString = enToFaDigits(monthString);
       dayString = enToFaDigits(dayString);
     }
-    str = str.replace('YYYY', yearString).replace('MM', monthString).replace('DD', dayString);
+    str = str.replace("YYYY", yearString).replace("MM", monthString).replace("DD", dayString);
     this.#inputValue = str;
   }
   /**
    * called when input text change and we want to update value object base on input text
-   * @param {string}inputString 
+   * @param {string}inputString
    */
   #updateValueFromInputString(inputString: string) {
     inputRegex.lastIndex = 0;
@@ -1039,14 +1113,19 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.isOpen = true;
   }
   #handleCaretPosOnInputFocus() {
-    const newCaretPos = getFixedCaretPos({ inputValue: this.displayValue, selectionStart: this.elements.input.selectionStart })
+    const newCaretPos = getFixedCaretPos({ inputValue: this.displayValue, selectionStart: this.elements.input.selectionStart });
     if (newCaretPos !== null) {
       if (newCaretPos !== this.elements.input.selectionStart) {
         this.elements.input.setSelectionRange(newCaretPos, newCaretPos);
       }
     }
-    const caretPos = newCaretPos ?? this.elements.input.selectionStart ?? 0
-    const selectionPart = getSelectionPart(caretPos)
+    const caretPos = newCaretPos ?? this.elements.input.selectionStart ?? 0;
+    if (this.#isCalendarDefaultDateView && !this.typedYear.trim() && !this.typedMonth.trim() && !this.typedDay.trim()) {
+      //when user set calendar default year and month we ask user to select day
+      this.elements.calendar.activeSection = "DAY";
+      return;
+    }
+    const selectionPart = getSelectionPart(caretPos);
     if (selectionPart) {
       this.elements.calendar.activeSection = selectionPart;
     }
@@ -1070,8 +1149,8 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   #onInputFocus(e: FocusEvent) {
     this.#lastInputStringValue = this.#sInputValue;
     this.focus();
-    //dont add once:true here because we need to detect every caret pos change during the type and then r r input on blur
-    document.addEventListener('selectionchange', this.#onDocumentSelectionChange);
+    //don't add once:true here because we need to detect every caret pos change during the type and then r r input on blur
+    document.addEventListener("selectionchange", this.#onDocumentSelectionChange);
     this.#dispatchFocusEvent(e);
   }
   #dispatchFocusEvent(e: FocusEvent) {
@@ -1080,7 +1159,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.dispatchEvent(event);
   }
   #onInputBlur(e: FocusEvent) {
-    document.removeEventListener('selectionchange', this.#onDocumentSelectionChange);
+    document.removeEventListener("selectionchange", this.#onDocumentSelectionChange);
     const focusedElement = e.relatedTarget;
     if (focusedElement !== this.elements.calendar && focusedElement !== this.elements.calendarTriggerButton) {
       this.isOpen = false;
@@ -1117,7 +1196,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.elements.input.blur();
   }
   #dispatchOnChangeEvent() {
-    const event = new Event('change', { composed: true, bubbles: true, cancelable: true });
+    const event = new Event("change", { composed: true, bubbles: true, cancelable: true });
     this.dispatchEvent(event);
     return event;
   }
@@ -1127,7 +1206,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       validationList.push({
         validator: undefined,
         message: this.getAttribute("error")!,
-        stateType: "customError"
+        stateType: "customError",
       });
     }
     if (this.required) {
@@ -1135,20 +1214,20 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     }
     if (this.dateRestrictions.min) {
       validationList.push({
-        validator: (value) => {
+        validator: value => {
           return checkMinValidation(new Date(value.valueObject.timeStamp!), this.dateRestrictions.min!);
         },
         message: dictionary.get(i18n, "minRangeViolation"),
-        stateType: "rangeUnderflow"
+        stateType: "rangeUnderflow",
       });
     }
     if (this.dateRestrictions.max) {
       validationList.push({
-        validator: (value) => {
+        validator: value => {
           return checkMaxValidation(new Date(value.valueObject.timeStamp!), this.dateRestrictions.max!);
         },
         message: dictionary.get(i18n, "maxRangeViolation"),
-        stateType: "rangeOverflow"
+        stateType: "rangeOverflow",
       });
     }
 
@@ -1163,7 +1242,6 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.elements.input?.clearValidationError?.();
     this.#internals?.states?.delete("invalid");
     if (this.#internals) this.#internals.ariaInvalid = "false";
-
   }
   #onCalendarElementInitiated() {
     this.elements.calendar.dateRestrictions.min = this.dateRestrictions.min;
@@ -1176,7 +1254,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       jalali: {
         year: this.#dateFactory.nicheNumbers.calendarYearOnEmpty.jalali,
         month: this.#dateFactory.nicheNumbers.calendarMonthOnEmpty.jalali,
-      }
+      },
     };
     this.#updateCalendarView();
   }
@@ -1192,7 +1270,6 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       this.#isCalendarButtonClickEventIsAfterFocusEvent = true;
       this.isOpen = true;
     }
-
   }
   #onCalendarButtonBlur(e: FocusEvent) {
     if (![this.elements.calendar as EventTarget, this.elements.input as EventTarget].includes(e.relatedTarget!)) {
@@ -1228,11 +1305,10 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
         this.#isDirty = wasDirty;
       }
     }
-
   }
   #callOnDateSelect() {
     //when user pick a day in calendar modal
-    const event = new CustomEvent('select');
+    const event = new CustomEvent("select");
     this.dispatchEvent(event);
   }
   async onInputTypeChange() {
@@ -1244,6 +1320,10 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.#updateInputTextFromValue();
   }
   /**
+   * needed for ui logic if user set calendar default value (used in input selection change)
+   */
+  #isCalendarDefaultDateView = false;
+  /**
    * set opened calendar date when date input value is empty
    * @public
    * @param  year which year you want to show in empty state in calendar.
@@ -1252,6 +1332,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
    */
   setCalendarDefaultDateView(year: number, month: number, dateType: InputType | undefined) {
     if (year && month) {
+      this.#isCalendarDefaultDateView = true;
       this.#dateFactory.setCalendarDefaultDateView(year, month, dateType);
       this.#updateCalendarView();
     }
@@ -1259,17 +1340,17 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   #checkValidity(showError: boolean) {
     if (!this.isAutoValidationDisabled) {
       if (this.#internals?.states.has("invalid")) {
-        // if we currently showing error to user it make sure error get updated (when failed validation changed of function return different string as an error) 
+        // if we currently showing error to user it make sure error get updated (when failed validation changed of function return different string as an error)
         showError = true;
       }
       return this.#validation.checkValidity({ showError });
     }
   }
   /**
- * @public
- * @description this method used to check for validity but doesn't show error to user and just return the result
- * this method used by #internal of component
- */
+   * @public
+   * @description this method used to check for validity but doesn't show error to user and just return the result
+   * this method used by #internal of component
+   */
   checkValidity(): boolean {
     const validationResult = this.#validation.checkValiditySync({ showError: false });
     if (!validationResult.isAllValid) {
@@ -1278,9 +1359,9 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     return validationResult.isAllValid;
   }
   /**
-  * @public
- * @description this method used to check for validity and show error to user
- */
+   * @public
+   * @description this method used to check for validity and show error to user
+   */
   reportValidity(): boolean {
     const validationResult = this.#validation.checkValiditySync({ showError: true });
     if (!validationResult.isAllValid) {
@@ -1289,7 +1370,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     return validationResult.isAllValid;
   }
   #dispatchInvalidEvent() {
-    const event = new CustomEvent('invalid');
+    const event = new CustomEvent("invalid");
     this.dispatchEvent(event);
   }
   /**
@@ -1297,19 +1378,20 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
    */
   #setValidationResult(result: ValidationResult<ValidationValue>) {
     if (result.isAllValid) {
-      this.#internals?.setValidity({}, '');
+      this.#internals?.setValidity({}, "");
     } else {
       const states: ValidityStateFlags = {};
       let message = "";
-      result.validationList.forEach((res) => {
+      result.validationList.forEach(res => {
         if (!res.isValid) {
           if (res.validation.stateType) {
             states[res.validation.stateType] = true;
           } else {
             states["customError"] = true;
           }
-          if (message == '') { message = res.message ?? ""; }
-
+          if (message == "") {
+            message = res.message ?? "";
+          }
         }
       });
       this.#internals?.setValidity(states, message);
@@ -1322,7 +1404,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     return this.#internals?.validity;
   }
 }
-defineWebComponent('jb-date-input', JBDateInputWebComponent);
+defineWebComponent("jb-date-input", JBDateInputWebComponent);
 
 declare global {
   interface HTMLElementTagNameMap {
