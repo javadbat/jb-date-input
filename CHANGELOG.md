@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.0.1] - 2026-09-13
+
+- fix null value assignment not reset all aspect
+
 ## [7.0.0] - 2026-09-03
 
 ### Changed

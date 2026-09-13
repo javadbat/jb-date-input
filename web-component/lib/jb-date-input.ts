@@ -917,7 +917,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
    * @description when user change value this function called and update inner value object base on user value
    */
   #setDateValue(value: string | Date | null) {
-    if (value === null && value === "") {
+    if (value === null || value === "") {
       this.#clearValue();
     }else if (typeof value == "string") {
       switch (this.#dateFactory.valueType) {
