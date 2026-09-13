@@ -35,8 +35,9 @@
     --jb-input-label-font-size	:1.3em;
     --jb-input-value-color:#434343;
     --jb-input-value-font-size:1.3em;
-    --jb-popover-border-radius:0;
-    --jb-button-border-radius:0;
+    --jb-radius-sm:0;
+    --jb-radius-lg:0;
+    --jb-radius-md:0;
   }
   .ltr-dir{
     direction: ltr;

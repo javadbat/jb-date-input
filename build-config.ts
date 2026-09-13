@@ -29,7 +29,7 @@ export const webComponentList: WebComponentBuildConfig[] = [
       "jb-core/i18n":"JBCoreI18n"
     },
     //because date-fns dont have any umd module export i have to do this so it doesn't exclude in umd build
-    umdIncludes: ["date-fns", "date-fns-jalali"],
+    umdIncludes: ["date-fns", "date-fns-jalali", "jb-core", "jb-core/theme", "jb-core/i18n"],
   },
 ];
 export const reactComponentList: ReactComponentBuildConfig[] = [
