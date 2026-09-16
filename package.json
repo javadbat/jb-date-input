@@ -32,7 +32,7 @@
     "jalali web-component",
     "jalali web component"
   ],
-  "version": "7.0.2",
+  "version": "7.0.5",
   "bugs": "https://github.com/javadbat/jb-date-input/issues",
   "license": "MIT",
   "files": [
@@ -73,7 +73,7 @@
   "dependencies": {
     "date-fns": "^4.4.0",
     "date-fns-jalali": "^4.4.0-0",
-    "jb-calendar": "^6.1.1",
+    "jb-calendar": "^6.1.4",
     "jb-popover":"^2.0.0",
     "jb-validation":"^1.1.0",
     "jb-input":"^4.1.0",

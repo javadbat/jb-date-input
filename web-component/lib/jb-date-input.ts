@@ -570,7 +570,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     this.elements.calendarTriggerButton.addEventListener("click", this.#onCalendarButtonClick.bind(this));
     //
     this.elements.calendar.addEventListener("select", e => this.#onCalendarSelect(e as CustomEvent));
-    this.elements.calendar.addEventListener("init", this.#onCalendarElementInitiated.bind(this));
+    this.elements.calendar.addEventListener("init", this.#onCalendarElementInitiated.bind(this), {once:true});
     this.elements.calendar.addEventListener("blur", this.#onCalendarBlur.bind(this), { passive: true });
     this.elements.popover.addEventListener("close", this.#onPopoverClose.bind(this), { passive: true });
   }
@@ -586,10 +586,18 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     await customElements.whenDefined("jb-input");
     await customElements.whenDefined("jb-calendar");
     await customElements.whenDefined("jb-popover");
+    customElements.upgrade(this.elements.input);
+    customElements.upgrade(this.elements.calendar);
+    customElements.upgrade(this.elements.popover);
     this.#isAllSubComponentInitiated = true;
     return Promise.resolve();
   }
-  #initProp() {
+  async #initProp() {
+    await this.#waitForComponentsLoad();
+    const valueAttribute = this.getAttribute("value");
+    if (valueAttribute !== null) {
+      this.value = valueAttribute;
+    }
     this.#unsubscribeLocaleChange?.();
     if (this.hasAttribute("input-type")) this.#hasInputTypeOverride = true;
     if (this.hasAttribute("show-persian-number")) this.#hasShowPersianNumberOverride = true;
@@ -599,13 +607,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
       if (!this.#hasInputTypeOverride) this.#setInputType(i18n.locale.calendar === "persian" ? InputTypes.jalali : InputTypes.gregorian);
       if (!this.#hasShowPersianNumberOverride) this.#setShowPersianNumber(i18n.locale.numberingSystem === "arabext");
     });
-    this.#waitForComponentsLoad().then(() => {
-      const valueAttribute = this.getAttribute("value");
-      if (valueAttribute !== null) {
-        this.value = valueAttribute;
-      }
-      this.#callOnInitEvent();
-    });
+    this.#callOnInitEvent();
   }
   static get dateInputObservedAttributes() {
     return ["value-type", "value", "name", "format", "min", "max", "required", "input-type", "dir", "show-persian-number", "placeholder", "disabled", "error"];
@@ -919,7 +921,7 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
   #setDateValue(value: string | Date | null) {
     if (value === null || value === "") {
       this.#clearValue();
-    }else if (typeof value == "string") {
+    } else if (typeof value == "string") {
       switch (this.#dateFactory.valueType) {
         case "GREGORIAN":
         case "JALALI":
@@ -948,6 +950,11 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     }
   }
   #updateCalendarView() {
+    if(this.elements.calendar.isConnected){
+      this.elements.calendar.addEventListener("init",()=>{
+        this.#updateCalendarView();
+      },{once:true})
+    }
     //update jb-calendar view base on current data
     const value: JBCalendarValue = {
       year: this.#dateFactory.getCalendarYear(this.#valueObject),
