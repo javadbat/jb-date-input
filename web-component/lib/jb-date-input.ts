@@ -1323,6 +1323,11 @@ export class JBDateInputWebComponent extends JBBaseComponent implements WithVali
     if (!this.#isAllSubComponentInitiated) {
       await this.#waitForComponentsLoad();
     }
+    this.elements.calendar.value = {
+      year: this.#dateFactory.getCalendarYear(this.#valueObject),
+      month: this.#dateFactory.getCalendarMonth(this.#valueObject),
+      day: this.#dateFactory.getCalendarDay(this.#valueObject),
+    }
     this.elements.calendar.inputType = this.inputType;
     this.#updateInputTextFromValue();
   }

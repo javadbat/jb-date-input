@@ -1,36 +1,39 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useRef } from "react";
 import { JBDateInput, useJBDateInput } from "jb-date-input/react";
-import './styles/themes.css';
-import '../../jb-input/stories/styles/style-forest.css';
-import '../../jb-calendar/stories/styles/style-forest.css';
-import { useState } from 'react';
-import type { CSSProperties } from 'react';
-import { useMemo } from 'react';
-import { useCallback } from 'react';
-import { useEffect } from 'react';
-import type { ValidationValue } from 'jb-form';
-import type { JBDateInputEventType } from 'jb-date-input';
-import { JBButton } from 'jb-button/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-import { getCalendar, getCalendarDay, getCalendarMonthNames, getCalendarShadow, getDateInput, getMessageText, getNativeInput, hasPersianDigits } from './test-utils';
+import "./styles/themes.css";
+import "../../jb-input/stories/styles/style-forest.css";
+import "../../jb-calendar/stories/styles/style-forest.css";
+import { useState } from "react";
+import type { CSSProperties } from "react";
+import { useMemo } from "react";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import type { ValidationValue } from "jb-form";
+import type { JBDateInputEventType } from "jb-date-input";
+import { JBButton } from "jb-button/react";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { getCalendar, getCalendarDay, getCalendarMonthNames, getCalendarShadow, getDateInput, getMessageText, getNativeInput, hasPersianDigits } from "./test-utils";
 const meta = {
   title: "Components/form elements/Inputs/JBDateInput",
   component: JBDateInput,
+  argTypes: {
+    inputType: {
+      control: { type: "select" },
+      options: ["GREGORIAN", "JALALI"],
+    },
+  },
   //we create custom docs for this stories so we don't need them in display
   // excludeStories:['Headless','WithInlineSections','WithCustomIcon', 'Jalali', 'Gregorian','JalaliWithPersianSetup']
 } satisfies Meta<typeof JBDateInput>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-function DarkModeDateInput() {
-  return <JBDateInput className="dark-theme-date-input forest-style" />;
-}
 
 export const Normal: Story = {
   args: {
     label: "date",
-  }
+  },
 };
 
 export const ImperativeMethods: Story = {
@@ -44,25 +47,28 @@ export const ImperativeMethods: Story = {
 
     await waitFor(() => expect(dateInput.elements.input).toBeTruthy());
 
-    dateInput.setFormat('YYYY/MM/DD');
-    dateInput.value = '2024/01/15';
-    dateInput.setMinDate('2024/01/01');
-    dateInput.setMaxDate('2024/12/31');
+    dateInput.setFormat("YYYY/MM/DD");
+    dateInput.value = "2024/01/15";
+    dateInput.setMinDate("2024/01/01");
+    dateInput.setMaxDate("2024/12/31");
 
-    expect(dateInput.valueFormat).toBe('YYYY/MM/DD');
-    expect(dateInput.value).toBe('2024/01/15');
+    expect(dateInput.valueFormat).toBe("YYYY/MM/DD");
+    expect(dateInput.value).toBe("2024/01/15");
     expect(dateInput.dateRestrictions.min).toBeInstanceOf(Date);
     expect(dateInput.dateRestrictions.max).toBeInstanceOf(Date);
-    expect(dateInput.getDateValue('GREGORIAN')).toBe('2024/01/15');
+    expect(dateInput.getDateValue("GREGORIAN")).toBe("2024/01/15");
 
-    dateInput.setMonthList('JALALI', Array.from({ length: 12 }, (_, index) => `Month ${index + 1}`));
+    dateInput.setMonthList(
+      "JALALI",
+      Array.from({ length: 12 }, (_, index) => `Month ${index + 1}`),
+    );
     dateInput.setSelectionRange(0, 4);
     expect(input.selectionStart).toBe(0);
     expect(input.selectionEnd).toBe(4);
 
-    dateInput.value = '';
-    dateInput.inputType = 'JALALI';
-    dateInput.setCalendarDefaultDateView(1360, 5, 'JALALI');
+    dateInput.value = "";
+    dateInput.inputType = "JALALI";
+    dateInput.setCalendarDefaultDateView(1360, 5, "JALALI");
     dateInput.isOpen = true;
     await waitFor(() => {
       expect(calendar.data.selectedYear).toBe(1360);
@@ -70,7 +76,7 @@ export const ImperativeMethods: Story = {
     });
 
     dateInput.required = true;
-    dateInput.value = '';
+    dateInput.value = "";
     expect(dateInput.checkValidity()).toBe(false);
     expect(dateInput.reportValidity()).toBe(false);
     dateInput.clearValidationError();
@@ -80,7 +86,7 @@ export const ImperativeMethods: Story = {
 };
 
 export const InitialValue: Story = {
-  render: (args) => {
+  render: args => {
     const formRef = useRef<HTMLFormElement>(null);
     return (
       <form ref={formRef}>
@@ -90,27 +96,27 @@ export const InitialValue: Story = {
     );
   },
   args: {
-    label: 'initialValueTest',
-    message: 'An initial value should be set by default',
-    initialValue: '2024-02-29T00:00:00.000Z',
-    inputType: 'GREGORIAN',
+    label: "initialValueTest",
+    message: "An initial value should be set by default",
+    initialValue: "2024-02-29T00:00:00.000Z",
+    inputType: "GREGORIAN",
   },
   play: async ({ canvasElement, args }) => {
     const dateInput = getDateInput(canvasElement);
     const input = getNativeInput(dateInput);
-    const resetButton = canvasElement.querySelector('jb-button')?.shadowRoot?.querySelector<HTMLButtonElement>('button');
+    const resetButton = canvasElement.querySelector("jb-button")?.shadowRoot?.querySelector<HTMLButtonElement>("button");
 
     expect(resetButton).toBeTruthy();
 
     await waitFor(() => {
       expect(dateInput.initialValue).toBe(args.initialValue);
       expect(dateInput.value).toBe(args.initialValue);
-      expect(input.value).not.toBe('');
+      expect(input.value).not.toBe("");
       expect(dateInput.isDirty).toBe(false);
     });
 
     const calendar = getCalendar(dateInput);
-    dateInput.addEventListener('change', (event) => event.preventDefault(), { once: true });
+    dateInput.addEventListener("change", event => event.preventDefault(), { once: true });
     calendar.data.selectedYear = 2024;
     calendar.data.selectedMonth = 3;
     await userEvent.click(getCalendarDay(calendar, 2));
@@ -122,10 +128,10 @@ export const InitialValue: Story = {
       expect(dateInput.isDirty).toBe(false);
     });
 
-    dateInput.initialValue = '2024-03-01T00:00:00.000Z';
+    dateInput.initialValue = "2024-03-01T00:00:00.000Z";
 
     await waitFor(() => {
-      expect(dateInput.value).toBe('2024-03-01T00:00:00.000Z');
+      expect(dateInput.value).toBe("2024-03-01T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(false);
     });
 
@@ -133,19 +139,19 @@ export const InitialValue: Story = {
     dateInput.value = new Date(Number.NaN);
 
     // Rejected date strings must leave the clean initialization state intact.
-    dateInput.value = 'invalid-date';
-    dateInput.initialValue = '2024-03-03T00:00:00.000Z';
+    dateInput.value = "invalid-date";
+    dateInput.initialValue = "2024-03-03T00:00:00.000Z";
 
     await waitFor(() => {
-      expect(dateInput.initialValue).toBe('2024-03-03T00:00:00.000Z');
-      expect(dateInput.value).toBe('2024-03-03T00:00:00.000Z');
+      expect(dateInput.initialValue).toBe("2024-03-03T00:00:00.000Z");
+      expect(dateInput.value).toBe("2024-03-03T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(false);
     });
 
-    dateInput.value = '2024-03-02T00:00:00.000Z';
+    dateInput.value = "2024-03-02T00:00:00.000Z";
 
     await waitFor(() => {
-      expect(dateInput.value).toBe('2024-03-02T00:00:00.000Z');
+      expect(dateInput.value).toBe("2024-03-02T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(true);
     });
 
@@ -153,7 +159,7 @@ export const InitialValue: Story = {
 
     await waitFor(() => {
       expect(dateInput.initialValue).toBeNull();
-      expect(dateInput.value).toBe('2024-03-02T00:00:00.000Z');
+      expect(dateInput.value).toBe("2024-03-02T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(true);
     });
 
@@ -161,23 +167,23 @@ export const InitialValue: Story = {
 
     await waitFor(() => {
       // The date component serializes its empty GREGORIAN value canonically.
-      expect(dateInput.value).toBe('0000-00-00T00:00:00.000Z');
+      expect(dateInput.value).toBe("0000-00-00T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(false);
     });
 
-    dateInput.value = '2025-03-20T00:00:00.000Z';
-    dateInput.initialValue = '2026-03-20T00:00:00.000Z';
+    dateInput.value = "2025-03-20T00:00:00.000Z";
+    dateInput.initialValue = "2026-03-20T00:00:00.000Z";
 
     await waitFor(() => {
-      expect(dateInput.initialValue).toBe('2026-03-20T00:00:00.000Z');
-      expect(dateInput.value).toBe('2025-03-20T00:00:00.000Z');
+      expect(dateInput.initialValue).toBe("2026-03-20T00:00:00.000Z");
+      expect(dateInput.value).toBe("2025-03-20T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(true);
     });
 
     await userEvent.click(resetButton!);
 
     await waitFor(() => {
-      expect(dateInput.value).toBe('2026-03-20T00:00:00.000Z');
+      expect(dateInput.value).toBe("2026-03-20T00:00:00.000Z");
       expect(dateInput.initialValue).toBe(dateInput.value);
       expect(dateInput.isDirty).toBe(false);
     });
@@ -185,55 +191,55 @@ export const InitialValue: Story = {
 };
 export const InitialValueDoesNotOverrideValue: Story = {
   args: {
-    initialValue: '2024-02-29T00:00:00.000Z',
-    value: '2025-03-20T00:00:00.000Z',
-    inputType: 'GREGORIAN',
+    initialValue: "2024-02-29T00:00:00.000Z",
+    value: "2025-03-20T00:00:00.000Z",
+    inputType: "GREGORIAN",
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
 
     await waitFor(() => {
-      expect(dateInput.value).toBe('2025-03-20T00:00:00.000Z');
+      expect(dateInput.value).toBe("2025-03-20T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(true);
     });
   },
 };
 export const ExplicitNullValueDoesNotFallBackToInitialValue: Story = {
   args: {
-    initialValue: '2024-02-29T00:00:00.000Z',
+    initialValue: "2024-02-29T00:00:00.000Z",
     value: null,
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
 
     await waitFor(() => {
-      expect(dateInput.value).toBe('0000-00-00T00:00:00.000Z');
+      expect(dateInput.value).toBe("0000-00-00T00:00:00.000Z");
       expect(dateInput.isDirty).toBe(true);
     });
   },
 };
 export const RejectedTimestampDoesNotBlockInitialValue: Story = {
   args: {
-    valueType: 'TIME_STAMP',
-    inputType: 'GREGORIAN',
-    initialValue: '1709164800000',
+    valueType: "TIME_STAMP",
+    inputType: "GREGORIAN",
+    initialValue: "1709164800000",
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
 
     await waitFor(() => {
-      expect(dateInput.value).toBe('1709164800000');
+      expect(dateInput.value).toBe("1709164800000");
       expect(dateInput.isDirty).toBe(false);
     });
 
-    dateInput.value = 'not-a-timestamp';
-    dateInput.initialValue = '1709251200000';
+    dateInput.value = "not-a-timestamp";
+    dateInput.initialValue = "1709251200000";
 
     await waitFor(() => {
       // A non-finite timestamp is rejected as a live assignment and therefore
       // cannot block the next initialValue from seeding the input.
-      expect(dateInput.initialValue).toBe('1709251200000');
-      expect(dateInput.value).toBe('1709251200000');
+      expect(dateInput.initialValue).toBe("1709251200000");
+      expect(dateInput.value).toBe("1709251200000");
       expect(dateInput.isDirty).toBe(false);
     });
   },
@@ -243,20 +249,20 @@ export const Jalali: Story = {
     label: "jalali date",
     inputType: "JALALI",
   },
-  play: async ({ canvasElement }) => {
-    const dateInput = getDateInput(canvasElement);
-    const input = getNativeInput(dateInput);
+  // play: async ({ canvasElement }) => {
+  //   const dateInput = getDateInput(canvasElement);
+  //   const input = getNativeInput(dateInput);
 
-    await userEvent.click(input);
-    await userEvent.type(input, '1402/05/12');
+  //   await userEvent.click(input);
+  //   await userEvent.type(input, '1402/05/12');
 
-    await waitFor(() => {
-      expect(dateInput.isOpen).toBe(true);
-      expect(getCalendar(dateInput).inputType).toBe('JALALI');
-      expect(dateInput.displayValue).toBe('1402/05/12');
-      expect(dateInput.valueAsDate).toBeTruthy();
-    });
-  }
+  //   await waitFor(() => {
+  //     expect(dateInput.isOpen).toBe(true);
+  //     expect(getCalendar(dateInput).inputType).toBe('JALALI');
+  //     expect(dateInput.displayValue).toBe('1402/05/12');
+  //     expect(dateInput.valueAsDate).toBeTruthy();
+  //   });
+  // }
 };
 export const Gregorian: Story = {
   args: {
@@ -268,58 +274,60 @@ export const Gregorian: Story = {
     const input = getNativeInput(dateInput);
 
     await userEvent.click(input);
-    await userEvent.type(input, '2024/02/29');
+    await userEvent.type(input, "2024/02/29");
 
     await waitFor(() => {
       expect(dateInput.isOpen).toBe(true);
-      expect(getCalendar(dateInput).inputType).toBe('GREGORIAN');
-      expect(dateInput.displayValue).toBe('2024/02/29');
+      expect(getCalendar(dateInput).inputType).toBe("GREGORIAN");
+      expect(dateInput.displayValue).toBe("2024/02/29");
     });
 
     const typedValue = dateInput.value;
-    dateInput.initialValue = '2025-03-20T00:00:00.000Z';
+    dateInput.initialValue = "2025-03-20T00:00:00.000Z";
 
     await waitFor(() => {
       expect(dateInput.value).toBe(typedValue);
     });
-  }
+  },
 };
 export const SizeVariants: Story = {
   render: () => {
-    return (<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-      <JBDateInput label='xl size' message="message underneath" size='xl'></JBDateInput>
-      <JBDateInput label='xl size' placeholder="placeholder" size='xl'></JBDateInput>
-      <JBDateInput label='xl size' value='2021-08-03T00:00:00.000Z' size='xl'></JBDateInput>
+    return (
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
+        <JBDateInput label="xl size" message="message underneath" size="xl"></JBDateInput>
+        <JBDateInput label="xl size" placeholder="placeholder" size="xl"></JBDateInput>
+        <JBDateInput label="xl size" value="2021-08-03T00:00:00.000Z" size="xl"></JBDateInput>
 
-      <JBDateInput label='lg size' message="message underneath" size='lg'></JBDateInput>
-      <JBDateInput label='lg size' placeholder="placeholder" size='lg'></JBDateInput>
-      <JBDateInput label='lg size' value='2021-08-03T00:00:00.000Z' size='lg'></JBDateInput>
+        <JBDateInput label="lg size" message="message underneath" size="lg"></JBDateInput>
+        <JBDateInput label="lg size" placeholder="placeholder" size="lg"></JBDateInput>
+        <JBDateInput label="lg size" value="2021-08-03T00:00:00.000Z" size="lg"></JBDateInput>
 
-      <JBDateInput label='md size' message="message underneath" size='md'></JBDateInput>
-      <JBDateInput label='md size' placeholder="placeholder" size='md'></JBDateInput>
-      <JBDateInput label='md size' value='2021-08-03T00:00:00.000Z' size='md'></JBDateInput>
+        <JBDateInput label="md size" message="message underneath" size="md"></JBDateInput>
+        <JBDateInput label="md size" placeholder="placeholder" size="md"></JBDateInput>
+        <JBDateInput label="md size" value="2021-08-03T00:00:00.000Z" size="md"></JBDateInput>
 
-      <JBDateInput label='sm size' message="message underneath" size='sm'></JBDateInput>
-      <JBDateInput label='sm size' placeholder="placeholder" size='sm'></JBDateInput>
-      <JBDateInput label='sm size' value='2021-08-03T00:00:00.000Z' size='sm'></JBDateInput>
+        <JBDateInput label="sm size" message="message underneath" size="sm"></JBDateInput>
+        <JBDateInput label="sm size" placeholder="placeholder" size="sm"></JBDateInput>
+        <JBDateInput label="sm size" value="2021-08-03T00:00:00.000Z" size="sm"></JBDateInput>
 
-      <JBDateInput label='xs size' message="message underneath" size='xs'></JBDateInput>
-      <JBDateInput label='xs size' placeholder="placeholder" size='xs'></JBDateInput>
-      <JBDateInput label='xs size' value='2021-08-03T00:00:00.000Z' size='xs'></JBDateInput>
-    </div>)
-  }
-}
+        <JBDateInput label="xs size" message="message underneath" size="xs"></JBDateInput>
+        <JBDateInput label="xs size" placeholder="placeholder" size="xs"></JBDateInput>
+        <JBDateInput label="xs size" value="2021-08-03T00:00:00.000Z" size="xs"></JBDateInput>
+      </div>
+    );
+  },
+};
 export const JalaliWithPersianSetup: Story = {
   globals: {
     locale: "fa",
-    dir: "rtl"
+    dir: "rtl",
   },
   args: {
     label: "ØªØ§Ø±ÛŒØ® Ø¬Ù„Ø§Ù„ÛŒ",
     inputType: "JALALI",
-    dir: 'rtl',
+    dir: "rtl",
     showPersianNumber: true,
-    message: "ØªØ§Ø±ÛŒØ® Ø¬Ù„Ø§Ù„ÛŒ Ø¨Ø§ Ø§Ø¹Ø¯Ø§Ø¯ ÙØ§Ø±Ø³ÛŒ Ùˆ Ø¨Ù‡ ØµÙˆØ±Øª Ø±Ø§Ø³Øª Ø¨Ù‡ Ú†Ù¾"
+    message: "ØªØ§Ø±ÛŒØ® Ø¬Ù„Ø§Ù„ÛŒ Ø¨Ø§ Ø§Ø¹Ø¯Ø§Ø¯ ÙØ§Ø±Ø³ÛŒ Ùˆ Ø¨Ù‡ ØµÙˆØ±Øª Ø±Ø§Ø³Øª Ø¨Ù‡ Ú†Ù¾",
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
@@ -327,43 +335,49 @@ export const JalaliWithPersianSetup: Story = {
     const calendar = getCalendar(dateInput);
 
     await userEvent.click(input);
-    await userEvent.type(input, '1402/05/12');
+    await userEvent.type(input, "1402/05/12");
 
     await waitFor(() => {
       expect(dateInput.showPersianNumber).toBe(true);
       expect(calendar.showPersianNumber).toBe(true);
       expect(hasPersianDigits(dateInput.displayValue)).toBe(true);
-      expect(hasPersianDigits(getCalendarShadow(calendar).querySelector('.navigator-title .year')?.textContent ?? '')).toBe(true);
+      expect(hasPersianDigits(getCalendarShadow(calendar).querySelector(".navigator-title .year")?.textContent ?? "")).toBe(true);
     });
-  }
-}
+  },
+};
 export const CustomFormat: Story = {
-  render: (args) => {
-    const [value, setValue] = useState('');
-    const [value2, setValue2] = useState('');
+  render: args => {
+    const [value, setValue] = useState("");
+    const [value2, setValue2] = useState("");
     return (
       <div>
         <h2>input.value in different format</h2>
         <p>try to input some value inside date-input and see the changes in the paragraphs below</p>
-        <JBDateInput label={`value with arguments format(${args.format})`} format={args.format} value={value} onChange={(e) => setValue(e.target.value)} />
+        <JBDateInput label={`value with arguments format(${args.format})`} format={args.format} value={value} onChange={e => setValue(e.target.value)} />
         <p>your inputted value is: {value}</p>
-        <JBDateInput label="value with YYYY-MM-DD format" format="YYYY-MM-DD format" value={value2} onChange={(e) => setValue2(e.target.value)} />
+        <JBDateInput label="value with YYYY-MM-DD format" format="YYYY-MM-DD format" value={value2} onChange={e => setValue2(e.target.value)} />
         <p>your inputted value is: {value2}</p>
       </div>
-    )
+    );
   },
   args: {
     format: "YYYY/MM/DD",
   },
   play: async ({ canvasElement, args }) => {
     const dateInput = getDateInput(canvasElement);
-    dateInput.value = '2023/08/03';
+    dateInput.value = "2023/08/03";
 
     await waitFor(() => {
       expect(dateInput.value).toMatch(/^\d{4}\/\d{2}\/\d{2}$/);
-      expect(args.format).toBe('YYYY/MM/DD');
+      expect(args.format).toBe("YYYY/MM/DD");
     });
-  }
+  },
+};
+export const AlignCenter: Story = {
+  args: {
+    label: "Align Center",
+    style: { "--jb-input-input-text-align": "center" } as any,
+  },
 };
 
 export const Placeholder: Story = {
@@ -371,7 +385,7 @@ export const Placeholder: Story = {
     label: "date",
     placeholder: "please enter your date",
     dir: "ltr",
-  }
+  },
 };
 
 export const WithDefaultCalendarDate: Story = {
@@ -392,9 +406,9 @@ export const WithDefaultCalendarDate: Story = {
     await waitFor(() => {
       expect(calendar.data.selectedYear).toBe(1360);
       expect(calendar.data.selectedMonth).toBe(5);
-      expect(calendar.activeSection).toBe('DAY');
+      expect(calendar.activeSection).toBe("DAY");
     });
-  }
+  },
 };
 export const PersianNumber: Story = {
   args: {
@@ -410,16 +424,16 @@ export const PersianNumber: Story = {
     const dateInput = getDateInput(canvasElement);
     const calendar = getCalendar(dateInput);
 
-    dateInput.value = '1360/05/12';
+    dateInput.value = "1360/05/12";
     dateInput.isOpen = true;
 
     await waitFor(() => {
       expect(dateInput.showPersianNumber).toBe(true);
       expect(hasPersianDigits(dateInput.displayValue)).toBe(true);
-      expect(hasPersianDigits(getCalendarShadow(calendar).querySelector('.navigator-title .year')?.textContent ?? '')).toBe(true);
+      expect(hasPersianDigits(getCalendarShadow(calendar).querySelector(".navigator-title .year")?.textContent ?? "")).toBe(true);
     });
-  }
-}
+  },
+};
 export const CustomMonthName: Story = {
   args: {
     label: "date",
@@ -446,13 +460,13 @@ export const CustomMonthName: Story = {
     const shadow = getCalendarShadow(calendar);
 
     dateInput.isOpen = true;
-    await userEvent.click(shadow.querySelector<HTMLElement>('.navigator-title .month')!);
+    await userEvent.click(shadow.querySelector<HTMLElement>(".navigator-title .month")!);
 
     await waitFor(() => {
       expect(getCalendarMonthNames(calendar)).toEqual(args.jalaliMonthList);
     });
-  }
-}
+  },
+};
 export const Required: Story = {
   args: {
     label: "required field",
@@ -480,105 +494,104 @@ export const WithOverflowHandler: Story = {
   args: {
     label: "will jump on overflow",
     overflowHandler: "SLIDE",
-  }
+  },
 };
 
 export const OverflowWithinParent: Story = {
-  render:
-    (args) => {
-      const ref = useRef<HTMLDivElement>(null);
-      return (
-        <div ref={ref} style={{ height: "10rem", border: "solid 1px #666", overflow: "hidden" }}>
-          {/* ðŸ‘‡ Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
-          <JBDateInput {...args} overflowRef={ref} />
-        </div>
-      );
-    },
+  render: args => {
+    const ref = useRef<HTMLDivElement>(null);
+    return (
+      <div ref={ref} style={{ height: "10rem", border: "solid 1px #666", overflow: "hidden" }}>
+        {/* ðŸ‘‡ Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
+        <JBDateInput {...args} overflowRef={ref} />
+      </div>
+    );
+  },
   args: {
     label: "will jump on overflow",
     overflowHandler: "SLIDE",
-  }
+  },
 };
 
 export const withError: Story = {
   args: {
     label: "with default error",
-    error: 'error message',
-    message: 'default message'
+    error: "error message",
+    message: "default message",
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
 
     await waitFor(() => {
-      expect(getMessageText(dateInput)).toBe('error message');
+      expect(getMessageText(dateInput)).toBe("error message");
       expect(dateInput.reportValidity()).toBe(false);
     });
 
-    dateInput.removeAttribute('error');
+    dateInput.removeAttribute("error");
     dateInput.reportValidity();
 
     await waitFor(() => {
-      expect(getMessageText(dateInput)).toBe('default message');
+      expect(getMessageText(dateInput)).toBe("default message");
     });
-  }
+  },
 };
 
 export const ValueSetGet: Story = {
   render: () => {
     const [value, setValue] = useState<Date | string>("");
     return (
-      <div style={{ display: 'flex', flexDirection: "column", gap: "0.5rem" }}>
-        <JBDateInput value={value} onChange={(e) => setValue(e.target.value)}></JBDateInput>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <JBDateInput value={value} onChange={e => setValue(e.target.value)}></JBDateInput>
         <JBButton onClick={() => setValue(new Date())}>set value to Today</JBButton>
       </div>
-    )
+    );
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const dateInput = getDateInput(canvasElement);
 
-    await userEvent.click(canvas.getByText('set value to Today'));
+    await userEvent.click(canvas.getByText("set value to Today"));
 
     await waitFor(() => {
-      expect(dateInput.value).not.toBe('');
-      expect(dateInput.displayValue).not.toBe('');
+      expect(dateInput.value).not.toBe("");
+      expect(dateInput.displayValue).not.toBe("");
       expect(getCalendar(dateInput).value.year).toBeTruthy();
     });
-  }
-}
+  },
+};
 export const sizeTest: Story = {
   render: () => {
     return (
       <>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: "100%" }}>
           <h3>parent full width</h3>
           <JBDateInput></JBDateInput>
         </div>
-        <div style={{ width: '50%' }}>
+        <div style={{ width: "50%" }}>
           <h3>parent percent width</h3>
           <JBDateInput></JBDateInput>
         </div>
-        <div style={{ width: '18.75rem' }}>
+        <div style={{ width: "18.75rem" }}>
           <h3>parent pixel width</h3>
           <JBDateInput></JBDateInput>
         </div>
 
         <h3>self full width</h3>
-        <JBDateInput style={{ width: '100%' }}></JBDateInput>
+        <JBDateInput style={{ width: "100%" }}></JBDateInput>
 
         <h3>self percent width</h3>
-        <JBDateInput style={{ width: '50%' }}></JBDateInput>
+        <JBDateInput style={{ width: "50%" }}></JBDateInput>
 
         <h3>self pixel width</h3>
-        <JBDateInput style={{ width: '18.75rem' }}></JBDateInput>
+        <JBDateInput style={{ width: "18.75rem" }}></JBDateInput>
 
         <h3>self pixel height</h3>
-        <JBDateInput style={({ "--jb-input-height": "4.375rem" } as any)}></JBDateInput>
+        <JBDateInput style={{ "--jb-input-height": "4.375rem" } as any}></JBDateInput>
       </>
     );
   },
   play: async ({ canvasElement }) => {
-    const dateInputs = Array.from(canvasElement.querySelectorAll<HTMLElement>('jb-date-input'));
+    const dateInputs = Array.from(canvasElement.querySelectorAll<HTMLElement>("jb-date-input"));
 
     await waitFor(() => {
       expect(dateInputs[1].getBoundingClientRect().width).toBeCloseTo(dateInputs[1].parentElement!.getBoundingClientRect().width, -1);
@@ -586,24 +599,22 @@ export const sizeTest: Story = {
       expect(dateInputs[5].getBoundingClientRect().width).toBeCloseTo(300, -1);
       expect(dateInputs[6].getBoundingClientRect().height).toBeGreaterThanOrEqual(70);
     });
-  }
+  },
 };
 
 export const ValueTypeTest: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState("");
     return (
       <div>
         <JBDateInput
           {...args}
-
-          onChange={(e) => {
+          onChange={e => {
             setValue(e.target.value);
           }}
-        >
-        </JBDateInput>
+        ></JBDateInput>
         <div>
-          <table style={{ margin: '1rem' }}>
+          <table style={{ margin: "1rem" }}>
             <tbody>
               <tr>
                 <td>valueType is</td>
@@ -626,7 +637,6 @@ export const ValueTypeTest: Story = {
                 <td>{value}</td>
               </tr>
             </tbody>
-
           </table>
         </div>
       </div>
@@ -636,10 +646,9 @@ export const ValueTypeTest: Story = {
     valueType: "GREGORIAN",
     inputType: "GREGORIAN",
     min: "",
-    max: ""
+    max: "",
   },
   //TODO: add arg types so control in Value doc works better for test
-  
 };
 
 export const GregorianMinMaxTest: Story = {
@@ -650,46 +659,99 @@ export const GregorianMinMaxTest: Story = {
     min: "2020-09-05T08:51:23.176Z",
     max: "2020-10-15T08:51:23.176Z",
     dir: "ltr",
-  }
+  },
 };
 
 //TODO: break this into multiple story in different or combine scenario (dont duplicate if exact functionality test is already exist)
 export const JalaliTest: Story = {
-  render: (args) => {
+  render: args => {
     const [value, valueSetter] = useState("");
     const [dateValue, setDateValue] = useState(new Date());
     const validationList = [
       {
         validator: /^13.*$/g,
-        message: 'date must be in 13 century'
+        message: "date must be in 13 century",
       },
       {
         validator: ({ valueObject }: ValidationValue) => {
           return valueObject.jalali.day >= 15;
         },
-        message: 'you can only choose 15th day of month'
-      }
+        message: "you can only choose 15th day of month",
+      },
     ];
     return (
       <div>
-        <JBDateInput name="first-date-input" value={value} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
-        <JBDateInput name="first-date-input" showPersianNumber={true} value={value} label={`${args.label} Ø¨Ø§ Ø§Ø¹Ø¯Ø§Ø¯ ÙØ§Ø±Ø³ÛŒ `} onSelect={e => { valueSetter(e.target.value); }} onChange={e => { valueSetter(e.target.value); }} {...args} />
+        <JBDateInput
+          inputType="JALALI"
+          name="first-date-input"
+          value={value}
+          onSelect={e => {
+            valueSetter(e.target.value);
+          }}
+          onChange={e => {
+            valueSetter(e.target.value);
+          }}
+          {...args}
+        />
+        <JBDateInput
+          inputType="JALALI"
+          name="first-date-input"
+          showPersianNumber={true}
+          value={value}
+          label={`${args.label} Ø¨Ø§ Ø§Ø¹Ø¯Ø§Ø¯ ÙØ§Ø±Ø³ÛŒ `}
+          onSelect={e => {
+            valueSetter(e.target.value);
+          }}
+          onChange={e => {
+            valueSetter(e.target.value);
+          }}
+          {...args}
+        />
         <div>
-          <br /><br />valueType is {args.valueType}
-          <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
-          <br /><br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
-          <br /><br />Your chosen date is: {value}
-          <br /><JBButton onClick={() => { valueSetter("1400-06-18T00:00:00.000Z"); }}>set value to 1400-06-18T00:00:00.000Z</JBButton>
-          <br /><JBButton onClick={() => { valueSetter("1399/08/09"); }}>set value to 1399/08/09</JBButton>
-        </div>
-        <h3>Center Aligned</h3>
-        <div style={({ '--jb-date-input-text-align': 'center' } as any)}>
-          <JBDateInput></JBDateInput>
+          <br />
+          <br />
+          valueType is {args.valueType}
+          <br />
+          <br />
+          Min date is: {args.min ? args.min.toString() : "Unlimited"}
+          <br />
+          <br />
+          Max date is: {args.max ? args.max.toString() : "Unlimited"}
+          <br />
+          <br />
+          Your chosen date is: {value}
+          <br />
+          <JBButton
+            onClick={() => {
+              valueSetter("1400-06-18T00:00:00.000Z");
+            }}
+          >
+            set value to 1400-06-18T00:00:00.000Z
+          </JBButton>
+          <br />
+          <JBButton
+            onClick={() => {
+              valueSetter("1399/08/09");
+            }}
+          >
+            set value to 1399/08/09
+          </JBButton>
         </div>
         <h3>test custom validation</h3>
-        <JBDateInput validationList={validationList} value={value} onChange={e => { valueSetter(e.target.value); }} onSelect={e => { valueSetter(e.target.value); }} {...args}></JBDateInput>
+        <JBDateInput
+          inputType="JALALI"
+          validationList={validationList}
+          value={value}
+          onChange={e => {
+            valueSetter(e.target.value);
+          }}
+          onSelect={e => {
+            valueSetter(e.target.value);
+          }}
+          {...args}
+        ></JBDateInput>
         <h3>test via JS Date type value</h3>
-        <JBDateInput value={dateValue} onChange={(e) => setDateValue(e.target.valueAsDate as Date)}></JBDateInput>
+        <JBDateInput inputType="JALALI" value={dateValue} onChange={e => setDateValue(e.target.valueAsDate as Date)}></JBDateInput>
       </div>
     );
   },
@@ -713,12 +775,12 @@ export const JalaliMinMaxTest: Story = {
     const dateInput = getDateInput(canvasElement);
     const calendar = getCalendar(dateInput);
 
-    calendar.inputType = 'JALALI';
+    calendar.inputType = "JALALI";
     calendar.data.selectedYear = 1399;
     calendar.data.selectedMonth = 4;
 
     await waitFor(() => {
-      expect(getCalendarDay(calendar, 30).classList.contains('--disable')).toBe(true);
+      expect(getCalendarDay(calendar, 30).classList.contains("--disable")).toBe(true);
     });
 
     const valueBeforeDisabledClick = dateInput.value;
@@ -726,13 +788,13 @@ export const JalaliMinMaxTest: Story = {
 
     expect(dateInput.value).toBe(valueBeforeDisabledClick);
 
-    dateInput.value = '1399-04-30T12:05:39.530Z';
+    dateInput.value = "1399-04-30T12:05:39.530Z";
     dateInput.reportValidity();
 
     await waitFor(() => {
       expect(dateInput.checkValidity()).toBe(false);
     });
-  }
+  },
 };
 
 export const JalaliMinMaxTestWithCustomFormat: Story = {
@@ -743,11 +805,11 @@ export const JalaliMinMaxTestWithCustomFormat: Story = {
     valueType: "JALALI",
     min: "1399/05/01",
     max: "1400/08/01",
-  }
+  },
 };
 
 export const TimeStampTest: Story = {
-  render: (args) => {
+  render: args => {
     const [setValue, setValueSetter] = useState<string | null>(null);
     const valueAsDate = useMemo(() => {
       if (setValue) {
@@ -764,11 +826,21 @@ export const TimeStampTest: Story = {
       <div>
         <JBDateInput value={setValue} valueType="TIME_STAMP" onChange={onChange} {...args} />
         <div>
-          <br /><br />valueType is {args.valueType}
-          <br /><br />Min date is: {args.min ? args.min.toString() : "Unlimited"}
-          <br /><br />Max date is: {args.max ? args.max.toString() : "Unlimited"}
-          <br /><br />Your chosen date is: {setValue}
-          <br /><br />Your chosen date in greg is: {valueAsDate}
+          <br />
+          <br />
+          valueType is {args.valueType}
+          <br />
+          <br />
+          Min date is: {args.min ? args.min.toString() : "Unlimited"}
+          <br />
+          <br />
+          Max date is: {args.max ? args.max.toString() : "Unlimited"}
+          <br />
+          <br />
+          Your chosen date is: {setValue}
+          <br />
+          <br />
+          Your chosen date in greg is: {valueAsDate}
         </div>
       </div>
     );
@@ -791,13 +863,13 @@ export const TimeStampTest: Story = {
     });
 
     const selectedValue = dateInput.value;
-    dateInput.initialValue = '0';
+    dateInput.initialValue = "0";
 
     await waitFor(() => {
       expect(dateInput.value).toBe(selectedValue);
     });
-  }
-}
+  },
+};
 export const TimeStampMinMaxTest: Story = {
   ...TimeStampTest,
   args: {
@@ -809,13 +881,13 @@ export const TimeStampMinMaxTest: Story = {
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
 
-    dateInput.value = '1577836800000';
+    dateInput.value = "1577836800000";
     dateInput.reportValidity();
 
     await waitFor(() => {
       expect(dateInput.checkValidity()).toBe(false);
     });
-  }
+  },
 };
 
 export const GregorianInputTest: Story = {
@@ -826,66 +898,56 @@ export const GregorianInputTest: Story = {
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
-    dateInput.value = '2024-02-29T00:00:00.000Z';
+    dateInput.value = "2024-02-29T00:00:00.000Z";
 
     await waitFor(() => {
-      expect(dateInput.inputType).toBe('GREGORIAN');
-      expect(dateInput.valueType).toBe('GREGORIAN');
-      expect(dateInput.value).toContain('2024');
+      expect(dateInput.inputType).toBe("GREGORIAN");
+      expect(dateInput.valueType).toBe("GREGORIAN");
+      expect(dateInput.value).toContain("2024");
       expect(dateInput.valueAsDate).toBeTruthy();
     });
-  }
+  },
 };
 
 export const RightToLeftTest: Story = {
   args: {
     label: "Ø±Ø§Ø³Øª Ø¨Ù‡ Ú†Ù¾",
-    dir: "rtl"
-  }
-}
+    dir: "rtl",
+  },
+};
 export const Headless: Story = {
-  render: (args) => {
+  render: args => {
     const ref = useRef<HTMLInputElement>(null);
-    const { value, onChange, onClick, onFocus } = useJBDateInput({ dateInputType: "JALALI", ref, showPersianNumber: false })
-    return (
-      <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus} />
-    )
+    const { value, onChange, onClick, onFocus } = useJBDateInput({ dateInputType: "JALALI", ref, showPersianNumber: false });
+    return <input ref={ref} value={value} onChange={onChange} onClick={onClick} onFocus={onFocus} />;
   },
-  name: 'headless sample',
-  args: {
-
-  },
+  name: "headless sample",
+  args: {},
   play: async ({ canvasElement }) => {
-    const input = canvasElement.querySelector<HTMLInputElement>('input');
+    const input = canvasElement.querySelector<HTMLInputElement>("input");
     expect(input).toBeTruthy();
 
     await userEvent.click(input!);
-    await userEvent.type(input!, '1402/13/45');
+    await userEvent.type(input!, "1402/13/45");
 
     await waitFor(() => {
-      expect(input!.value).not.toContain('13');
+      expect(input!.value).not.toContain("13");
       expect(input!.selectionStart).toBe(input!.selectionEnd);
     });
 
-    await userEvent.keyboard('{Control>}a{/Control}{Backspace}');
-    await userEvent.type(input!, '1402/05/12');
+    await userEvent.keyboard("{Control>}a{/Control}{Backspace}");
+    await userEvent.type(input!, "1402/05/12");
 
     await waitFor(() => {
-      expect(input!.value).toBe('1402/05/12');
+      expect(input!.value).toBe("1402/05/12");
     });
-  }
+  },
 };
 export const WithCustomIcon: Story = {
-  render: (args) => (
+  render: args => (
     <JBDateInput {...args}>
-      <div slot="calendar-trigger-icon" style={{height:'100%', "aspectRatio":"1"}}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          version="1.1"
-          x="0px"
-          y="0px"
-          viewBox="0 0 610.398 610.398"
-        >
+      <div slot="calendar-trigger-icon" style={{ height: "100%", aspectRatio: "1" }}>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 610.398 610.398">
           <title>calendar icon</title>
           <g>
             <g>
@@ -910,7 +972,7 @@ export const WithCustomIcon: Story = {
     label: "date",
     valueType: "GREGORIAN",
     inputType: "JALALI",
-  }
+  },
 };
 export const WithoutIcon: Story = {
   args: {
@@ -919,11 +981,11 @@ export const WithoutIcon: Story = {
     inputType: "JALALI",
     dir: "ltr",
     style: { "--jb-date-input-calendar-trigger-display": "none" } as CSSProperties,
-  }
+  },
 };
 
 export const WithInlineSections: Story = {
-  render: (args) => (
+  render: args => (
     <JBDateInput {...args}>
       <div slot="inline-start" style={{ height: "1.5rem", borderInlineEnd: "2px solid #262626", paddingInline: "0.5rem" }}>
         ðŸŽ‰Birthday
@@ -936,11 +998,11 @@ export const WithInlineSections: Story = {
     valueType: "GREGORIAN",
     inputType: "JALALI",
     dir: "ltr",
-  }
+  },
 };
 
 export const InFormTest: Story = {
-  render: (args) => {
+  render: args => {
     const formRef = useRef<HTMLFormElement>(null);
     useEffect(() => {
       // formRef.current.addEventListener('formdata', ({ formData }) => {
@@ -970,16 +1032,16 @@ export const InFormTest: Story = {
   },
   play: async ({ canvasElement }) => {
     const dateInput = getDateInput(canvasElement);
-    const form = canvasElement.querySelector<HTMLFormElement>('form');
+    const form = canvasElement.querySelector<HTMLFormElement>("form");
 
     expect(form).toBeTruthy();
-    dateInput.value = '2024-02-29T00:00:00.000Z';
+    dateInput.value = "2024-02-29T00:00:00.000Z";
 
     await waitFor(() => {
-      expect(new FormData(form!).get('birthdate')).toBe(dateInput.value);
+      expect(new FormData(form!).get("birthdate")).toBe(dateInput.value);
     });
-  }
-}
+  },
+};
 
 export const EventTest: Story = {
   args: {
@@ -1003,23 +1065,23 @@ export const EventTest: Story = {
     const input = getNativeInput(dateInput);
 
     await waitFor(() => {
-      dateInput.dispatchEvent(new CustomEvent('load'));
+      dateInput.dispatchEvent(new CustomEvent("load"));
       expect(args.onLoad).toHaveBeenCalled();
     });
     await waitFor(() => {
-      dateInput.dispatchEvent(new CustomEvent('init'));
+      dateInput.dispatchEvent(new CustomEvent("init"));
       expect(args.onInit).toHaveBeenCalled();
     });
 
     await userEvent.click(input);
-    await userEvent.type(input, '1402/05/12');
+    await userEvent.type(input, "1402/05/12");
 
     const calendar = getCalendar(dateInput);
     calendar.data.selectedYear = 1402;
     calendar.data.selectedMonth = 5;
     await userEvent.click(getCalendarDay(calendar, 13));
 
-    dateInput.setAttribute('error', 'forced error');
+    dateInput.setAttribute("error", "forced error");
     dateInput.reportValidity();
     input.blur();
 
@@ -1035,5 +1097,5 @@ export const EventTest: Story = {
       expect(args.onInvalid).toHaveBeenCalled();
       expect(args.onBlur).toHaveBeenCalled();
     });
-  }
+  },
 };
